@@ -21,7 +21,7 @@
     <div v-for="(d, i) in directories" :key="i" v-on:click="navigate(d)">
       <v-icon>mdi-folder-text-outline</v-icon>
       <!-- {{ d.mountpoints[0].path }} -->
-      {{ d }}
+      {{ d.mountpoint }}
     </div>
   </div>
 </template>
@@ -115,11 +115,25 @@ export default {
       ipc
         .invoke('findAllMountedDrives')
         .then(res => {
-          // console.log(res);
+          console.log(res);
           let temp = res.map(r => {
-            return r.mountpoints[0].path;
+            r.mountpoint = r.mountpoints[0].path;
+            return r;
           });
-          this.directories = temp.sort();
+          // temp = this.directories.map(d => {
+          //   d = d.replace(/(\\.*?)/gi, '/');
+          //   console.log(d);
+          //   return d;
+          // });
+          this.directories = temp.sort((a, b) => {
+            if (a.mountpoint < b.mountpoint) {
+              return -1;
+            }
+            if (a.mountpoint > b.mountpoint) {
+              return 1;
+            }
+            return 0;
+          });
         })
         .catch(console.log)
         .finally(x => {
