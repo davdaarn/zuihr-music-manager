@@ -10,11 +10,14 @@
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "postuninstall": "electron-builder install-app-deps",
+    "electron:rebuild": "./node_modules/.bin/electron-rebuild.cmd"
   },
   "main": "background.js",
   "dependencies": {
     "core-js": "^3.6.5",
+    "drivelist": "^9.2.2",
+    "electron-rebuild": "^2.3.4",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuetify": "^2.2.11",
