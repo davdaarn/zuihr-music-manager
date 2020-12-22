@@ -19,9 +19,8 @@
       color="deep-purple accent-4"
     ></v-progress-linear>
     <div v-for="(d, i) in directories" :key="i" v-on:click="navigate(d)">
-      <v-icon>mdi-folder-text-outline</v-icon>
-      <!-- {{ d.mountpoints[0].path }} -->
-      {{ d.mountpoint }}
+      <v-icon>{{ d.icon }}</v-icon>
+      {{ d.path }}
     </div>
   </div>
 </template>
@@ -31,6 +30,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const ipc = require('electron').ipcRenderer;
+import { DirectoryItem } from '../types';
 
 // const drivelist = require('drivelist');
 
@@ -76,32 +76,29 @@ export default {
       // console.log(drives);
     },
     async navigate(dir) {
-      // console.log(dir);
-      this.currentDir = dir;
-      this.directories = [];
-      let paths = fs.readdirSync(dir);
-      paths.forEach(p => {
-        try {
-          p = path.join(dir, p);
-          const stat = fs.statSync(p);
-          this.directories.push(p);
-        } catch (error) {}
-      });
+      console.log(dir);
+      // this.currentDir = dir;
+      // this.directories = [];
+      // let paths = fs.readdirSync(dir);
+      // paths.forEach(p => {
+      //   try {
+      //     p = path.join(dir, p);
+      //     const stat = fs.statSync(p);
+      //     this.directories.push(p);
+      //   } catch (error) {
+      //     console.log(error);
+      //   }
+      // });
     },
     async back() {
-      console.log(this.currentDir);
-      let temp = this.currentDir.split('\\');
+      console.log(this.currentDir.mountpoint);
+      let temp = this.currentDir.mountpoint.split('\\');
       console.log(temp);
       if (temp.length > 1) {
         temp.splice(-1, 1);
         this.navigate(temp.join('\\'));
       } else {
-        console.log(temp[0] == '\\');
-        if (temp[0] === '\\') {
-          console.log('go home');
-        } else {
-          this.navigate(temp[0] + '\\');
-        }
+        this.navigate(temp[0] + '\\');
       }
     }
   },
@@ -117,19 +114,19 @@ export default {
         .then(res => {
           console.log(res);
           let temp = res.map(r => {
-            r.mountpoint = r.mountpoints[0].path;
-            return r;
+            return new DirectoryItem({
+              path: r.mountpoints[0].path,
+              // type: getType(r),
+              type: 'system',
+              icon: 'mdi-folder-text-outline'
+            });
           });
-          // temp = this.directories.map(d => {
-          //   d = d.replace(/(\\.*?)/gi, '/');
-          //   console.log(d);
-          //   return d;
-          // });
+
           this.directories = temp.sort((a, b) => {
-            if (a.mountpoint < b.mountpoint) {
+            if (a.path < b.path) {
               return -1;
             }
-            if (a.mountpoint > b.mountpoint) {
+            if (a.path > b.path) {
               return 1;
             }
             return 0;
@@ -137,9 +134,10 @@ export default {
         })
         .catch(console.log)
         .finally(x => {
-          setTimeout(() => {
-            this.isLoading = false;
-          }, 5000);
+          // setTimeout(() => {
+          //   this.isLoading = false;
+          // }, 5000);
+          this.isLoading = false;
         });
     });
   }
