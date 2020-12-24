@@ -83,47 +83,6 @@ export default {
       // const drives = await drivelist.list();
       // console.log(drives);
     },
-    // async navigate(dir, back = false) {
-    //   // console.log(dir);
-    //   // console.log(this.currentDir);
-
-    //   if (!back && dir !== '' && dir) {
-    //     this.currentDir += `${dir.path}\\`;
-    //   } else {
-    //     this.currentDir = dir;
-    //   }
-    //   console.log(this.currentDir);
-    //   this.directoryItems = [];
-    //   let paths = fs.readdirSync(this.currentDir, { withFileTypes: true }); // returns array of dirnet
-    //   // console.log(paths);
-    //   paths.forEach(p => {
-    //     // console.log(p.isDirectory());
-    //     try {
-    //       if (p.isDirectory()) {
-    //         this.directoryItems.push(
-    //           new DirectoryItem({
-    //             path: p.name,
-    //             // type: getType(r),
-    //             type: 'system',
-    //             icon: 'mdi-folder-text-outline'
-    //           })
-    //         );
-    //       } else if (p.isFile()) {
-    //         this.directoryItems.push(
-    //           new DirectoryItem({
-    //             path: p.name,
-    //             // type: getType(r),
-    //             type: 'file',
-    //             icon: 'mdi-file-music-outline'
-    //           })
-    //         );
-    //       }
-    //     } catch (error) {
-    //       console.log(error);
-    //     }
-    //   });
-    // },
-
     async updateDirectoryItems(fullPath) {
       this.directoryItems = [];
       let paths = fs.readdirSync(fullPath, { withFileTypes: true }); // returns array of dirnet
@@ -131,7 +90,6 @@ export default {
       paths.forEach(p => {
         // console.log(p.isDirectory());
         try {
-          console.log(p);
           if (p.isDirectory()) {
             this.directoryItems.push(
               new DirectoryItem({
@@ -188,11 +146,9 @@ export default {
       ipc
         .invoke('findAllMountedDrives')
         .then(res => {
-          console.log(res);
           let temp = res
             .filter(x => !x.error)
             .map(r => {
-              console.log(!r.error);
               switch (r.busType) {
                 case 'USB':
                   return new DirectoryItem({
@@ -212,7 +168,6 @@ export default {
                   return;
               }
             });
-          console.log(temp);
           this.directoryItems = temp.sort((a, b) => {
             if (a.path < b.path) {
               return -1;
