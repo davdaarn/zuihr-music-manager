@@ -1,17 +1,15 @@
 <template>
   <div>
-    <v-btn outlined v-on:click="getPath">Test</v-btn>
+    <v-btn outlined v-on:click="playTest">Play</v-btn>
+    <v-btn outlined v-on:click="stopTest">Stop</v-btn>
     <v-btn outlined v-on:click="directoryUp">Back</v-btn>
     <v-btn outlined v-on:click="logDir">Directory</v-btn>
     <div>
       <span>Directory: </span>
-      <span>{{ homedir }}</span>
-      <!-- <div v-if="isLoading">
-        <v-progress-circular
-          indeterminate
-          color="primary"
-        ></v-progress-circular>
-      </div> -->
+      <span v-if="currentDir.length > 0" @click="toRoot"> -> Home </span>
+      <span v-for="(d, i) in currentDir" :key="d" v-on:click="getPath(i)">
+        -> {{ d }}</span
+      >
     </div>
     <v-progress-linear
       :active="isLoading"
@@ -22,7 +20,8 @@
     <div
       v-for="(d, i) in directoryItems"
       :key="i"
-      v-on:click="d.type !== 'file' ? directoryDown(d) : null"
+      v-on:click="handleOnDirectoryItemClick(d, i)"
+      style="cursor: pointer"
     >
       <v-icon>{{ d.icon }}</v-icon>
       {{ d.path }}
@@ -36,6 +35,7 @@ const path = require('path');
 const os = require('os');
 const ipc = require('electron').ipcRenderer;
 import { DirectoryItem } from '../types';
+import { Howler, Howl } from 'howler';
 
 // const drivelist = require('drivelist');
 
@@ -45,52 +45,55 @@ export default {
       homedir: '',
       directoryItems: [],
       isLoading: false,
-      currentDir: []
+      currentDir: [],
+      song: null
     };
   },
   methods: {
     logDir() {
       console.log(this.currentDir);
     },
-    async getPath() {
-      this.homedir = os.homedir();
-
-      // let file = `${this.homedir}/test.txt`;
-      // console.log(file);
-
-      let dir = 'C:/';
-      // const homeNames = fs.readdirSync(this.homedir);
-      let homeNames = fs.readdirSync(dir);
-      // console.log(homeNames);
-      homeNames = homeNames.filter(item => !/(^|\/)\.[^\/\.]/g.test(item));
-      // console.log(homeNames);
-      homeNames.forEach(file => {
-        try {
-          const filePath = path.join(dir, file);
-          const stat = fs.statSync(filePath);
-          // console.log(stat.isDirectory(), file);
-          // if (stat.isFile()) {
-          //   console.log('The is a File ' + file);
-          if (stat.isDirectory()) {
-            // console.log(file);
-          }
-        } catch (err) {
-          console.log('err');
-        }
+    handleOnDirectoryItemClick(item, index) {
+      if (item.type !== 'file') {
+        this.directoryDown(item);
+      } else {
+        console.log(item);
+        this.playNewSong(item.path);
+      }
+    },
+    async playNewSong(path) {
+      // console.log(path);
+      const fullPath =
+        this.currentDir.join('\\').replace('\\\\', '\\') + `\\${path}`;
+      // console.log(fullPath);
+      if (this.song) this.song.stop();
+      this.song = await new Howl({
+        src: [`safe-file-protocol://${fullPath}`],
+        volume: 0.5
       });
-      // console.log(homeNames);
 
-      // const drives = await drivelist.list();
-      // console.log(drives);
+      this.song.play();
+    },
+    async playTest() {
+      if (this.song) this.song.play();
+    },
+    async stopTest() {
+      if (this.song) this.song.stop();
+    },
+    async getPath(currentDirIndex) {
+      this.currentDir = this.currentDir.slice(0, currentDirIndex + 1);
+      const fullPath = this.currentDir.join('\\').replace('\\\\', '\\');
+      console.log(fullPath);
+      this.updateDirectoryItems(fullPath);
     },
     async updateDirectoryItems(fullPath) {
       this.directoryItems = [];
       let paths = fs.readdirSync(fullPath, { withFileTypes: true }); // returns array of dirnet
       // console.log(paths);
       paths.forEach(p => {
-        // console.log(p.isDirectory());
+        // console.log(p);
         try {
-          if (p.isDirectory()) {
+          if (p.isDirectory() || p.isSymbolicLink()) {
             this.directoryItems.push(
               new DirectoryItem({
                 path: p.name,
@@ -136,7 +139,7 @@ export default {
         this.toRoot();
       }
     },
-    // navigateTo(fullPath)
+    navigateTo(fullPath) {},
     async toRoot() {
       // ipc.on('drives', (e, m) => {
       //   console.log(e, m);

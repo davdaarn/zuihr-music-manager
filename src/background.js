@@ -54,7 +54,9 @@ async function createWindow() {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       // nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
-      nodeIntegration: true
+      nodeIntegration: true,
+      // enableRemoteModule: true,
+      // webSecurity: false,
     }
   })
 
@@ -99,6 +101,19 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
+
+  const protocolName = 'safe-file-protocol'
+
+  protocol.registerFileProtocol(protocolName, (request, callback) => {
+    const url = request.url.replace(`${protocolName}://`, '')
+    try {
+      return callback(decodeURIComponent(url))
+    } catch (error) {
+      // Handle the error as needed
+      console.error(error)
+    }
+  })
+
   createWindow()
 })
 

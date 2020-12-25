@@ -15,9 +15,13 @@
   },
   "main": "background.js",
   "dependencies": {
+    "chokidar": "^3.4.3",
     "core-js": "^3.6.5",
     "drivelist": "^9.2.2",
     "electron-rebuild": "^2.3.4",
+    "howler": "^2.2.1",
+    "lokijs": "^1.5.11",
+    "music-metadata": "^7.5.2",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuetify": "^2.2.11",

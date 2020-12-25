@@ -9,19 +9,22 @@ export class DirectoryItem {
 }
 
 export class PlaylistItem {
+  id;
+  title;
   path;
-  type;
   icon;
+  format;
   missing = false;
 
   constructor(data) {
     Object.assign(this, data);
-
-
   }
 }
 
 export class Playlist {
+  id;
+  title;
+  path;
   playlistItems;
   errors;
   inErrorState = false;
@@ -29,8 +32,16 @@ export class Playlist {
   constructor(data) {
     Object.assign(this, data);
 
-    this.playlistItems = (this.properties || []).map(x => new PlaylistItem(x));
+    this.playlistItems = (this.playlistItems || []).map(x => new PlaylistItem(x));
   }
 
   checkValidity() {}
+
+  addItems(items = []) {}
+
+  removeItems(items = []) {}
+
+  delete() {}
+
+  save() {}
 }
