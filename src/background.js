@@ -4,19 +4,23 @@ import {
   app,
   protocol,
   BrowserWindow
-} from 'electron'
+} from 'electron';
+
 import {
   createProtocol
-} from 'vue-cli-plugin-electron-builder/lib'
+} from 'vue-cli-plugin-electron-builder/lib';
+
 import installExtension, {
   VUEJS_DEVTOOLS
-} from 'electron-devtools-installer'
+} from 'electron-devtools-installer';
 
-const isDevelopment = process.env.NODE_ENV !== 'production'
 
+
+const isDevelopment = process.env.NODE_ENV !== 'production';
 const drivelist = require('drivelist');
-
 const electron = require('electron');
+const mm = require('music-metadata');
+const util = require('util');
 const {
   ipcMain,
   webContents
@@ -34,6 +38,20 @@ ipcMain.handle('findAllMountedDrives', async (event, args) => {
   // })
 })
 
+ipcMain.handle('getMetaData', async (event, args) => {
+  console.log(args);
+  let data;
+  let {
+    common
+  } = await mm.parseFile(args);
+  // console.log(common.picture[0].data);
+  // data = mm.selectCover(common.picture);
+  // return data;
+  return common;
+})
+
+
+
 let win = null;
 
 // Scheme must be registered before the app is ready
@@ -48,8 +66,8 @@ protocol.registerSchemesAsPrivileged([{
 async function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1280,
+    height: 720,
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
@@ -64,7 +82,7 @@ async function createWindow() {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
     if (!process.env.IS_TEST) {
-      // win.webContents.openDevTools()
+      win.webContents.openDevTools()
     }
   } else {
     createProtocol('app')

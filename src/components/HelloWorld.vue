@@ -4,12 +4,18 @@
     <v-btn outlined v-on:click="stopTest">Stop</v-btn>
     <v-btn outlined v-on:click="directoryUp">Back</v-btn>
     <v-btn outlined v-on:click="logDir">Directory</v-btn>
+    <img v-if="dataURL" :src="dataURL" alt="Item Artwork" />
     <div>
       <span>Directory: </span>
-      <span v-if="currentDir.length > 0" @click="toRoot"> -> Home </span>
+      <span v-if="currentDir.length > 0" @click="toRoot">
+        <v-chip>Home</v-chip>
+      </span>
       <span v-for="(d, i) in currentDir" :key="d" v-on:click="getPath(i)">
-        -> {{ d }}</span
-      >
+        <span>
+          <v-icon>mdi-chevron-right</v-icon>
+        </span>
+        <v-chip>{{ d }}</v-chip>
+      </span>
     </div>
     <v-progress-linear
       :active="isLoading"
@@ -34,8 +40,11 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const ipc = require('electron').ipcRenderer;
+const mm = require('music-metadata');
+const util = require('util');
 import { DirectoryItem } from '../types';
-import { Howler, Howl } from 'howler';
+// import { Howler, Howl } from 'howler';
+import { Howler, Howl } from '../libs/howler';
 
 // const drivelist = require('drivelist');
 
@@ -46,12 +55,16 @@ export default {
       directoryItems: [],
       isLoading: false,
       currentDir: [],
-      song: null
+      song: null,
+      dataURL: null
     };
   },
   methods: {
     logDir() {
-      console.log(this.currentDir);
+      // console.log(this.currentDir);
+      this.currentDir = ['C:\\', 'Users', 'davda', 'OneDrive', 'Music'];
+      const fullPath = this.currentDir.join('\\').replace('\\\\', '\\');
+      this.updateDirectoryItems(fullPath);
     },
     handleOnDirectoryItemClick(item, index) {
       if (item.type !== 'file') {
@@ -69,10 +82,42 @@ export default {
       if (this.song) this.song.stop();
       this.song = await new Howl({
         src: [`safe-file-protocol://${fullPath}`],
-        volume: 0.5
+        volume: 0.1,
+        preload: true
       });
 
-      this.song.play();
+      // mm.parseFile(`safe-file-protocol://${fullPath}`)
+      //   .then(metadata => {
+      //     console.log(
+      //       util.inspect(metadata, { showHidden: false, depth: null })
+      //     );
+      //   })
+      //   .catch(err => {
+      //     console.error(err.message);
+      //   });
+
+      ipc.invoke('getMetaData', fullPath).then(metadata => {
+        console.log(metadata);
+        if (metadata.picture && metadata.picture.length > 0) {
+          let blob = new Blob([metadata.picture[0].data], {
+            type: metadata.picture[0].format
+          });
+          let urlCreator = window.URL || window.webkitURL;
+          let imageUrl = urlCreator.createObjectURL(blob);
+          console.log(imageUrl);
+          this.dataURL = imageUrl;
+        }
+
+        // this.dataURL = `data:${metadata.format};base64,${metadata.data.toString(
+        //   'base64'
+        // )};`;
+        // console.log(this.dataURL);
+        // console.log(metadata);
+        // var blob = new Blob();
+        // console.log(util.inspect(metadata, { showHidden: false, depth: null }));
+      });
+
+      // this.song.play();
     },
     async playTest() {
       if (this.song) this.song.play();
@@ -146,6 +191,7 @@ export default {
       //   this.directoryItems = m;
       // });
       this.isLoading = true;
+
       ipc
         .invoke('findAllMountedDrives')
         .then(res => {
@@ -171,6 +217,7 @@ export default {
                   return;
               }
             });
+
           this.directoryItems = temp.sort((a, b) => {
             if (a.path < b.path) {
               return -1;
