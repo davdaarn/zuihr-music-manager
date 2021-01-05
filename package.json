@@ -16,6 +16,7 @@
   },
   "main": "background.js",
   "dependencies": {
+    "chalk": "^4.1.0",
     "chokidar": "^3.4.3",
     "core-js": "^3.6.5",
     "drivelist": "^9.2.2",
@@ -23,6 +24,7 @@
     "howler": "^2.2.1",
     "lokijs": "^1.5.11",
     "music-metadata": "^7.5.2",
+    "node-id3": "^0.2.2",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuetify": "^2.2.11",

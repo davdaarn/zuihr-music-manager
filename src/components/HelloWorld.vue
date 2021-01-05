@@ -39,7 +39,8 @@
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const ipc = require('electron').ipcRenderer;
+// const ipc = require('electron').ipcRenderer;
+const { ipcRenderer } = require('electron');
 const mm = require('music-metadata');
 const util = require('util');
 import { DirectoryItem } from '../types';
@@ -96,11 +97,20 @@ export default {
       //     console.error(err.message);
       //   });
 
-      ipc.invoke('getMetaData', fullPath).then(metadata => {
+      ipcRenderer.invoke('getMetaData', fullPath).then(metadata => {
         console.log(metadata);
-        if (metadata.picture && metadata.picture.length > 0) {
-          let blob = new Blob([metadata.picture[0].data], {
-            type: metadata.picture[0].format
+        // if (metadata.picture && metadata.picture.length > 0) {
+        //   let blob = new Blob([metadata.picture[0].data], {
+        //     type: metadata.picture[0].format
+        //   });
+        //   let urlCreator = window.URL || window.webkitURL;
+        //   let imageUrl = urlCreator.createObjectURL(blob);
+        //   console.log(imageUrl);
+        //   this.dataURL = imageUrl;
+        // }
+        if (metadata.image) {
+          let blob = new Blob([metadata.image.imageBuffer], {
+            type: metadata.image.mime
           });
           let urlCreator = window.URL || window.webkitURL;
           let imageUrl = urlCreator.createObjectURL(blob);
@@ -147,7 +157,7 @@ export default {
                 icon: 'mdi-folder-text-outline'
               })
             );
-          } else if (p.isFile()) {
+          } else if (p.isFile() && RegExp('[.]mp3$').test(p.name)) {
             this.directoryItems.push(
               new DirectoryItem({
                 path: p.name,
@@ -192,7 +202,7 @@ export default {
       // });
       this.isLoading = true;
 
-      ipc
+      ipcRenderer
         .invoke('findAllMountedDrives')
         .then(res => {
           let temp = res

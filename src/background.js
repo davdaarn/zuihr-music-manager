@@ -21,6 +21,9 @@ const drivelist = require('drivelist');
 const electron = require('electron');
 const mm = require('music-metadata');
 const util = require('util');
+const NodeID3 = require('node-id3');
+const NodeID3Promise = require('node-id3').Promise;
+const chalk = require('chalk');
 const {
   ipcMain,
   webContents
@@ -39,15 +42,41 @@ ipcMain.handle('findAllMountedDrives', async (event, args) => {
 })
 
 ipcMain.handle('getMetaData', async (event, args) => {
-  console.log(args);
+  console.log(chalk.green(args));
+
+  const success = true;
+  // const success = await NodeID3.update({
+  //   comment: {
+  //     language: 'eng',
+  //     text: 'TEST',
+  //   },
+  //   popularimeter: {
+  //     rating: 192, // 1-255
+  //   },
+  // }, args);
+
   let data;
-  let {
-    common
-  } = await mm.parseFile(args);
-  // console.log(common.picture[0].data);
-  // data = mm.selectCover(common.picture);
-  // return data;
-  return common;
+  console.log(chalk.green(success));
+  if (success === true) {
+
+    await NodeID3Promise.read(args).then(x => {
+      // console.log(chalk.cyan('here'), util.inspect(x, {
+      //   showHidden: false,
+      //   depth: null
+      // }));
+      data = x;
+    })
+
+  }
+
+  return data;
+
+  // let data = await mm.parseFile(args);
+  // console.log(chalk.blue('data'), util.inspect(data, {
+  //   showHidden: false,
+  //   depth: null
+  // }));
+  // return data.common;
 })
 
 
