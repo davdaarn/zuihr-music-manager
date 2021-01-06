@@ -1,3 +1,13 @@
+export class RootDirectory {
+  directoryItems;
+
+  constructor(data) {
+    Object.assign(this, data);
+
+    this.directoryItems = (this.directoryItems || []).map(x => new DirectoryItem(x));
+  }
+}
+
 export class DirectoryItem {
   path;
   type;
@@ -20,7 +30,6 @@ export class PlaylistItem {
     Object.assign(this, data);
   }
 }
-
 export class Playlist {
   id;
   title;

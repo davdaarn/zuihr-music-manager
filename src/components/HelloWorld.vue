@@ -4,6 +4,13 @@
     <v-btn outlined v-on:click="stopTest">Stop</v-btn>
     <v-btn outlined v-on:click="directoryUp">Back</v-btn>
     <v-btn outlined v-on:click="logDir">Directory</v-btn>
+    <v-btn
+      outlined
+      @dragenter.prevent
+      @dragover.prevent
+      v-on:drop.prevent="test"
+      >TEST</v-btn
+    >
     <img v-if="dataURL" :src="dataURL" alt="Item Artwork" />
     <div>
       <span>Directory: </span>
@@ -66,6 +73,13 @@ export default {
       this.currentDir = ['C:\\', 'Users', 'davda', 'OneDrive', 'Music'];
       const fullPath = this.currentDir.join('\\').replace('\\\\', '\\');
       this.updateDirectoryItems(fullPath);
+    },
+    test(e) {
+      console.log(e.dataTransfer.files);
+      console.log(e);
+    },
+    test2() {
+      console.log('test2');
     },
     handleOnDirectoryItemClick(item, index) {
       if (item.type !== 'file') {
@@ -205,38 +219,38 @@ export default {
       ipcRenderer
         .invoke('findAllMountedDrives')
         .then(res => {
-          let temp = res
-            .filter(x => !x.error)
-            .map(r => {
-              switch (r.busType) {
-                case 'USB':
-                  return new DirectoryItem({
-                    path: r.mountpoints[0].path,
-                    // type: getType(r),
-                    type: r.busType,
-                    icon: 'mdi-usb-port'
-                  });
-                case 'SATA':
-                  return new DirectoryItem({
-                    path: r.mountpoints[0].path,
-                    // type: getType(r),
-                    type: r.busType,
-                    icon: 'mdi-harddisk'
-                  });
-                default:
-                  return;
-              }
-            });
-
-          this.directoryItems = temp.sort((a, b) => {
-            if (a.path < b.path) {
-              return -1;
-            }
-            if (a.path > b.path) {
-              return 1;
-            }
-            return 0;
-          });
+          // console.log(JSON.stringify(res));
+          // let temp = res
+          //   .filter(x => !x.error)
+          //   .map(r => {
+          //     switch (r.busType) {
+          //       case 'USB':
+          //         return new DirectoryItem({
+          //           path: r.mountpoints[0].path,
+          //           // type: getType(r),
+          //           type: r.busType,
+          //           icon: 'mdi-usb-port'
+          //         });
+          //       case 'SATA':
+          //         return new DirectoryItem({
+          //           path: r.mountpoints[0].path,
+          //           // type: getType(r),
+          //           type: r.busType,
+          //           icon: 'mdi-harddisk'
+          //         });
+          //       default:
+          //         return;
+          //     }
+          //   });
+          // this.directoryItems = temp.sort((a, b) => {
+          //   if (a.path < b.path) {
+          //     return -1;
+          //   }
+          //   if (a.path > b.path) {
+          //     return 1;
+          //   }
+          //   return 0;
+          // });
         })
         .catch(console.log)
         .finally(x => {
@@ -250,6 +264,34 @@ export default {
   },
   created() {
     this.$nextTick(() => {
+      ipcRenderer.on('test', (e, args) => {
+        console.log('on test');
+        console.log(args);
+        let temp = args
+          .filter(x => x.FileSystem)
+          .map(r => {
+            switch (r.DriveType) {
+              case 2:
+                return new DirectoryItem({
+                  path: `${r.DeviceID}\\`,
+                  // type: getType(r),
+                  type: r.DriveType,
+                  icon: 'mdi-usb-port'
+                });
+              case 3:
+                return new DirectoryItem({
+                  path: `${r.DeviceID}\\`,
+                  // type: getType(r),
+                  type: r.DriveType,
+                  icon: 'mdi-harddisk'
+                });
+              default:
+                return;
+            }
+          });
+        this.directoryItems = temp;
+        this.isLoading = false;
+      });
       this.toRoot();
     });
   }
