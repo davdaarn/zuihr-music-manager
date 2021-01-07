@@ -30,6 +30,11 @@ const {
   webContents
 } = require('electron');
 const ipc = electron.ipcMain;
+const DataStore = require('nedb');
+
+ipcMain.handle('getPathToAppData', async (event, args) => {
+  return app.getPath('appData');
+})
 
 ipcMain.handle('findAllMountedDrives', async (event, args) => {
   console.log(process.platform);
@@ -180,6 +185,17 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
+  // const appData = app.getPath('appData');
+  // const db = {};
+  // db.playlists = new DataStore({
+  //   filename: `${appData}/playlister/db/playlists.db`,
+  //   autoload: true
+  // });
+  // db.songs = new DataStore({
+  //   filename: `${appData}/playlister/db/songs.db`,
+  //   autoload: true
+  // });
+
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     try {

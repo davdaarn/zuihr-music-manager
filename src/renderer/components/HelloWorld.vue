@@ -4,13 +4,20 @@
     <v-btn outlined v-on:click="stopTest">Stop</v-btn>
     <v-btn outlined v-on:click="directoryUp">Back</v-btn>
     <v-btn outlined v-on:click="logDir">Directory</v-btn>
-    <v-btn
-      outlined
+    <div
+      style="
+        width: 200px;
+        height: 200px;
+        background-color: rgba(55, 55, 55, 0.2);
+      "
       @dragenter.prevent
       @dragover.prevent
       v-on:drop.prevent="test"
-      >TEST</v-btn
     >
+      Drop Songs here
+    </div>
+    <v-btn outlined v-on:click="test2">Test 2</v-btn>
+    <v-btn outlined v-on:click="test3">Test 3</v-btn>
     <img v-if="dataURL" :src="dataURL" alt="Item Artwork" />
     <div>
       <span>Directory: </span>
@@ -51,6 +58,7 @@ const { ipcRenderer } = require('electron');
 const mm = require('music-metadata');
 const util = require('util');
 import { DirectoryItem } from '../types';
+const NodeID3Promise = require('node-id3').Promise;
 // import { Howler, Howl } from 'howler';
 import { Howler, Howl } from '../libs/howler';
 
@@ -75,11 +83,50 @@ export default {
       this.updateDirectoryItems(fullPath);
     },
     test(e) {
-      console.log(e.dataTransfer.files);
-      console.log(e);
+      const paths = [];
+      e.dataTransfer.files.forEach(element => {
+        // console.log(element);
+        paths.push(fs.readdirSync(element.path, { withFileTypes: true }));
+        console.log(paths);
+      });
     },
     test2() {
-      console.log('test2');
+      console.log(process.platform);
+      if (process.platform === 'win32') {
+        const spawn = require('child_process').spawn;
+        const child = spawn('powershell.exe', [
+          // `Write-Host "Drive information for $env:ComputerName"
+          `Get-WmiObject -Class Win32_LogicalDisk |
+        Where-Object {$_.DriveType -ne 5} |
+        Sort-Object -Property Name | 
+        Select-Object Name, VolumeName, FileSystem, Description, VolumeDirty, MediaType, DeviceID, DriveType, \`
+          @{"Label"="DiskSize(GB)";"Expression"={"{0:N}" -f ($_.Size/1GB) -as [float]}}, \`
+          @{"Label"="FreeSpace(GB)";"Expression"={"{0:N}" -f ($_.FreeSpace/1GB) -as [float]}}, \`
+          @{"Label"="%Free";"Expression"={"{0:N}" -f ($_.FreeSpace/$_.Size*100) -as [float]}} |
+        ConvertTo-Json`
+        ]);
+
+        child.stdout.on('data', function(data) {
+          if (data) {
+            let dataArray = JSON.parse(data.toString());
+            console.log(dataArray);
+            // win.webContents.send('test', dataArray);
+          }
+        });
+        child.stderr.on('data', function(data) {
+          // console.log("Powershell Errors: " + data);
+        });
+        child.on('exit', function() {
+          console.log('Powershell Script finished');
+        });
+        child.stdin.end(); //end input
+      }
+    },
+    test3() {
+      console.log(this.$db);
+      // this.$db.playlists.find({}, (err, docs) => {
+      //   console.log(err, docs);
+      // });
     },
     handleOnDirectoryItemClick(item, index) {
       if (item.type !== 'file') {
@@ -111,17 +158,7 @@ export default {
       //     console.error(err.message);
       //   });
 
-      ipcRenderer.invoke('getMetaData', fullPath).then(metadata => {
-        console.log(metadata);
-        // if (metadata.picture && metadata.picture.length > 0) {
-        //   let blob = new Blob([metadata.picture[0].data], {
-        //     type: metadata.picture[0].format
-        //   });
-        //   let urlCreator = window.URL || window.webkitURL;
-        //   let imageUrl = urlCreator.createObjectURL(blob);
-        //   console.log(imageUrl);
-        //   this.dataURL = imageUrl;
-        // }
+      NodeID3Promise.read(fullPath).then(metadata => {
         if (metadata.image) {
           let blob = new Blob([metadata.image.imageBuffer], {
             type: metadata.image.mime
@@ -131,15 +168,37 @@ export default {
           console.log(imageUrl);
           this.dataURL = imageUrl;
         }
-
-        // this.dataURL = `data:${metadata.format};base64,${metadata.data.toString(
-        //   'base64'
-        // )};`;
-        // console.log(this.dataURL);
-        // console.log(metadata);
-        // var blob = new Blob();
-        // console.log(util.inspect(metadata, { showHidden: false, depth: null }));
       });
+
+      // ipcRenderer.invoke('getMetaData', fullPath).then(metadata => {
+      //   console.log(metadata);
+      //   // if (metadata.picture && metadata.picture.length > 0) {
+      //   //   let blob = new Blob([metadata.picture[0].data], {
+      //   //     type: metadata.picture[0].format
+      //   //   });
+      //   //   let urlCreator = window.URL || window.webkitURL;
+      //   //   let imageUrl = urlCreator.createObjectURL(blob);
+      //   //   console.log(imageUrl);
+      //   //   this.dataURL = imageUrl;
+      //   // }
+      //   if (metadata.image) {
+      //     let blob = new Blob([metadata.image.imageBuffer], {
+      //       type: metadata.image.mime
+      //     });
+      //     let urlCreator = window.URL || window.webkitURL;
+      //     let imageUrl = urlCreator.createObjectURL(blob);
+      //     console.log(imageUrl);
+      //     this.dataURL = imageUrl;
+      //   }
+
+      //   // this.dataURL = `data:${metadata.format};base64,${metadata.data.toString(
+      //   //   'base64'
+      //   // )};`;
+      //   // console.log(this.dataURL);
+      //   // console.log(metadata);
+      //   // var blob = new Blob();
+      //   // console.log(util.inspect(metadata, { showHidden: false, depth: null }));
+      // });
 
       // this.song.play();
     },
@@ -208,92 +267,53 @@ export default {
         this.toRoot();
       }
     },
-    navigateTo(fullPath) {},
+    // navigateTo(fullPath) {},
     async toRoot() {
-      // ipc.on('drives', (e, m) => {
-      //   console.log(e, m);
-      //   this.directoryItems = m;
-      // });
       this.isLoading = true;
 
       ipcRenderer
         .invoke('findAllMountedDrives')
-        .then(res => {
-          // console.log(JSON.stringify(res));
-          // let temp = res
-          //   .filter(x => !x.error)
-          //   .map(r => {
-          //     switch (r.busType) {
-          //       case 'USB':
-          //         return new DirectoryItem({
-          //           path: r.mountpoints[0].path,
-          //           // type: getType(r),
-          //           type: r.busType,
-          //           icon: 'mdi-usb-port'
-          //         });
-          //       case 'SATA':
-          //         return new DirectoryItem({
-          //           path: r.mountpoints[0].path,
-          //           // type: getType(r),
-          //           type: r.busType,
-          //           icon: 'mdi-harddisk'
-          //         });
-          //       default:
-          //         return;
-          //     }
-          //   });
-          // this.directoryItems = temp.sort((a, b) => {
-          //   if (a.path < b.path) {
-          //     return -1;
-          //   }
-          //   if (a.path > b.path) {
-          //     return 1;
-          //   }
-          //   return 0;
-          // });
-        })
+        .then(res => {})
         .catch(console.log)
         .finally(x => {
-          // setTimeout(() => {
-          //   this.isLoading = false;
-          // }, 5000);
           this.currentDir = [];
           this.isLoading = false;
         });
     }
   },
   created() {
-    this.$nextTick(() => {
-      ipcRenderer.on('test', (e, args) => {
-        console.log('on test');
-        console.log(args);
-        let temp = args
-          .filter(x => x.FileSystem)
-          .map(r => {
-            switch (r.DriveType) {
-              case 2:
-                return new DirectoryItem({
-                  path: `${r.DeviceID}\\`,
-                  // type: getType(r),
-                  type: r.DriveType,
-                  icon: 'mdi-usb-port'
-                });
-              case 3:
-                return new DirectoryItem({
-                  path: `${r.DeviceID}\\`,
-                  // type: getType(r),
-                  type: r.DriveType,
-                  icon: 'mdi-harddisk'
-                });
-              default:
-                return;
-            }
-          });
-        this.directoryItems = temp;
-        this.isLoading = false;
-      });
-      this.toRoot();
+    console.log('created');
+    // this.$nextTick(() => {
+    ipcRenderer.on('test', (e, args) => {
+      console.log('on test');
+      console.log(args);
+      let temp = args
+        .filter(x => x.FileSystem)
+        .map(r => {
+          switch (r.DriveType) {
+            case 2:
+              return new DirectoryItem({
+                path: `${r.DeviceID}\\`,
+                // type: getType(r),
+                type: r.DriveType,
+                icon: 'mdi-usb-port'
+              });
+            case 3:
+              return new DirectoryItem({
+                path: `${r.DeviceID}\\`,
+                // type: getType(r),
+                type: r.DriveType,
+                icon: 'mdi-harddisk'
+              });
+            default:
+              return;
+          }
+        });
+      this.directoryItems = temp;
+      this.isLoading = false;
     });
+    this.toRoot();
+    // });
   }
 };
 </script>
