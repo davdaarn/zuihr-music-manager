@@ -19,12 +19,21 @@ export class DirectoryItem {
 }
 
 export class PlaylistItem {
-  id;
   title;
+  album;
+  artist;
+  genre;
   path;
-  icon;
+  rating;
+  year;
   format;
-  missing = false;
+  trackNumber;
+  length;
+  // tags;
+  // image;
+
+  // icon;
+  // missing = false;
 
   constructor(data) {
     Object.assign(this, data);

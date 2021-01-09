@@ -12,11 +12,24 @@
       "
       @dragenter.prevent
       @dragover.prevent
-      v-on:drop.prevent="test"
+      v-on:drop.prevent="testWalk"
     >
       Drop Songs here
     </div>
-    <v-btn outlined v-on:click="test2">Test 2</v-btn>
+    <p id="p1" draggable="true">This element is draggable.</p>
+    <div v-if="isLoading">
+      <p>{{ pathCount }} songs discovered</p>
+      <p>Processing song # {{ songIndex }}</p>
+      <p>
+        New songs added: {{ songsAdded }}, Songs already in library:
+        {{ existingSongs }}
+      </p>
+      <v-progress-linear
+        v-model="progress"
+        color="light-green"
+      ></v-progress-linear>
+    </div>
+    <v-btn outlined v-on:click="testWalk">Test Walk</v-btn>
     <v-btn outlined v-on:click="test3">Test 3</v-btn>
     <img v-if="dataURL" :src="dataURL" alt="Item Artwork" />
     <div>
@@ -42,6 +55,9 @@
       :key="i"
       v-on:click="handleOnDirectoryItemClick(d, i)"
       style="cursor: pointer"
+      draggable="true"
+      v-bind:id="d.path"
+      v-on:dragstart="updateTarget"
     >
       <v-icon>{{ d.icon }}</v-icon>
       {{ d.path }}
@@ -61,6 +77,7 @@ import { DirectoryItem } from '../types';
 const NodeID3Promise = require('node-id3').Promise;
 // import { Howler, Howl } from 'howler';
 import { Howler, Howl } from '../libs/howler';
+import { PlaylistItem } from '../types';
 
 // const drivelist = require('drivelist');
 
@@ -72,22 +89,237 @@ export default {
       isLoading: false,
       currentDir: [],
       song: null,
-      dataURL: null
+      dataURL: null,
+      pathCount: 0,
+      songIndex: 0,
+      songsAdded: 0,
+      existingSongs: 0
     };
+  },
+  computed: {
+    progress: function() {
+      return (this.songIndex / this.pathCount) * 100;
+    }
   },
   methods: {
     logDir() {
       // console.log(this.currentDir);
-      this.currentDir = ['C:\\', 'Users', 'davda', 'OneDrive', 'Music'];
-      const fullPath = this.currentDir.join('\\').replace('\\\\', '\\');
+      this.currentDir = ['C:/', 'Users', 'davda', 'OneDrive', 'Music'];
+      const fullPath = this.currentDir.join('/').replace('//', '/');
       this.updateDirectoryItems(fullPath);
+    },
+    updateTarget(e) {
+      console.log(e);
+      e.dataTransfer.setData('Text', e.target.id);
+    },
+    testWalk(e) {
+      // let data = e.dataTransfer.getData('Text');
+      // let fullPath = '';
+      // console.log(this.currentDir);
+      // if (this.currentDir.length > 0) {
+      //   fullPath = this.currentDir.join('/').replace('//', '/') + '/';
+      // }
+      // fullPath += data;
+      // console.log(fullPath);
+
+      const paths = [];
+
+      const walk = dirPath => {
+        // console.log(dirPath);
+        let subFiles = fs.readdirSync(dirPath);
+        // console.log(subFiles);
+        subFiles.forEach(f => {
+          // console.log(f);
+          let nextPath = `${dirPath}/${f}`;
+          if (fs.lstatSync(nextPath).isDirectory()) {
+            // do some basic filtering as to not look in node_modules, .files, etc.
+            walk(nextPath);
+          } else if (
+            fs.lstatSync(nextPath).isFile() &&
+            RegExp('[.]mp3$').test(nextPath)
+          ) {
+            paths.push(nextPath);
+          }
+        });
+      };
+
+      // walk('C:/Users/davda/Desktop/root');
+      // console.log('after walk');
+      // console.log(paths);
+
+      e.dataTransfer.files.forEach(file => {
+        this.isLoading = true;
+        this.existingSongs = 0;
+        this.songsAdded = 0;
+
+        let root = file.path.replace('\\', '/');
+        if (fs.lstatSync(root).isDirectory()) {
+          walk(root);
+        } else if (
+          fs.lstatSync(root).isFile() &&
+          RegExp('[.]mp3$').test(root)
+        ) {
+          paths.push(root);
+        }
+      });
+
+      console.log('paths', paths.length);
+      this.pathCount = paths.length;
+
+      const createPlaylistItem = index => {
+        this.songIndex = index;
+        // console.log('createPlaylistItem', index, paths.length - 1);
+        if (index <= paths.length - 1) {
+          const p = paths[index];
+          NodeID3Promise.read(p).then(metadata => {
+            // console.log(metadata);
+            const item = new PlaylistItem({
+              album: metadata.album ? metadata.album : '',
+              artist: metadata.artist ? metadata.artist : '',
+              format: metadata.format ? metadata.format : '',
+              genre: metadata.genre ? metadata.genre : '',
+              path: p,
+              length: metadata.length ? metadata.length : '',
+              rating: metadata.popularimeter
+                ? metadata.popularimeter.rating
+                : 0,
+              // if metadata is bad, use path to get title
+              title: metadata.title ? metadata.title : '',
+              trackNumber: metadata.trackNumber ? metadata.trackNumber : '',
+              year: metadata.year ? metadata.year : ''
+            });
+
+            this.$db.songs.find(
+              { title: item.title, album: item.album, artist: item.artist },
+              (err, docs) => {
+                if (err) {
+                } else if (docs.length < 1) {
+                  this.$db.songs.insert(item, (err, newDoc) => {
+                    if (err) {
+                    } else {
+                      // console.log(`${item.title} added`);
+                      this.songsAdded++;
+                      console.log(metadata);
+                      console.log(item);
+                    }
+                  });
+                } else {
+                  // console.log('file exists');
+                  this.existingSongs++;
+                }
+              }
+            );
+            createPlaylistItem(index + 1);
+          });
+        } else if (index > paths.length - 1) {
+          // currently assuming no errors...
+          this.isLoading = false;
+        }
+      };
+
+      createPlaylistItem(0);
     },
     test(e) {
       const paths = [];
       e.dataTransfer.files.forEach(element => {
         // console.log(element);
-        paths.push(fs.readdirSync(element.path, { withFileTypes: true }));
-        console.log(paths);
+        if (fs.lstatSync(element.path).isDirectory()) {
+          // this.searchInDirectory(
+          //   fs.readdirSync(element.path, { withFileTypes: true })
+          // );
+          let paths = fs.readdirSync(element.path, { withFileTypes: true });
+          console.log(paths.length);
+          paths.forEach((p, i) => {
+            console.log(i, p);
+            // NodeID3Promise.read(`${element.path}/${p.name}`).then(metadata => {
+            //   console.log(metadata);
+            // });
+
+            /////////
+            NodeID3Promise.read(`${element.path}/${p.name}`).then(metadata => {
+              // console.log(metadata);
+              const item = new PlaylistItem({
+                album: metadata.album,
+                artist: metadata.artist,
+                format: element.type,
+                genre: metadata.genre,
+                path: element.path,
+                length: metadata.length,
+                rating: metadata.popularimeter
+                  ? metadata.popularimeter.rating
+                  : 1,
+                // if metadata is bad, use file name minus the extension
+                title: metadata.title
+                  ? metadata.title
+                  : element.name.split('.mp3')[0],
+                trackNumber: metadata.trackNumber,
+                year: metadata.year
+              });
+
+              console.log(item);
+
+              this.$db.songs.find(
+                { title: item.title, album: item.album, artist: item.artist },
+                (err, docs) => {
+                  if (err) {
+                    console.log(err);
+                  } else if (docs.length < 1) {
+                    console.log('song does not exist');
+                    this.$db.songs.insert(item, (err, newDoc) => {
+                      if (err) {
+                      } else {
+                        console.log(`${item.title} added`);
+                      }
+                    });
+                  } else {
+                    console.log('file exists');
+                  }
+                }
+              );
+            });
+            /////////
+          });
+        } else if (
+          fs.lstatSync(element.path).isFile() &&
+          RegExp('[.]mp3$').test(element.path)
+        ) {
+          NodeID3Promise.read(element.path).then(metadata => {
+            // console.log(metadata);
+            const item = new PlaylistItem({
+              album: metadata.album,
+              artist: metadata.artist,
+              format: element.type,
+              genre: metadata.genre,
+              path: element.path,
+              rating: metadata.popularimeter
+                ? metadata.popularimeter.rating
+                : 1,
+              // if metadata is bad, use file name minus the extension
+              title: metadata.title
+                ? metadata.title
+                : element.name.split('.mp3')[0],
+              year: metadata.year
+            });
+
+            this.$db.songs.find(
+              { title: item.title, album: item.album, artist: item.artist },
+              (err, docs) => {
+                if (err) {
+                } else if (docs.length < 1) {
+                  this.$db.songs.insert(item, (err, newDoc) => {
+                    if (err) {
+                    } else {
+                      console.log(`${item.title} added`);
+                    }
+                  });
+                } else {
+                  console.log('file exists');
+                }
+              }
+            );
+          });
+        } else {
+        }
       });
     },
     test2() {
@@ -124,9 +356,9 @@ export default {
     },
     test3() {
       console.log(this.$db);
-      // this.$db.playlists.find({}, (err, docs) => {
-      //   console.log(err, docs);
-      // });
+      this.$db.songs.find({}, (err, docs) => {
+        console.log(err, docs);
+      });
     },
     handleOnDirectoryItemClick(item, index) {
       if (item.type !== 'file') {
@@ -139,7 +371,7 @@ export default {
     async playNewSong(path) {
       // console.log(path);
       const fullPath =
-        this.currentDir.join('\\').replace('\\\\', '\\') + `\\${path}`;
+        this.currentDir.join('/').replace('//', '/') + `/${path}`;
       // console.log(fullPath);
       if (this.song) this.song.stop();
       this.song = await new Howl({
@@ -210,7 +442,7 @@ export default {
     },
     async getPath(currentDirIndex) {
       this.currentDir = this.currentDir.slice(0, currentDirIndex + 1);
-      const fullPath = this.currentDir.join('\\').replace('\\\\', '\\');
+      const fullPath = this.currentDir.join('/').replace('//', '/');
       console.log(fullPath);
       this.updateDirectoryItems(fullPath);
     },
@@ -249,7 +481,7 @@ export default {
       // push nextDir to currentDir array
       this.currentDir.push(nextDir.path);
       // create full path from currentDir
-      const fullPath = this.currentDir.join('\\').replace('\\\\', '\\');
+      const fullPath = this.currentDir.join('/').replace('//', '/');
       // readdirSync using full path
       // update current list of directoryItems
       this.updateDirectoryItems(fullPath);
@@ -259,7 +491,7 @@ export default {
       if (this.currentDir.length > 1) {
         this.currentDir.pop(-1, 1);
         // create full path from currentDir
-        const fullPath = this.currentDir.join('\\').replace('\\\\', '\\');
+        const fullPath = this.currentDir.join('/').replace('//', '/');
         // readdirSync using full path
         // update current list of directoryItems
         this.updateDirectoryItems(fullPath);
@@ -293,14 +525,14 @@ export default {
           switch (r.DriveType) {
             case 2:
               return new DirectoryItem({
-                path: `${r.DeviceID}\\`,
+                path: `${r.DeviceID}/`,
                 // type: getType(r),
                 type: r.DriveType,
                 icon: 'mdi-usb-port'
               });
             case 3:
               return new DirectoryItem({
-                path: `${r.DeviceID}\\`,
+                path: `${r.DeviceID}/`,
                 // type: getType(r),
                 type: r.DriveType,
                 icon: 'mdi-harddisk'

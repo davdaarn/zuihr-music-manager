@@ -20,6 +20,7 @@
     "core-js": "^3.6.5",
     "drivelist": "^9.2.2",
     "electron-rebuild": "^2.3.4",
+    "fs-extra": "^9.0.1",
     "howler": "^2.2.1",
     "lokijs": "^1.5.11",
     "music-metadata": "^7.5.2",

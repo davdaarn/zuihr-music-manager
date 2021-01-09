@@ -15,13 +15,14 @@ Vue.config.productionTip = false
 ipcRenderer
   .invoke('getPathToAppData')
   .then(res => {
+    console.log(res);
     Vue.prototype.$db = {
       playlists: new DataStore({
-        filename: `${res}/playlister/db/playlists.db`,
+        filename: `${res}\\playlister\\db\\playlists.db`,
         autoload: true
       }),
       songs: new DataStore({
-        filename: `${res}/playlister/db/songs.db`,
+        filename: `${res}\\playlister\\db\\songs.db`,
         autoload: true
       }),
     };
