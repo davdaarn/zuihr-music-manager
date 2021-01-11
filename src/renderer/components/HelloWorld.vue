@@ -17,7 +17,7 @@
       Drop Songs here
     </div>
     <p id="p1" draggable="true">This element is draggable.</p>
-    <div v-if="isLoading">
+    <div>
       <p>{{ pathCount }} songs discovered</p>
       <p>Processing song # {{ songIndex }}</p>
       <p>
@@ -26,8 +26,13 @@
       </p>
       <v-progress-linear
         v-model="progress"
-        color="light-green"
-      ></v-progress-linear>
+        striped
+        stream
+        color="green"
+        height="25"
+      >
+        <strong>{{ Math.ceil(progress) }}%</strong>
+      </v-progress-linear>
     </div>
     <v-btn outlined v-on:click="testWalk">Test Walk</v-btn>
     <v-btn outlined v-on:click="test3">Test 3</v-btn>

@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
+import '@mdi/font/css/materialdesignicons.css'
 import './assets/tailwind.css'
 
 import {
@@ -17,14 +18,17 @@ ipcRenderer
   .then(res => {
     console.log(res);
     Vue.prototype.$db = {
+      // playlists
       playlists: new DataStore({
         filename: `${res}\\playlister\\db\\playlists.db`,
         autoload: true
       }),
+      // songs
       songs: new DataStore({
         filename: `${res}\\playlister\\db\\songs.db`,
         autoload: true
       }),
+      // settings
     };
   })
   .catch(console.log)
