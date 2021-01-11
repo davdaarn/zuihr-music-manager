@@ -85,12 +85,10 @@ export default {
 <style >
 .main {
   height: calc(100vh - 100px);
-  /* display: flex; */
 }
 
 #main {
   margin-left: 250px;
-  /* margin-bottom: 100px; */
   height: calc(100vh - 100px);
   overflow: auto;
 }
@@ -102,15 +100,9 @@ export default {
 .sidebar {
   width: 250px;
   height: calc(100vh - 100px);
-  /* height: inherit; */
-  /* background-color: rgba(100, 148, 237, 0.521); */
   position: fixed;
   top: 0;
   left: 0;
-  display: flex;
-  flex-direction: column;
-  /* padding-bottom: 100px; */
-  /* overflow: hidden; */
 }
 
 .sidebar:hover {
@@ -118,12 +110,11 @@ export default {
 
 .sidebar_playlist {
   overflow-y: hidden;
-  /* height: inherit; */
+  height: calc(100vh - 600px);
 }
 
 .sidebar_playlist:hover {
   overflow-y: auto;
-  /* overflow-x: hidden; */
 }
 
 .footer {
