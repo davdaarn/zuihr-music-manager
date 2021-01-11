@@ -1,140 +1,48 @@
 <template>
   <v-app>
-    <div style="border-bottom: 1px solid" class="main">
-      <div class="sidebar">
-        <h1 style="height: 250px; background-color: blue"></h1>
-        <!-- <hr /> -->
-        <div class="sidebar_playlist">
-          <ul>
-            <li v-for="(item, index) in items" v-bind:key="index" class="item">
-              {{ item.text }}
-            </li>
-          </ul>
+    <div class="flex flex-col h-screen">
+      <div class="bg-gray-200 flex-grow flex">
+        <!-- sidebar -->
+        <Sidebar />
+        <!-- content -->
+        <div class="bg-blue-200 h-full w-full">
+          <HelloWorld />
         </div>
-        <div style="height: 250px; background-color: blue"></div>
       </div>
-      <!--  -->
-      <!-- <v-main id="main"> -->
-      <HelloWorld id="main" />
-      <!-- </v-main> -->
-      <!--  -->
+      <!-- player -->
+      <PlayerControls />
     </div>
-    <div class="footer"></div>
   </v-app>
 </template>
 
 <script>
 import HelloWorld from './components/HelloWorld';
+import Sidebar from './components/Sidebar';
+import PlayerControls from './components/PlayerControls';
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld
+    HelloWorld,
+    Sidebar,
+    PlayerControls
   },
 
-  data: () => ({
-    mini: false,
-    drawer: false,
-    selectedItem: 0,
-    items: [
-      { text: 'My Files', icon: 'mdi-folder' },
-      { text: 'Shared with me', icon: 'mdi-account-multiple' },
-      { text: 'Starred', icon: 'mdi-star' },
-      { text: 'Recent', icon: 'mdi-history' },
-      { text: 'Offline', icon: 'mdi-check-circle' },
-      { text: 'Uploads', icon: 'mdi-upload' },
-      { text: 'Backups', icon: 'mdi-cloud-upload' },
-      { text: 'My Files', icon: 'mdi-folder' },
-      { text: 'Shared with me', icon: 'mdi-account-multiple' },
-      { text: 'Starred', icon: 'mdi-star' },
-      { text: 'Recent', icon: 'mdi-history' },
-      { text: 'Offline', icon: 'mdi-check-circle' },
-      { text: 'Uploads', icon: 'mdi-upload' },
-      { text: 'Backups', icon: 'mdi-cloud-upload' },
-      { text: 'My Files', icon: 'mdi-folder' },
-      { text: 'Shared with me', icon: 'mdi-account-multiple' },
-      { text: 'Starred', icon: 'mdi-star' },
-      { text: 'Recent', icon: 'mdi-history' },
-      { text: 'Offline', icon: 'mdi-check-circle' },
-      { text: 'Uploads', icon: 'mdi-upload' },
-      { text: 'Starred', icon: 'mdi-star' },
-      { text: 'Recent', icon: 'mdi-history' },
-      { text: 'Offline', icon: 'mdi-check-circle' },
-      { text: 'Uploads', icon: 'mdi-upload' },
-      { text: 'Backups', icon: 'mdi-cloud-upload' },
-      { text: 'My Files', icon: 'mdi-folder' },
-      { text: 'Shared with me', icon: 'mdi-account-multiple' },
-      { text: 'Starred', icon: 'mdi-star' },
-      { text: 'Recent', icon: 'mdi-history' },
-      { text: 'Offline', icon: 'mdi-check-circle' },
-      { text: 'Uploads', icon: 'mdi-upload' },
-      { text: 'Backups', icon: 'mdi-cloud-upload' },
-      { text: 'My Files', icon: 'mdi-folder' },
-      { text: 'Shared with me', icon: 'mdi-account-multiple' },
-      { text: 'Starred', icon: 'mdi-star' },
-      { text: 'Recent', icon: 'mdi-history' },
-      { text: 'Offline', icon: 'mdi-check-circle' },
-      { text: 'Uploads', icon: 'mdi-upload' },
-      { text: 'Backups', icon: 'mdi-cloud-upload' }
-    ]
-  })
+  data: () => ({})
 };
 </script>
 
 <style >
-.main {
-  height: calc(100vh - 100px);
-}
-
-#main {
-  margin-left: 250px;
-  height: calc(100vh - 100px);
-  overflow: auto;
-}
-
-.item {
-  padding: 10px;
-}
-
-.sidebar {
-  width: 250px;
-  height: calc(100vh - 100px);
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
-.sidebar:hover {
-}
-
-.sidebar_playlist {
-  overflow-y: hidden;
-  height: calc(100vh - 600px);
-}
-
-.sidebar_playlist:hover {
-  overflow-y: auto;
-}
-
-.footer {
-  width: 100vw;
-  height: 100px;
-  background-color: rgba(100, 148, 237, 0.521);
-  position: fixed;
-  bottom: 0;
-  left: 0;
-}
-
-/* ::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
-  background-color: #f5f5f5;
-} */
+  /* background-color: #f5f5f5; */
+}
 
 ::-webkit-scrollbar {
   width: 5px;
-  background-color: #f5f5f5;
+  /* background-color: #f5f5f5; */
 }
 
 ::-webkit-scrollbar-thumb {
