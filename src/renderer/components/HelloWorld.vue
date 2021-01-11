@@ -1,71 +1,79 @@
 <template>
-  <div>
-    <v-btn outlined v-on:click="playTest">Play</v-btn>
-    <v-btn outlined v-on:click="stopTest">Stop</v-btn>
-    <v-btn outlined v-on:click="directoryUp">Back</v-btn>
-    <v-btn outlined v-on:click="logDir">Directory</v-btn>
-    <div
-      style="
-        width: 200px;
-        height: 200px;
-        background-color: rgba(55, 55, 55, 0.2);
-      "
-      @dragenter.prevent
-      @dragover.prevent
-      v-on:drop.prevent="testWalk"
-    >
-      Drop Songs here
-    </div>
-    <p id="p1" draggable="true">This element is draggable.</p>
-    <div>
-      <p>{{ pathCount }} songs discovered</p>
-      <p>Processing song # {{ songIndex }}</p>
-      <p>
-        New songs added: {{ songsAdded }}, Songs already in library:
-        {{ existingSongs }}
-      </p>
-      <v-progress-linear
-        v-model="progress"
-        striped
-        stream
-        color="green"
-        height="25"
-      >
-        <strong>{{ Math.ceil(progress) }}%</strong>
-      </v-progress-linear>
-    </div>
-    <v-btn outlined v-on:click="testWalk">Test Walk</v-btn>
-    <v-btn outlined v-on:click="test3">Test 3</v-btn>
-    <img v-if="dataURL" :src="dataURL" alt="Item Artwork" />
-    <div>
-      <span>Directory: </span>
-      <span v-if="currentDir.length > 0" @click="toRoot">
-        <v-chip>Home</v-chip>
-      </span>
-      <span v-for="(d, i) in currentDir" :key="d" v-on:click="getPath(i)">
-        <span>
-          <v-icon>mdi-chevron-right</v-icon>
-        </span>
-        <v-chip>{{ d }}</v-chip>
-      </span>
-    </div>
-    <v-progress-linear
-      :active="isLoading"
-      :indeterminate="isLoading"
-      top
-      color="deep-purple accent-4"
-    ></v-progress-linear>
-    <div
-      v-for="(d, i) in directoryItems"
-      :key="i"
-      v-on:click="handleOnDirectoryItemClick(d, i)"
-      style="cursor: pointer"
-      draggable="true"
-      v-bind:id="d.path"
-      v-on:dragstart="updateTarget"
-    >
-      <v-icon>{{ d.icon }}</v-icon>
-      {{ d.path }}
+  <div class="flex flex-col">
+    <div class="h-20 bg-gray-400"></div>
+    <div class="h-20 flex-grow p-4">
+      <div class="h-full overflow-auto">
+        <!-- put router here... -->
+        <v-btn outlined v-on:click="playTest">Play</v-btn>
+        <v-btn outlined v-on:click="stopTest">Stop</v-btn>
+        <v-btn outlined v-on:click="directoryUp">Back</v-btn>
+        <v-btn outlined v-on:click="logDir">Directory</v-btn>
+        <div
+          style="
+            width: 200px;
+            height: 200px;
+            background-color: rgba(55, 55, 55, 0.2);
+          "
+          @dragenter.prevent
+          @dragover.prevent
+          v-on:drop.prevent="testWalk"
+        >
+          Drop Songs here
+        </div>
+        <p id="p1" draggable="true">This element is draggable.</p>
+        <div>
+          <p>{{ pathCount }} songs discovered</p>
+          <p>Processing song # {{ songIndex }}</p>
+          <p>
+            New songs added: {{ songsAdded }}, Songs already in library:
+            {{ existingSongs }}
+          </p>
+          <v-progress-linear
+            v-model="progress"
+            striped
+            stream
+            color="green"
+            height="25"
+          >
+            <strong>{{ Math.ceil(progress) }}%</strong>
+          </v-progress-linear>
+        </div>
+        <v-btn outlined v-on:click="testWalk">Test Walk</v-btn>
+        <v-btn outlined v-on:click="test3">Test 3</v-btn>
+        <img v-if="dataURL" :src="dataURL" alt="Item Artwork" />
+        <img v-if="dataURL" :src="dataURL" alt="Item Artwork" />
+        <img v-if="dataURL" :src="dataURL" alt="Item Artwork" />
+        <div>
+          <span>Directory: </span>
+          <span v-if="currentDir.length > 0" @click="toRoot">
+            <v-chip>Home</v-chip>
+          </span>
+          <span v-for="(d, i) in currentDir" :key="d" v-on:click="getPath(i)">
+            <span>
+              <v-icon>mdi-chevron-right</v-icon>
+            </span>
+            <v-chip>{{ d }}</v-chip>
+          </span>
+        </div>
+        <v-progress-linear
+          :active="isLoading"
+          :indeterminate="isLoading"
+          top
+          color="deep-purple accent-4"
+        ></v-progress-linear>
+        <div
+          v-for="(d, i) in directoryItems"
+          :key="i"
+          v-on:click="handleOnDirectoryItemClick(d, i)"
+          style="cursor: pointer"
+          draggable="true"
+          v-bind:id="d.path"
+          v-on:dragstart="updateTarget"
+        >
+          <v-icon>{{ d.icon }}</v-icon>
+          {{ d.path }}
+        </div>
+      </div>
     </div>
   </div>
 </template>

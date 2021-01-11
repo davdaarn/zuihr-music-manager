@@ -1,13 +1,13 @@
 <template>
-  <v-app>
+  <v-app class="max-h-screen">
     <div class="flex flex-col h-screen">
-      <div class="bg-gray-200 flex-grow flex">
+      <div class="bg-gray-200 flex-grow flex max-h-screen">
         <!-- sidebar -->
-        <Sidebar />
+        <Sidebar class="w-72" />
         <!-- content -->
-        <div class="bg-blue-200 h-full w-full">
-          <HelloWorld />
-        </div>
+        <!-- <div class="bg-grey-200 h-full w-full overflow-auto"> -->
+        <HelloWorld class="w-full" />
+        <!-- </div> -->
       </div>
       <!-- player -->
       <PlayerControls />
@@ -35,8 +35,8 @@ export default {
 
 <style >
 ::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-  border-radius: 10px;
+  /* -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); */
+  border-radius: 5px;
   /* background-color: #f5f5f5; */
 }
 
@@ -46,8 +46,8 @@ export default {
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  /* -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); */
   background-color: #555;
 }
 </style>
