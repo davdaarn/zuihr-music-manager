@@ -6,7 +6,7 @@
         <Sidebar class="w-72" />
         <!-- content -->
         <!-- <div class="bg-grey-200 h-full w-full overflow-auto"> -->
-        <HelloWorld class="w-full" />
+        <Display class="w-full" />
         <!-- </div> -->
       </div>
       <!-- player -->
@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+import Display from './components/Display';
 import Sidebar from './components/Sidebar';
 import PlayerControls from './components/PlayerControls';
 
@@ -24,7 +24,7 @@ export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    Display,
     Sidebar,
     PlayerControls
   },

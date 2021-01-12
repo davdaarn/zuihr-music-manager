@@ -54,7 +54,7 @@ ipcMain.handle('findAllMountedDrives', async (event, args) => {
     ]);
 
     child.stdout.on("data", function (data) {
-
+      // todo: json error happens here
       if (data) {
         let dataArray = JSON.parse(data.toString());
         // console.log(dataArray);
