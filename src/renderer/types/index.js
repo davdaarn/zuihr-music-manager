@@ -18,19 +18,28 @@ export class DirectoryItem {
   }
 }
 
+export class Tag {
+  label;
+  color;
+
+  constructor(data) {
+    Object.assign(this, data);
+  }
+}
+
 export class PlaylistItem {
-  title;
   album;
   artist;
+  diskNumber;
   genre;
+  format;
+  length;
   path;
   rating;
-  year;
-  format;
+  tags;
+  title;
   trackNumber;
-  length;
-  // tags;
-  // image;
+  year;
 
   // icon;
   // missing = false;

@@ -20,6 +20,9 @@
     </div>
     <hr />
     <div class="pt-4 pl-4 text-sm text-green-600">Playlists</div>
+    <div class="pt-4 pl-4 text-sm">
+      <v-icon>mdi-playlist-plus</v-icon> Create new
+    </div>
     <div class="h-20 flex-grow pr-4 pt-4 pb-4">
       <ul class="h-full overflow-auto">
         <li

@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col">
-    <div class="h-20 bg-gray-400"></div>
+    <!-- <div class="h-20 bg-gray-400"></div> -->
     <div class="h-20 flex-grow p-4">
       <div class="h-full overflow-auto">
         <!-- put router here... -->
@@ -121,11 +121,13 @@ export default {
       const fullPath = this.currentDir.join('/').replace('//', '/');
       this.updateDirectoryItems(fullPath);
     },
+    // used for drag and drop
     updateTarget(e) {
       console.log(e);
       e.dataTransfer.setData('Text', e.target.id);
     },
     testWalk(e) {
+      // Todo: handle drag from computer or from app
       // let data = e.dataTransfer.getData('Text');
       // let fullPath = '';
       // console.log(this.currentDir);
@@ -145,7 +147,7 @@ export default {
           // console.log(f);
           let nextPath = `${dirPath}/${f}`;
           if (fs.lstatSync(nextPath).isDirectory()) {
-            // do some basic filtering as to not look in node_modules, .files, etc.
+            // Todo: do some basic filtering as to not look in node_modules, .files, etc.
             walk(nextPath);
           } else if (
             fs.lstatSync(nextPath).isFile() &&
@@ -181,56 +183,77 @@ export default {
 
       const createPlaylistItem = index => {
         this.songIndex = index;
-        // console.log('createPlaylistItem', index, paths.length - 1);
         if (index <= paths.length - 1) {
           const p = paths[index];
-          NodeID3Promise.read(p).then(metadata => {
-            // console.log(metadata);
-            const item = new PlaylistItem({
-              album: metadata.album ? metadata.album : '',
-              artist: metadata.artist ? metadata.artist : '',
-              format: metadata.format ? metadata.format : '',
-              genre: metadata.genre ? metadata.genre : '',
-              path: p,
-              length: metadata.length ? metadata.length : '',
-              rating: metadata.popularimeter
-                ? metadata.popularimeter.rating
-                : 0,
-              // if metadata is bad, use path to get title
-              title: metadata.title ? metadata.title : '',
-              trackNumber: metadata.trackNumber ? metadata.trackNumber : '',
-              year: metadata.year ? metadata.year : ''
-            });
+          (async () => {
+            try {
+              const metadata = await mm.parseFile(p);
+              const { common, format } = metadata;
 
-            this.$db.songs.find(
-              { title: item.title, album: item.album, artist: item.artist },
-              (err, docs) => {
+              // console.log(
+              //   util.inspect(metadata, { showHidden: true, depth: null })
+              // );
+
+              // Todo: use more appropreate default values
+              const album = common.album ? common.album : '';
+              const artist = common.artist ? common.artist : '';
+              const diskNumber = common.disk ? common.disk : '';
+              const genre = common.genre ? common.genre : '';
+              // format, // to be determined
+              // image, // Too large, maybe create a thumbnail...
+              const length = format.duration ? format.duration : '';
+              const path = p;
+              const rating = 0;
+              const tags = [];
+              // Todo: if title is bad, use path to get title
+              const title = common.title ? common.title : '';
+              const trackNumber = common.track ? common.track : '';
+              const year = common.year ? common.year : '';
+
+              // Todo: better id generation
+              const uid = `${title}${album}${artist}`;
+
+              const item = new PlaylistItem({
+                _id: uid,
+                album,
+                artist,
+                genre,
+                path,
+                length,
+                rating,
+                tags,
+                title,
+                trackNumber,
+                year
+              });
+
+              console.log(item);
+
+              this.$db.songs.insert(item, (err, newDocs) => {
                 if (err) {
-                } else if (docs.length < 1) {
-                  this.$db.songs.insert(item, (err, newDoc) => {
-                    if (err) {
-                    } else {
-                      // console.log(`${item.title} added`);
-                      this.songsAdded++;
-                      console.log(metadata);
-                      console.log(item);
-                    }
-                  });
+                  if (err.message.includes('unique constraint')) {
+                    this.existingSongs++;
+                  }
                 } else {
-                  // console.log('file exists');
-                  this.existingSongs++;
+                  this.songsAdded++;
                 }
-              }
-            );
-            createPlaylistItem(index + 1);
-          });
+              });
+
+              createPlaylistItem(index + 1);
+            } catch (err) {
+              console.error(err.message);
+            }
+          })();
         } else if (index > paths.length - 1) {
-          // currently assuming no errors...
+          console.log('exiting', Date());
+          // Todo: currently assuming no errors...
           this.isLoading = false;
         }
       };
 
+      console.log('creating playlist items', Date());
       createPlaylistItem(0);
+      console.log('last line...', Date());
     },
     test(e) {
       const paths = [];
@@ -512,7 +535,7 @@ export default {
         this.toRoot();
       }
     },
-    // navigateTo(fullPath) {},
+    // Todo: navigateTo(fullPath) {},
     async toRoot() {
       this.isLoading = true;
 
