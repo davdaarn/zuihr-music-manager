@@ -27,8 +27,8 @@ export class Tag {
   }
 }
 
-export class PlaylistItem {
-  _id;
+export class Song {
+  id;
   album;
   artist;
   diskNumber;
@@ -49,11 +49,12 @@ export class PlaylistItem {
     Object.assign(this, data);
   }
 }
+
 export class Playlist {
   _id;
   title;
   path;
-  playlistItems;
+  Songs;
   image;
   errors;
   inErrorState = false;
@@ -61,7 +62,7 @@ export class Playlist {
   constructor(data) {
     Object.assign(this, data);
 
-    this.playlistItems = (this.playlistItems || []).map(x => new PlaylistItem(x));
+    this.Songs = (this.Songs || []).map(x => new Song(x));
   }
 
   checkValidity() {}
@@ -73,4 +74,13 @@ export class Playlist {
   delete() {}
 
   save() {}
+}
+
+export class SongContainer {
+  _id;
+  songs;
+
+  constructor(data) {
+    Object.assign(this, data);
+  }
 }

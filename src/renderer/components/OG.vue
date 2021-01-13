@@ -86,11 +86,11 @@ const os = require('os');
 const { ipcRenderer } = require('electron');
 const mm = require('music-metadata');
 const util = require('util');
-import { DirectoryItem } from '../types';
+import { DirectoryItem, SongContainer } from '../types';
 const NodeID3Promise = require('node-id3').Promise;
 // import { Howler, Howl } from 'howler';
 import { Howler, Howl } from '../libs/howler';
-import { PlaylistItem } from '../types';
+import { Song } from '../types';
 
 // const drivelist = require('drivelist');
 
@@ -181,7 +181,12 @@ export default {
       console.log('paths', paths.length);
       this.pathCount = paths.length;
 
-      const createPlaylistItem = index => {
+      /**
+       * todo: if possible check if song exists before parsing file
+       * db querries probably faster than a file read
+       * this might imporve performance when processing lots of songs
+       */
+      const createSong = index => {
         this.songIndex = index;
         if (index <= paths.length - 1) {
           const p = paths[index];
@@ -213,8 +218,8 @@ export default {
               // Todo: better id generation
               const uid = `${title}${album}${artist}`;
 
-              const item = new PlaylistItem({
-                _id: uid,
+              const song = new Song({
+                id: uid,
                 album,
                 artist,
                 genre,
@@ -228,22 +233,49 @@ export default {
               });
 
               // console.log(item);
-
-              this.$db.songs.insert(item, (err, newDocs) => {
+              // todo: make function // processNewSong(song);
+              this.$db.songs.find({ _id: uid }, (err, docs) => {
                 if (err) {
-                  if (err.message.includes('unique constraint')) {
-                    this.$db.songs.findOne({ _id: item._id }, (error, doc) => {
-                      console.table({ doc, item });
-                    });
-
-                    this.existingSongs++;
+                  console.warn(err.message);
+                } else if (docs.length > 1) {
+                  console.error("Entities should have unique id's"); // This should never happen
+                } else if (docs.length === 1) {
+                  const exists = docs[0].songs.some(x => x.path === song.path); // check for existing file path
+                  if (!exists) {
+                    // update doc
+                    this.$db.songs.update(
+                      { _id: uid },
+                      { $push: { songs: song } },
+                      (err, numEffected, param3, param4) => {
+                        if (err) {
+                          console.error(err);
+                        } else if (numEffected === 0 || numEffected > 1) {
+                          console.error('Error updating document'); // Somthing when wrong
+                        } else {
+                          this.existingSongs++;
+                        }
+                      }
+                    );
+                  } else {
+                    console.warn('song already in library');
                   }
                 } else {
-                  this.songsAdded++;
+                  // insert new doc
+                  const songContainer = new SongContainer({
+                    _id: uid,
+                    songs: [song]
+                  });
+                  this.$db.songs.insert(songContainer, (err, newDoc) => {
+                    if (err) {
+                      console.error(err);
+                    } else {
+                      this.songsAdded++;
+                    }
+                  });
                 }
               });
 
-              createPlaylistItem(index + 1);
+              createSong(index + 1);
             } catch (err) {
               console.error(err.message);
             }
@@ -256,7 +288,7 @@ export default {
       };
 
       console.log('creating playlist items', Date());
-      createPlaylistItem(0);
+      createSong(0);
       console.log('last line...', Date());
     },
     test(e) {
@@ -278,7 +310,7 @@ export default {
             /////////
             NodeID3Promise.read(`${element.path}/${p.name}`).then(metadata => {
               // console.log(metadata);
-              const item = new PlaylistItem({
+              const item = new Song({
                 album: metadata.album,
                 artist: metadata.artist,
                 format: element.type,
@@ -325,7 +357,7 @@ export default {
         ) {
           NodeID3Promise.read(element.path).then(metadata => {
             // console.log(metadata);
-            const item = new PlaylistItem({
+            const item = new Song({
               album: metadata.album,
               artist: metadata.artist,
               format: element.type,
