@@ -187,7 +187,7 @@ export default {
           const p = paths[index];
           (async () => {
             try {
-              const metadata = await mm.parseFile(p);
+              const metadata = await mm.parseFile(p, { skipCovers: true });
               const { common, format } = metadata;
 
               // console.log(
@@ -227,11 +227,15 @@ export default {
                 year
               });
 
-              console.log(item);
+              // console.log(item);
 
               this.$db.songs.insert(item, (err, newDocs) => {
                 if (err) {
                   if (err.message.includes('unique constraint')) {
+                    this.$db.songs.findOne({ _id: item._id }, (error, doc) => {
+                      console.table({ doc, item });
+                    });
+
                     this.existingSongs++;
                   }
                 } else {

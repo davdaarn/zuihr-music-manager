@@ -28,6 +28,7 @@ export class Tag {
 }
 
 export class PlaylistItem {
+  _id;
   album;
   artist;
   diskNumber;
@@ -49,10 +50,11 @@ export class PlaylistItem {
   }
 }
 export class Playlist {
-  id;
+  _id;
   title;
   path;
   playlistItems;
+  image;
   errors;
   inErrorState = false;
 
