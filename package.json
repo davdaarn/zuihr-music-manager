@@ -12,6 +12,7 @@
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps",
+    "electron:rebuild": "./node_modules/.bin/electron-rebuild",
     "electron:rebuild:win": "./node_modules/.bin/electron-rebuild.cmd"
   },
   "dependencies": {
@@ -25,6 +26,8 @@
     "lokijs": "^1.5.11",
     "music-metadata": "^7.5.2",
     "nedb": "^1.8.0",
+    "nedb-electron": "^1.0.0",
+    "nedb-promise": "^2.0.1",
     "node-id3": "^0.2.2",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
