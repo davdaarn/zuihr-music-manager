@@ -1,31 +1,33 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store'
-import vuetify from './plugins/vuetify'
-import '@mdi/font/css/materialdesignicons.css'
-import './assets/tailwind.css'
-
+import Vue from 'vue';
+import App from './App.vue';
+import router from './router';
+import store from './store';
+import vuetify from './plugins/vuetify';
+import '@mdi/font/css/materialdesignicons.css';
+import './assets/tailwind.css';
+import VueWorker from 'vue-worker';
 import {
   ipcRenderer
 } from 'electron';
 import DataStore from 'nedb';
 
-Vue.config.productionTip = false
+Vue.use(VueWorker);
 
+Vue.config.productionTip = false
+// sometimes use ```Object.defineProperty(Vue.prototype, '$db', { value: DataStore });``` instead
 ipcRenderer
   .invoke('getPathToAppData')
-  .then(res => {
-    console.log(res);
+  .then(appdata => {
+    console.log(appdata);
     Vue.prototype.$db = {
       // playlists
       playlists: new DataStore({
-        filename: `${res}\\playlister\\db\\playlists.db`,
+        filename: `${appdata}\\playlister\\db\\playlists.db`,
         autoload: true
       }),
       // songs
       songs: new DataStore({
-        filename: `${res}\\playlister\\db\\songs.db`,
+        filename: `${appdata}\\playlister\\db\\songs.db`,
         autoload: true
       }),
       // settings

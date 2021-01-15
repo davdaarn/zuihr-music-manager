@@ -12,7 +12,7 @@
           <v-icon>mdi-text-search</v-icon> Search
         </div>
       </router-link>
-      <router-link to="/about">
+      <router-link to="/library">
         <div class="pl-6 pt-2 cursor-pointer">
           <v-icon>mdi-playlist-music</v-icon> Library
         </div>
