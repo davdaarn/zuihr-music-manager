@@ -38,7 +38,10 @@
             <strong>{{ Math.ceil(progress) }}%</strong>
           </v-progress-linear>
         </div>
-        <v-btn outlined v-on:click="testWalk">Test Walk</v-btn>
+        <!-- <v-btn outlined v-on:click="testWalk">Test Walk</v-btn> -->
+        <v-btn outlined v-on:click="$store.dispatch('findSongs')"
+          >Test Worker</v-btn
+        >
         <v-btn outlined v-on:click="test3">Test 3</v-btn>
         <img v-if="dataURL" :src="dataURL" alt="Item Artwork" />
         <img v-if="dataURL" :src="dataURL" alt="Item Artwork" />
@@ -56,8 +59,8 @@
           </span>
         </div>
         <v-progress-linear
-          :active="isLoading"
-          :indeterminate="isLoading"
+          :active="isSearching"
+          :indeterminate="isSearching"
           top
           color="deep-purple accent-4"
         ></v-progress-linear>
@@ -92,6 +95,8 @@ const NodeID3Promise = require('node-id3').Promise;
 import { Howler, Howl } from '../libs/howler';
 import { Song } from '../types';
 
+import { mapState, mapGetters } from 'vuex';
+
 // const drivelist = require('drivelist');
 
 export default {
@@ -112,6 +117,9 @@ export default {
   computed: {
     progress: function() {
       return (this.songIndex / this.pathCount) * 100;
+    },
+    isSearching() {
+      return this.$store.state.isSearching;
     }
   },
   methods: {
@@ -136,6 +144,17 @@ export default {
       // }
       // fullPath += data;
       // console.log(fullPath);
+      // ipcRenderer
+      //   .invoke('findSongs', e)
+      //   .then()
+      //   .catch()
+      //   .finally();
+      let baseDirs = [];
+      e.dataTransfer.files.forEach(file => {
+        baseDirs.push(file.path);
+      });
+
+      this.$store.dispatch('findSongs', baseDirs);
 
       const paths = [];
 
@@ -162,21 +181,21 @@ export default {
       // console.log('after walk');
       // console.log(paths);
 
-      e.dataTransfer.files.forEach(file => {
-        this.isLoading = true;
-        this.existingSongs = 0;
-        this.songsAdded = 0;
+      // e.dataTransfer.files.forEach(file => {
+      //   this.isLoading = true;
+      //   this.existingSongs = 0;
+      //   this.songsAdded = 0;
 
-        let root = file.path.replace('\\', '/');
-        if (fs.lstatSync(root).isDirectory()) {
-          walk(root);
-        } else if (
-          fs.lstatSync(root).isFile() &&
-          RegExp('[.]mp3$').test(root)
-        ) {
-          paths.push(root);
-        }
-      });
+      //   let root = file.path.replace('\\', '/');
+      //   if (fs.lstatSync(root).isDirectory()) {
+      //     walk(root);
+      //   } else if (
+      //     fs.lstatSync(root).isFile() &&
+      //     RegExp('[.]mp3$').test(root)
+      //   ) {
+      //     paths.push(root);
+      //   }
+      // });
 
       console.log('paths', paths.length);
       this.pathCount = paths.length;
@@ -288,7 +307,7 @@ export default {
       };
 
       console.log('creating playlist items', Date());
-      createSong(0);
+      // createSong(0);
       console.log('last line...', Date());
     },
     test(e) {

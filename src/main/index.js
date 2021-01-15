@@ -24,6 +24,9 @@ const mm = require('music-metadata');
 const util = require('util');
 const NodeID3 = require('node-id3');
 const NodeID3Promise = require('node-id3').Promise;
+const fs = require('fs');
+const path = require('path');
+const os = require('os');
 const chalk = require('chalk');
 const {
   ipcMain,
@@ -31,6 +34,9 @@ const {
 } = require('electron');
 const ipc = electron.ipcMain;
 const DataStore = require('nedb');
+const {
+  Worker
+} = require('worker_threads');
 
 ipcMain.handle('getPathToAppData', async (event, args) => {
   return app.getPath('appData');
@@ -122,7 +128,52 @@ ipcMain.handle('getMetaData', async (event, args) => {
   // return data.common;
 })
 
+ipcMain.handle('findSongs', async (event, args) => {
+  // console.log(
+  //   util.inspect(event, {
+  //     showHidden: true,
+  //     depth: null
+  //   })
+  // );
 
+  runService(args).then(console.log);
+
+  return 'happy days';
+
+})
+
+function runService(workerData) {
+  return new Promise((resolve, reject) => {
+    // const p = path.join(__dirname, 'worker.js');
+    // console.log(p)
+    // const workerContents = require(path.join);
+    const worker = new Worker('./src/main/worker.js', {
+      workerData
+    });
+
+    worker.on('message', (data) => {
+      console.log(data);
+      win.webContents.send('ham', 'sexy baby');
+      return resolve('sexy baby');
+    });
+    worker.on('error', (data) => {
+      console.log(data);
+      return reject('oh snap!!!');
+    });
+    worker.on('exit', code => {
+      if (code !== 0) {
+        reject(new Error(`Worker Thread stopped with exit code: ${code}`));
+      }
+    });
+  })
+}
+
+// async function run() {
+//   const result = await runService('GeeksForGeeks')
+//   console.log(result);
+// }
+
+// run().catch(err => console.error(err))
 
 let win = null;
 
@@ -220,7 +271,8 @@ app.on('ready', async () => {
     }
   })
 
-  createWindow()
+  createWindow();
+  new Worker('./worker.js');
 })
 
 // Exit cleanly on request from parent process in development mode.
