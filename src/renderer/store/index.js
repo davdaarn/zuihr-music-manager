@@ -26,6 +26,7 @@ const store = new Vuex.Store({
       commit,
       state
     }, baseDir) {
+      commit('SET_SEARCHING', true);
       console.log('calling findSongs')
       console.log(baseDir);
       // fileWorker.postMessage('findSongs');
@@ -42,6 +43,7 @@ const store = new Vuex.Store({
 });
 
 ipcRenderer.on('ham', (e, args) => {
+  store.commit('SET_SEARCHING', false);
   console.log(args);
 });
 

@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png" />
-    <Display msg="Welcome to Your Vue.js App" />
+    <!-- <Display msg="Welcome to Your Vue.js App" /> -->
   </div>
 </template>
 
@@ -12,7 +12,7 @@ import Display from '../components/Display.vue';
 export default {
   name: 'Home',
   components: {
-    Display
+    // Display
   }
 };
 </script>

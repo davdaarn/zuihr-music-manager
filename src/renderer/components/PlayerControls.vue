@@ -1,16 +1,27 @@
 <template>
-  <div class="h-24 bg-gray-400">
+  <div class="h-24">
     <div class="flex h-full justify-around">
       <!-- song peak -->
       <div class="flex-initial self-center flex flex-col"></div>
       <!-- controls -->
       <div class="flex-initial self-center flex flex-col">
-        <div class="flex justify-between w-64 self-center">
-          <v-icon small class="">mdi-shuffle-variant</v-icon>
-          <v-icon class="">mdi-skip-previous-outline</v-icon>
-          <v-icon large class="">mdi-motion-play-outline</v-icon>
-          <v-icon class="">mdi-skip-next-outline</v-icon>
-          <v-icon small class="">mdi-repeat</v-icon>
+        <div class="flex justify-between w-64 self-center items-center">
+          <span
+            class="mdi mdi-shuffle-variant dark:text-dark-text-active text-xl"
+            v-bind:class="{ 'dark:hover:text-red-700': testClass }"
+          ></span>
+          <span
+            class="mdi mdi-skip-previous-outline dark:text-dark-text-active text-2xl"
+          ></span>
+          <span
+            class="mdi mdi-motion-play-outline dark:text-dark-text-active text-4xl"
+          ></span>
+          <span
+            class="mdi mdi-skip-next-outline dark:text-dark-text-active text-2xl"
+          ></span>
+          <span
+            class="mdi mdi-repeat dark:text-dark-text-active text-xl"
+          ></span>
         </div>
         <div class="flex pt-3">
           <div>0:00</div>
@@ -28,7 +39,12 @@
 
 <script>
 export default {
-  name: 'PlayerControls'
+  name: 'PlayerControls',
+  data() {
+    return {
+      testClass: false
+    };
+  }
 };
 </script>
 

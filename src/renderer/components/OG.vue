@@ -1,19 +1,15 @@
 <template>
-  <div class="flex flex-col">
-    <!-- <div class="h-20 bg-gray-400"></div> -->
-    <div class="h-20 flex-grow p-4">
+  <div class="flex flex-col h-full">
+    <div class="h-20 flex-grow pl-2">
       <div class="h-full overflow-auto">
+        <div class="h-24"></div>
         <!-- put router here... -->
         <v-btn outlined v-on:click="playTest">Play</v-btn>
         <v-btn outlined v-on:click="stopTest">Stop</v-btn>
         <v-btn outlined v-on:click="directoryUp">Back</v-btn>
         <v-btn outlined v-on:click="logDir">Directory</v-btn>
         <div
-          style="
-            width: 200px;
-            height: 200px;
-            background-color: rgba(55, 55, 55, 0.2);
-          "
+          class="w-1/3 h-1/3 bg-gray-200"
           @dragenter.prevent
           @dragover.prevent
           v-on:drop.prevent="testWalk"
@@ -149,56 +145,13 @@ export default {
       //   .then()
       //   .catch()
       //   .finally();
+
       let baseDirs = [];
       e.dataTransfer.files.forEach(file => {
         baseDirs.push(file.path);
       });
 
       this.$store.dispatch('findSongs', baseDirs);
-
-      const paths = [];
-
-      const walk = dirPath => {
-        // console.log(dirPath);
-        let subFiles = fs.readdirSync(dirPath);
-        // console.log(subFiles);
-        subFiles.forEach(f => {
-          // console.log(f);
-          let nextPath = `${dirPath}/${f}`;
-          if (fs.lstatSync(nextPath).isDirectory()) {
-            // Todo: do some basic filtering as to not look in node_modules, .files, etc.
-            walk(nextPath);
-          } else if (
-            fs.lstatSync(nextPath).isFile() &&
-            RegExp('[.]mp3$').test(nextPath)
-          ) {
-            paths.push(nextPath);
-          }
-        });
-      };
-
-      // walk('C:/Users/davda/Desktop/root');
-      // console.log('after walk');
-      // console.log(paths);
-
-      // e.dataTransfer.files.forEach(file => {
-      //   this.isLoading = true;
-      //   this.existingSongs = 0;
-      //   this.songsAdded = 0;
-
-      //   let root = file.path.replace('\\', '/');
-      //   if (fs.lstatSync(root).isDirectory()) {
-      //     walk(root);
-      //   } else if (
-      //     fs.lstatSync(root).isFile() &&
-      //     RegExp('[.]mp3$').test(root)
-      //   ) {
-      //     paths.push(root);
-      //   }
-      // });
-
-      console.log('paths', paths.length);
-      this.pathCount = paths.length;
 
       /**
        * todo: if possible check if song exists before parsing file

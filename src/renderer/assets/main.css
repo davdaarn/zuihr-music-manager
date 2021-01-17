@@ -1,0 +1,14 @@
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+
+.light-mode {
+  --bg-primary: white;
+}
+
+.dark-mode {
+  --bg-primary: rgb(36, 36, 36);
+}

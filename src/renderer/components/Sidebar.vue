@@ -1,10 +1,11 @@
 <template>
-  <div class="flex flex-col bg-gray-300">
-    <div class="h-20 p-4">Fancy Logo</div>
+  <div class="flex flex-col">
+    <div class="h-20 p-4 text-gray-300">Fancy Logo</div>
     <div class="h-40 flex flex-col justify-around">
       <router-link to="/home">
         <div class="pl-6 pt-2 cursor-pointer">
-          <v-icon>mdi-home</v-icon> Home
+          <span class="mdi mdi-home dark:text-dark-text-active"></span>
+          <span class="text-gray-300">Home</span>
         </div>
       </router-link>
       <router-link to="/">

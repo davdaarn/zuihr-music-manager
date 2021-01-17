@@ -1,9 +1,19 @@
 <template>
   <div class="flex flex-col">
     <!-- Replace with a header -->
-    <div class="h-20 bg-gray-400"></div>
-    <div class="h-20 flex-grow p-4">
+    <!-- <div class="h-20 bg-gray-900">
+      <v-progress-linear
+        :active="isSearching"
+        :indeterminate="isSearching"
+        color="green"
+        height="6"
+        fixed
+      ></v-progress-linear>
+    </div> -->
+
+    <div class="h-20 flex-grow">
       <div class="h-full overflow-auto">
+        <div class="h-20 w-full fixed top-0 opacity-25"></div>
         <router-view class="h-full"></router-view>
       </div>
     </div>
@@ -13,9 +23,15 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      bottom: true
+    };
   },
-  computed: {},
+  computed: {
+    isSearching() {
+      return this.$store.state.isSearching;
+    }
+  },
   methods: {},
   created() {
     console.log('created');

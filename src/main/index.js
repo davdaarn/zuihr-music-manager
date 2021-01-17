@@ -37,6 +37,9 @@ const DataStore = require('nedb');
 const {
   Worker
 } = require('worker_threads');
+const {
+  logStuff
+} = require('./utils/test');
 
 ipcMain.handle('getPathToAppData', async (event, args) => {
   return app.getPath('appData');
@@ -128,25 +131,9 @@ ipcMain.handle('getMetaData', async (event, args) => {
   // return data.common;
 })
 
-ipcMain.handle('findSongs', async (event, args) => {
-  // console.log(
-  //   util.inspect(event, {
-  //     showHidden: true,
-  //     depth: null
-  //   })
-  // );
-
-  runService(args).then(console.log);
-
-  return 'happy days';
-
-})
-
 function runService(workerData) {
   return new Promise((resolve, reject) => {
-    // const p = path.join(__dirname, 'worker.js');
-    // console.log(p)
-    // const workerContents = require(path.join);
+
     const worker = new Worker('./src/main/worker.js', {
       workerData
     });
@@ -157,25 +144,47 @@ function runService(workerData) {
       return resolve('sexy baby');
     });
     worker.on('error', (data) => {
-      console.log(data);
+      // console.log(data);
+      win.webContents.send('ham', 'hairy baby');
       return reject('oh snap!!!');
     });
     worker.on('exit', code => {
       if (code !== 0) {
         reject(new Error(`Worker Thread stopped with exit code: ${code}`));
+      } else {
+        console.log(chalk.green('all done'));
       }
     });
+
+    setTimeout(() => {
+      win.webContents.send('ham', 'sexy baby');
+      return resolve('After Timeout')
+    }, 5000);
   })
 }
 
-// async function run() {
-//   const result = await runService('GeeksForGeeks')
-//   console.log(result);
-// }
-
-// run().catch(err => console.error(err))
-
 let win = null;
+
+ipcMain.handle('findSongs', async (event, args) => {
+  // console.log(
+  //   util.inspect(event, {
+  //     showHidden: true,
+  //     depth: null
+  //   })
+  // );
+
+  runService(args).then(x => {
+    logStuff('thank you for actually working');
+    console.log('not an error')
+  }).catch(err => {
+    console.log(err)
+  });
+
+  return 'happy days';
+
+})
+
+
 
 // Scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([{
@@ -190,9 +199,11 @@ async function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
     width: 1280,
-    height: 720,
+    height: 1000,
     minWidth: 1280,
     minHeight: 720,
+    autoHideMenuBar: true,
+    backgroundColor: '#050507',
     // transparent: true,
     // frame: false,
     // opacity: 0.5,
@@ -205,6 +216,8 @@ async function createWindow() {
       // webSecurity: false,
     }
   })
+
+  win.menuBarVisible = false;
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -272,7 +285,7 @@ app.on('ready', async () => {
   })
 
   createWindow();
-  new Worker('./worker.js');
+  // new Worker('./worker.js');
 })
 
 // Exit cleanly on request from parent process in development mode.
