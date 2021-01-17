@@ -9,7 +9,7 @@
         <v-btn outlined v-on:click="directoryUp">Back</v-btn>
         <v-btn outlined v-on:click="logDir">Directory</v-btn>
         <div
-          class="w-1/3 h-1/3 bg-gray-200"
+          class="w-1/3 h-1/3"
           @dragenter.prevent
           @dragover.prevent
           v-on:drop.prevent="testWalk"

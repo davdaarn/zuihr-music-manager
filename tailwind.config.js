@@ -22,19 +22,19 @@ module.exports = {
       // background: {
       //   primary: 'var(--bg-primary)',
       // }
-      dark: {
+      theme: {
         'background-gradient': {
           dark: '#0F141D',
           light: '#0F141D',
         },
-        primary: '#0F141D',
+        primary: 'var(--bg-primary)',
         text: {
-          active: '#B6BBC3',
-          muted: '#394251',
+          active: 'var(--text-active)',
+          muted: 'var(--text-muted)',
         },
         item: {
-          active: '#3A4454',
-          muted: '#616E84',
+          active: 'var(--item-active)',
+          muted: 'var(--item-muted)',
         },
       }
     },

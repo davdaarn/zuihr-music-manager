@@ -1,29 +1,33 @@
 <template>
   <div class="flex flex-col">
-    <div class="h-20 p-4 text-gray-300">Fancy Logo</div>
+    <div class="h-20 p-4 text-theme-text-active">Fancy Logo</div>
     <div class="h-40 flex flex-col justify-around">
       <router-link to="/home">
         <div class="pl-6 pt-2 cursor-pointer">
-          <span class="mdi mdi-home dark:text-dark-text-active"></span>
-          <span class="text-gray-300">Home</span>
+          <span class="mdi mdi-home text-theme-text-active"></span>
+          <span class="text-theme-text-active">Home</span>
         </div>
       </router-link>
       <router-link to="/">
         <div class="pl-6 pt-2 cursor-pointer">
-          <v-icon>mdi-text-search</v-icon> Search
+          <span class="mdi mdi-text-search text-theme-text-active"></span>
+          <span class="text-theme-text-active">Search</span>
         </div>
       </router-link>
       <router-link to="/library">
         <div class="pl-6 pt-2 cursor-pointer">
-          <v-icon>mdi-playlist-music</v-icon> Library
+          <span class="mdi mdi-playlist-music text-theme-text-active"></span>
+          <span class="text-theme-text-active">Libary</span>
         </div>
       </router-link>
     </div>
     <hr />
-    <div class="pt-4 pl-4 text-sm text-green-600">Playlists</div>
+    <div class="pt-4 pl-4 text-sm text-theme-text-muted">Playlists</div>
     <div class="pt-4 pl-4 text-sm">
-      <v-icon>mdi-playlist-plus</v-icon> Create new
+      <span class="mdi mdi-playlist-plus text-theme-text-active"></span>
+      <span class="text-theme-text-active">Create new</span>
     </div>
+    <hr />
     <div class="h-20 flex-grow pr-4 pt-4 pb-4">
       <ul class="h-full overflow-auto">
         <li
@@ -31,8 +35,11 @@
           :key="index"
           class="pt-3 select-none cursor-pointer"
         >
-          <v-icon>{{ item.icon }}</v-icon>
-          {{ item.text }}
+          <span
+            class="mdi mdi-playlist-music text-theme-text-active"
+            :class="item.icon"
+          ></span>
+          <span class="text-theme-text-active">{{ item.text }}</span>
         </li>
       </ul>
     </div>

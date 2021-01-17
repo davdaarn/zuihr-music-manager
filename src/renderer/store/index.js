@@ -14,7 +14,11 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    isSearching: false
+    isSearching: false,
+    isPlayingSong: false,
+    repeat: false,
+    shuffle: false,
+    songQueue: [],
   },
   mutations: {
     SET_SEARCHING(state, value) {

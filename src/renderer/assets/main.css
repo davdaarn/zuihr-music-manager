@@ -12,3 +12,16 @@
 .dark-mode {
   --bg-primary: rgb(36, 36, 36);
 }
+
+
+/* Using theme approach vs the built in dark mode */
+.theme-default-dark {
+  /* primary */
+  --bg-primary: #262c36;
+  /* text */
+  --text-muted: rgb(67, 78, 95);
+  --text-active: #B6BBC3;
+  /* items */
+  --item-muted: #3A4454;
+  --item-active: #616E84;
+}

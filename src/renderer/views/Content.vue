@@ -1,5 +1,5 @@
 <template>
-  <v-app class="max-h-screen">
+  <div class="max-h-screen">
     <div class="flex flex-col h-screen">
       <div class="flex-grow flex max-h-screen">
         <!-- sidebar -->
@@ -12,7 +12,7 @@
       <!-- player -->
       <PlayerControls />
     </div>
-  </v-app>
+  </div>
 </template>
 
 <script>

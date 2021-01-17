@@ -204,6 +204,8 @@ async function createWindow() {
     minHeight: 720,
     autoHideMenuBar: true,
     backgroundColor: '#050507',
+    titleBarStyle: 'hidden',
+    darkTheme: true,
     // transparent: true,
     // frame: false,
     // opacity: 0.5,

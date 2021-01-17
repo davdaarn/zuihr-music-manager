@@ -1,6 +1,6 @@
 <template>
-  <div id="content-body" :class="theme">
-    <Content id="content" class="dark:bg-dark-primary " />
+  <div id="content-body" class="bg-theme-primary" :class="theme">
+    <Content id="content" />
   </div>
 </template>
 
@@ -16,7 +16,8 @@ export default {
 
   data() {
     return {
-      theme: 'dark' // 'dark' or null
+      // theme: 'dark' // 'dark' or null
+      theme: 'theme-default-dark'
     };
   }
 };
