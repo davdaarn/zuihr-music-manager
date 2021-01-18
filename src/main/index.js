@@ -199,11 +199,13 @@ async function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
     width: 1280,
-    height: 1000,
+    height: 720,
     minWidth: 1280,
     minHeight: 720,
+    // maxWidth: 1920,
+    // maxHeight: 1080,
     autoHideMenuBar: true,
-    backgroundColor: '#050507',
+    backgroundColor: '#262c36',
     titleBarStyle: 'hidden',
     darkTheme: true,
     // transparent: true,

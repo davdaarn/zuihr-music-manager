@@ -101,4 +101,7 @@ export default {
 </script>
 
 <style>
+.sidebar {
+  box-shadow: black;
+}
 </style>

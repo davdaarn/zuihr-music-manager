@@ -36,6 +36,10 @@ module.exports = {
           active: 'var(--item-active)',
           muted: 'var(--item-muted)',
         },
+        gradient: {
+          start: 'var(--gradient-start)',
+          end: 'var(--gradient-end)'
+        }
       }
     },
   },

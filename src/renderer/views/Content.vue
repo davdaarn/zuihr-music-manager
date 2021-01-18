@@ -5,7 +5,6 @@
         <!-- sidebar -->
         <Sidebar class="w-72" />
         <!-- content -->
-        <!-- <div class="bg-gray-900 h-full w-full overflow-auto"> -->
         <Display class="w-full" />
         <!-- </div> -->
       </div>

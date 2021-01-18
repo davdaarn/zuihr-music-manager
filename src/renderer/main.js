@@ -4,7 +4,7 @@ import router from './router';
 import store from './store';
 import vuetify from './plugins/vuetify';
 import '@mdi/font/css/materialdesignicons.css';
-import './assets/main.css';
+import './assets/main.scss';
 import VueWorker from 'vue-worker';
 import {
   ipcRenderer

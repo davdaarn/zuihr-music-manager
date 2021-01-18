@@ -13,7 +13,12 @@
 
     <div class="h-20 flex-grow">
       <div class="h-full overflow-auto">
-        <div class="h-20 w-full fixed top-0 opacity-25"></div>
+        <div
+          class="h-20 w-full fixed top-0 flex items-center"
+          style="z-index: 50"
+        >
+          <div class="text-white h-full">Items will go here</div>
+        </div>
         <router-view class="h-full"></router-view>
       </div>
     </div>
