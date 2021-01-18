@@ -1,108 +1,39 @@
 <template>
-  <div class="w-full h-full flex flex-col">
-    <!--  -->
-    <div class="w-full h-64 relative">
+  <div class="w-full h-full flex flex-wrap mt-10">
+    <div
+      class="w-44 h-60 bg-gray-700 transition duration-200 hover:bg-gray-600 rounded mx-2 my-2 flex flex-col justify-between items-center shadow-lg relative"
+    >
       <div
-        class="w-full h-full bg-cover bg-fixed shadow-2xl"
+        class="w-36 h-36 bg-red-500 mt-4 rounded shadow-lg bg-cover"
         :style="{ backgroundImage: `url(${placeHolderImage})` }"
-      >
-        <div class="img-blur w-full h-full"></div>
-      </div>
-      <!-- info -->
-      <div class="absolute inset-y-1/4 inset-x-10 flex">
-        <!-- <div class="flex-grow-0 w-48 h-48 img-wrap">
-          <img
-            :src="placeHolderImage"
-            class="rounded-lg shadow-2xl h-full w-full bg-cover bg-fixed"
-          />
-        </div> -->
-        <div
-          class="w-40 h-40 bg-cover shadow-2xl rounded-lg"
-          :style="{ backgroundImage: `url(${placeHolderImage})` }"
-        ></div>
-        <div class="flex flex-col glex-grow pl-6">
-          <div class="flex-grow"></div>
-          <div class="text-gray-300 text-7xl">New Playlist</div>
-          <div class="text-gray-300 p-2">some text skd</div>
-        </div>
-      </div>
-      <!-- end info -->
+      ></div>
+      <div class="mb-4 text-theme-text-active">My Playlist</div>
+      <div
+        class="absolute mdi mdi-play-circle text-theme-text-active hover:text-green-500 text-5xl top-32 right-6 shadow-2xl rounded-full"
+      ></div>
     </div>
-    <!--  -->
-    <div class="w-full h-full">
-      <div class="pl-4 pr-4 pt-4 max-w-screen-2xl h-full">
-        <table class="w-full text-theme-text-active text-left">
-          <thead class="">
-            <tr class="h-20">
-              <th>#</th>
-              <th>Title</th>
-              <th>Album</th>
-              <th>Somethin</th>
-              <th>Clock</th>
-            </tr>
-          </thead>
-          <tbody class="ham">
-            <tr
-              v-for="(item, index) in emptyArr"
-              :key="index"
-              class="hover:bg-gray-600"
-            >
-              <td>1</td>
-              <td>
-                <div class="flex items-center">
-                  <div
-                    class="w-10 h-10 bg-cover shadow-2xl"
-                    :style="{ backgroundImage: `url(${placeHolderImage})` }"
-                  ></div>
 
-                  <div class="pl-2">
-                    <div>Song Name</div>
-                    <div>Artist</div>
-                  </div>
-                </div>
-              </td>
-              <td>Album</td>
-              <td>Sometdin</td>
-              <td>
-                <div class="flex">
-                  <div class="mdi mdi-heart-outline"></div>
-                  <div class="pl-2 pr-2">4:18</div>
-                  <div class="mdi mdi-dots-horizontal"></div>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <div
+      class="w-44 h-60 bg-gray-700 transition duration-200 hover:bg-gray-600 rounded mx-2 my-2 flex justify-center items-center shadow-lg"
+    >
+      <div
+        class="mdi mdi-music-note-plus text-theme-text-active hover:text-green-500 text-5xl"
+      ></div>
     </div>
   </div>
 </template>
 
 <script>
 import placeHolderImage from '../assets/lava.jpeg';
+
 export default {
-  name: 'Library',
   data() {
     return {
-      test: 'test',
-      placeHolderImage: placeHolderImage,
-      emptyArr: new Array(10).fill(0)
+      placeHolderImage: placeHolderImage
     };
-  },
-  methods: {}
+  }
 };
 </script>
 
 <style scoped>
-.img-blur {
-  content: "";
-  /* box-shadow: 0 0 1rem 0 black; */
-  /* background-color: rgba(0, 0, 0, 0.5); */
-  background-image: linear-gradient(
-    rgba(55, 65, 81, 0.3),
-    rgba(31, 41, 55, 0.5),
-    rgba(31, 41, 55, 0.7)
-  );
-  backdrop-filter: blur(30px);
-}
 </style>

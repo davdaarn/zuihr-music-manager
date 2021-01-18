@@ -13,12 +13,18 @@
 
     <div class="h-20 flex-grow">
       <div class="h-full overflow-auto">
+        <!--         
+        Todo - Header Bar: not using yet - make a component
         <div
           class="h-20 w-full fixed top-0 flex items-center"
           style="z-index: 50"
         >
-          <div class="text-white h-full">Items will go here</div>
-        </div>
+          <div class="text-white h-full flex">
+            <div>Items will go here</div>
+          </div>
+        </div> 
+        -->
+
         <router-view class="h-full"></router-view>
       </div>
     </div>
