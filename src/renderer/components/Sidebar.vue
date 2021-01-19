@@ -29,18 +29,15 @@
     </div>
     <hr />
     <div class="h-20 flex-grow pr-4 pt-4 pb-4">
-      <ul class="h-full overflow-auto">
-        <li
+      <ul class="h-full overflow-auto flex flex-col">
+        <router-link
           v-for="(item, index) in items"
           :key="index"
-          class="pt-3 select-none cursor-pointer"
+          class="py-2 pl-6 select-none cursor-pointer hover:bg-gray-700 text-lg"
+          :to="`/playlist/${index}`"
         >
-          <span
-            class="mdi mdi-playlist-music text-theme-text-active"
-            :class="item.icon"
-          ></span>
-          <span class="text-theme-text-active">{{ item.text }}</span>
-        </li>
+          <span class="text-theme-text-active">{{ truncate(item.text) }}</span>
+        </router-link>
       </ul>
     </div>
     <!-- <div class="h-20 w-64"></div> -->
@@ -54,9 +51,13 @@ export default {
     mini: false,
     drawer: false,
     selectedItem: 0,
+    maxLength: 18,
     items: [
       { text: 'First', icon: 'mdi-folder' },
-      { text: 'Shared with me', icon: 'mdi-account-multiple' },
+      {
+        text: 'Shared with me Shared with me Shared with me',
+        icon: 'mdi-account-multiple'
+      },
       { text: 'Starred', icon: 'mdi-star' },
       { text: 'Recent', icon: 'mdi-history' },
       { text: 'Offline', icon: 'mdi-check-circle' },
@@ -96,7 +97,15 @@ export default {
       { text: 'Last', icon: 'mdi-cloud-upload' }
     ]
   }),
-  methods: {}
+  methods: {
+    truncate(text) {
+      if (text.length > this.maxLength) {
+        return text.substring(0, this.maxLength) + '...';
+      } else {
+        return text;
+      }
+    }
+  }
 };
 </script>
 

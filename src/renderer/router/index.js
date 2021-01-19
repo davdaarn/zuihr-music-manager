@@ -5,7 +5,8 @@ import OG from '../components/OG';
 import About from '../views/About.vue';
 import Library from '../views/Library.vue';
 import Profile from '../views/Profile.vue';
-import Account from '../views/Account.vue'
+import Account from '../views/Account.vue';
+import Playlist from '../views/Playlist.vue';
 
 Vue.use(VueRouter)
 
@@ -23,6 +24,11 @@ const routes = [{
     path: '/library',
     name: 'Library',
     component: Library
+  },
+  {
+    path: '/playlist/:id',
+    name: 'Playlist',
+    component: Playlist
   },
   {
     path: '/about',

@@ -22,7 +22,9 @@
         ></div>
         <div class="flex flex-col glex-grow pl-6">
           <div class="flex-grow"></div>
-          <div class="text-gray-300 text-7xl">New Playlist</div>
+          <div class="text-gray-300 text-7xl">
+            Playlist ID:{{ $route.params.id }}
+          </div>
           <div class="text-gray-300 p-2">some text skd</div>
         </div>
       </div>
@@ -124,7 +126,8 @@ export default {
       test: 'test',
       placeHolderImage: placeHolderImage,
       emptyArr: new Array(10).fill(-1),
-      songToShowOptions: null
+      songToShowOptions: null,
+      id: this.$route.params.id
     };
   },
   methods: {
@@ -141,6 +144,11 @@ export default {
     },
     mousedown(e) {
       console.log(e);
+    }
+  },
+  watch: {
+    $route(to, from) {
+      console.log(to, from);
     }
   }
 };

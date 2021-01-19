@@ -3,10 +3,25 @@
     <div
       class="w-44 h-60 bg-gray-700 transition duration-200 hover:bg-gray-600 rounded mx-2 my-2 flex flex-col justify-between items-center shadow-lg relative"
     >
-      <div
-        class="w-36 h-36 bg-red-500 mt-4 rounded shadow-lg bg-cover"
+      <router-link
+        to="/playlist/1234"
+        class="w-36 h-36 mt-4 rounded shadow-lg bg-cover"
         :style="{ backgroundImage: `url(${placeHolderImage})` }"
+      ></router-link>
+      <div class="mb-4 text-theme-text-active">My Playlist</div>
+      <div
+        class="absolute mdi mdi-play-circle text-theme-text-active hover:text-green-500 text-5xl top-32 right-6 shadow-2xl rounded-full"
       ></div>
+    </div>
+
+    <div
+      class="w-44 h-60 bg-gray-700 transition duration-200 hover:bg-gray-600 rounded mx-2 my-2 flex flex-col justify-between items-center shadow-lg relative"
+    >
+      <router-link
+        to="/playlist/12345"
+        class="w-36 h-36 mt-4 rounded shadow-lg bg-cover"
+        :style="{ backgroundImage: `url(${placeHolderImage})` }"
+      ></router-link>
       <div class="mb-4 text-theme-text-active">My Playlist</div>
       <div
         class="absolute mdi mdi-play-circle text-theme-text-active hover:text-green-500 text-5xl top-32 right-6 shadow-2xl rounded-full"
