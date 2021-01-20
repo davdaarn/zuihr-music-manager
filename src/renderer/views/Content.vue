@@ -38,11 +38,20 @@ export default {
 }
 
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 8px;
+}
+
+::-webkit-scrollbar:hover {
+  width: 8px;
 }
 
 ::-webkit-scrollbar-thumb {
   border-radius: 5px;
   background-color: #555;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  border-radius: 10px;
+  background-color: rgb(104, 104, 104);
 }
 </style>

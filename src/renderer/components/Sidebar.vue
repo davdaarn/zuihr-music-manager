@@ -1,6 +1,7 @@
 <template>
   <div class="flex flex-col">
     <div class="h-20 p-4 text-theme-text-active">Fancy Logo</div>
+
     <div class="h-40 flex flex-col justify-around">
       <router-link to="/home">
         <div class="pl-6 pt-2 cursor-pointer">
@@ -21,13 +22,17 @@
         </div>
       </router-link>
     </div>
+
     <hr />
+
     <div class="pt-4 pl-4 text-sm text-theme-text-muted">Playlists</div>
     <div class="pt-4 pl-4 text-sm">
       <span class="mdi mdi-playlist-plus text-theme-text-active"></span>
       <span class="text-theme-text-active">Create new</span>
     </div>
+
     <hr />
+
     <div class="h-20 flex-grow pr-4 pt-4 pb-4">
       <ul class="h-full overflow-auto flex flex-col">
         <router-link
@@ -40,6 +45,7 @@
         </router-link>
       </ul>
     </div>
+
     <!-- <div class="h-20 w-64"></div> -->
   </div>
 </template>

@@ -15,6 +15,7 @@
           ></span>
           <span
             class="mdi mdi-motion-play-outline text-theme-text-muted hover:text-theme-text-active text-4xl"
+            @click="playPause"
           ></span>
           <span
             class="mdi mdi-skip-next-outline text-theme-text-muted hover:text-theme-text-active text-2xl"
@@ -44,6 +45,11 @@ export default {
     return {
       testClass: true
     };
+  },
+  methods: {
+    playPause() {
+      this.$store.dispatch('playPause');
+    }
   }
 };
 </script>

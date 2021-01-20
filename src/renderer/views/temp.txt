@@ -1,0 +1,137 @@
+    <div class="w-full h-full">
+      <div class="pl-4 pr-4 pt-4 max-w-screen-2xl h-full">
+        <!-- <div
+          class="flex justify-end space-x-4 text-theme-text-active items-center"
+        >
+          <div>Songs per page:</div>
+
+          <div
+            class="flex relative items-center cursor-pointer hover:bg-gray-600 translate"
+            class:bg-gray-600="showRowsPerPage"
+            @click="songsPerPageDropDown"
+          >
+            <div class="hover:text-green-400">100</div>
+            <div
+              class="mdi pl-2 text-2xl hover:text-green-400"
+              :class="showRowsPerPage ? 'mdi-menu-left' : 'mdi-menu-down'"
+            ></div>
+            <div
+              v-if="showRowsPerPage"
+              class="absolute h-auto w-14 bg-gray-900 rounded-sm shadow-2xl top-8 z-50 flex flex-col items-center"
+            >
+              <div
+                class="p-2 hover:text-green-400 cursor-pointer"
+                @click="updateSongsPerPage(100)"
+              >
+                100
+              </div>
+              <div
+                class="p-2 hover:text-green-400 cursor-pointer"
+                @click="updateSongsPerPage(200)"
+              >
+                200
+              </div>
+              <div
+                class="p-2 hover:text-green-400 cursor-pointer"
+                @click="updateSongsPerPage(500)"
+              >
+                500
+              </div>
+              <div
+                class="p-2 hover:text-green-400 cursor-pointer"
+                @click="updateSongsPerPage(1000)"
+              >
+                1000
+              </div>
+            </div>
+          </div>
+
+          <div>1-100 of 13492</div>
+          <div class="mdi mdi-chevron-left text-xl"></div>
+          <div class="mdi mdi-chevron-right text-xl"></div>
+        </div> -->
+        <table class="w-full text-theme-text-active text-left">
+          <thead class="">
+            <tr class="h-20">
+              <th>#</th>
+              <th>Title</th>
+              <th>Album</th>
+              <!-- <th>Somethin</th> -->
+              <th class="mdi mdi-clock-time-eight-outline text-center"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="(song, index) in allSongs"
+              :key="index"
+              class="hover:bg-gray-700 items-center h-14"
+            >
+              <td>{{ index + 1 }}</td>
+              <td>
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 bg-cover shadow-2xl"
+                    :style="{ backgroundImage: `url(${placeHolderImage})` }"
+                  ></div>
+
+                  <div class="pl-2">
+                    <div>
+                      {{ truncate(song.songs ? song.songs[0].title : "nope") }}
+                    </div>
+                    <div style="text-sm">
+                      {{ truncate(song.songs ? song.songs[0].artist : "nope") }}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td>
+                {{ truncate(song.songs ? song.songs[0].album : "nope") }}
+              </td>
+              <!-- <td>Sometdin</td> -->
+              <td class="flex justify-around items-center h-full">
+                <div class="flex">
+                  <div class="mdi mdi-heart-outline hover:text-red-500"></div>
+                  <div class="pl-2 pr-2">4:18</div>
+                  <div class="relative">
+                    <div
+                      class="mdi mdi-dots-horizontal hover:text-white select-auto"
+                      v-on:click="showOptions(song, index)"
+                    ></div>
+                    <div
+                      v-if="songToShowOptions === index"
+                      class="absolute h-auto w-48 bg-gray-900 rounded-sm shadow-2xl top-8 -left-24 z-50"
+                    >
+                      <div class="mdi mdi-heart-outline p-2 hover:text-red-500">
+                        Stuff
+                      </div>
+                      <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
+                        Stuff
+                      </div>
+                      <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
+                        Stuff
+                      </div>
+                      <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
+                        Stuff
+                      </div>
+                      <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
+                        Stuff
+                      </div>
+                      <hr />
+                      <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
+                        Other Stuff
+                      </div>
+                      <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
+                        Other Stuff
+                      </div>
+                      <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
+                        Other Stuff
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
