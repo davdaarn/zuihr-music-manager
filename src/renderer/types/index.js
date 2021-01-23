@@ -41,6 +41,7 @@ export class Song {
   title;
   trackNumber;
   year;
+  thumbnail;
 
   // icon;
   // missing = false;

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col">
     <!-- header -->
-    <div class="w-full h-64 relative">
+    <!-- <div class="w-full h-64 relative">
       <div
         class="w-full h-full bg-cover bg-fixed shadow-2xl"
         :style="{ backgroundImage: `url(${placeHolderImage})` }"
@@ -21,10 +21,9 @@
           <div class="text-gray-300 p-2">some text skd</div>
         </div>
       </div>
-    </div>
+    </div> -->
 
-    <div class="px-4 pt-4 flex-grow">
-      <!-- controls -->
+    <div class="pl-4 pr-4 pt-4 max-w-screen-2xl flex-grow">
       <div
         class="flex justify-end space-x-4 text-theme-text-active items-center"
       >
@@ -87,26 +86,22 @@
         <div class="mdi mdi-chevron-left text-xl"></div>
         <div class="mdi mdi-chevron-right text-xl"></div>
       </div>
-    </div>
-    <!--  -->
-    <div class="px-4 flex-grow overflow-y-auto">
-      <table class="w-full text-theme-text-active text-left">
+      <table class="w-full max-h-64 text-theme-text-active text-left">
         <thead class="">
-          <tr class="h-20 z-50">
-            <th class="bg-gray-800">#</th>
-            <th class="bg-gray-800">Title</th>
-            <th class="bg-gray-800">Album</th>
-            <th
-              class="mdi mdi-clock-time-eight-outline text-center bg-gray-800"
-            ></th>
+          <tr class="h-20">
+            <th>#</th>
+            <th>Title</th>
+            <th>Album</th>
+            <!-- <th>Somethin</th> -->
+            <th class="mdi mdi-clock-time-eight-outline text-center"></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="overflow-y-scroll" style="height: 10vh">
           <tr
             v-for="(song, index) in allSongs"
             :key="index"
             class="hover:bg-gray-700 items-center h-14"
-            :class="[focusedSong === index ? 'bg-gray-600' : '']"
+            :class="[focusedSong === index ? 'bg-gray-500' : '']"
             @click="setFocusedSong(song, index)"
           >
             <td>{{ index + 1 }}</td>
@@ -114,12 +109,8 @@
               <div class="flex items-center">
                 <div
                   class="w-10 h-10 bg-cover shadow-2xl"
-                  :style="{
-                    backgroundImage: `url(${renderImage(song)})`,
-                  }"
-                >
-                  <!-- {{ renderImage(song) }} -->
-                </div>
+                  :style="{ backgroundImage: `url(${placeHolderImage})` }"
+                ></div>
 
                 <div class="pl-2">
                   <div>
@@ -135,7 +126,7 @@
               {{ truncate(song.songs ? song.songs[0].album : "nope") }}
             </td>
             <!-- <td>Sometdin</td> -->
-            <td class="flex justify-around items-center h-10">
+            <td class="flex justify-around items-center h-full">
               <div class="flex">
                 <div class="mdi mdi-heart-outline hover:text-red-500"></div>
                 <div class="pl-2 pr-2">
@@ -216,21 +207,6 @@ export default {
   },
   watch: {},
   methods: {
-    renderImage(song) {
-      // console.log('cheese');
-      // console.log();
-      let dataArr = [];
-      Object.keys(song.songs[0].thumbnail.data).forEach(element => {
-        dataArr.push(song.songs[0].thumbnail.data[element]);
-      });
-      let buffer = Buffer.from(dataArr);
-      let blob = new Blob([buffer], {
-        type: song.songs[0].thumbnail.format
-      });
-      let urlCreator = window.URL || window.webkitURL;
-      let url = urlCreator.createObjectURL(blob);
-      return url;
-    },
     setFocusedSong(song, index) {
       this.focusedSong = index;
       this.$store.dispatch('setSongToPlay', { song });
@@ -292,18 +268,5 @@ input[type="number"]::-webkit-outer-spin-button {
     rgba(31, 41, 55, 0.7)
   );
   backdrop-filter: blur(30px);
-}
-
-th {
-  position: sticky;
-  top: 0;
-  /* margin-bottom: 4em; */
-  z-index: 50;
-}
-
-table {
-  text-align: left;
-  position: relative;
-  border-collapse: collapse;
 }
 </style>

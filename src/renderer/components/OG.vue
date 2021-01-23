@@ -93,6 +93,8 @@ import { Song } from '../types';
 
 import { mapState, mapGetters } from 'vuex';
 
+// const sharp = require('sharp');
+
 // const drivelist = require('drivelist');
 
 export default {
@@ -125,11 +127,19 @@ export default {
       const fullPath = this.currentDir.join('/').replace('//', '/');
       this.updateDirectoryItems(fullPath);
     },
+    renderImage(data, format) {
+      let blob = new Blob([data.buffer], {
+        type: metadata.image.mime
+      });
+      let urlCreator = window.URL || window.webkitURL;
+      return urlCreator.createObjectURL(blob);
+    },
     // used for drag and drop
     updateTarget(e) {
       console.log(e);
       e.dataTransfer.setData('Text', e.target.id);
     },
+    // using
     testWalk(e) {
       // Todo: handle drag from computer or from app
       // let data = e.dataTransfer.getData('Text');
@@ -146,12 +156,14 @@ export default {
       //   .catch()
       //   .finally();
 
-      let baseDirs = [];
+      let paths = [];
       e.dataTransfer.files.forEach(file => {
-        baseDirs.push(file.path);
+        paths.push(file.path);
       });
 
-      this.$store.dispatch('findSongs', baseDirs);
+      this.$store.dispatch('findSongs', paths).then(x => {
+        console.log(x);
+      });
 
       /**
        * todo: if possible check if song exists before parsing file
@@ -164,45 +176,61 @@ export default {
           const p = paths[index];
           (async () => {
             try {
-              const metadata = await mm.parseFile(p, { skipCovers: true });
-              const { common, format } = metadata;
+              // const metadata = await mm.parseFile(p, { skipCovers: false });
+              // const { common, format } = metadata;
+              // const cover = mm.selectCover(common.picture);
 
               // console.log(
               //   util.inspect(metadata, { showHidden: true, depth: null })
               // );
 
-              // Todo: use more appropreate default values
-              const album = common.album ? common.album : '';
-              const artist = common.artist ? common.artist : '';
-              const diskNumber = common.disk ? common.disk : '';
-              const genre = common.genre ? common.genre : '';
-              // format, // to be determined
-              // image, // Too large, maybe create a thumbnail...
-              const length = format.duration ? format.duration : '';
-              const path = p;
-              const rating = 0;
-              const tags = [];
-              // Todo: if title is bad, use path to get title
-              const title = common.title ? common.title : '';
-              const trackNumber = common.track ? common.track : '';
-              const year = common.year ? common.year : '';
+              // console.log(
+              //   util.inspect(cover, { showHidden: true, depth: null })
+              // );
+              console.log(p);
+              const song = await ipcRenderer.invoke('compressImage', p);
 
-              // Todo: better id generation
-              const uid = `${title}${album}${artist}`;
+              console.log(song);
+              // return;
 
-              const song = new Song({
-                id: uid,
-                album,
-                artist,
-                genre,
-                path,
-                length,
-                rating,
-                tags,
-                title,
-                trackNumber,
-                year
-              });
+              // // Todo: use more appropreate default values
+              // const album = common.album ? common.album : '';
+              // const artist = common.artist ? common.artist : '';
+              // const diskNumber = common.disk ? common.disk : '';
+              // const genre = common.genre ? common.genre : '';
+              // // format, // to be determined
+              // // image, // Too large, maybe create a thumbnail...
+              // const length = format.duration ? format.duration : '';
+              // const path = p;
+              // const rating = 0;
+              // const tags = [];
+              // // Todo: if title is bad, use path to get title
+              // const title = common.title ? common.title : '';
+              // const trackNumber = common.track ? common.track : '';
+              // const year = common.year ? common.year : '';
+
+              // // Todo: better id generation
+              // const uid = `${title}${album}${artist}`;
+
+              // const song = new Song({
+              //   id: uid,
+              //   album,
+              //   artist,
+              //   genre,
+              //   path,
+              //   length,
+              //   rating,
+              //   tags,
+              //   thumbnail: {
+              //     format: cover.format,
+              //     data: image
+              //   },
+              //   title,
+              //   trackNumber,
+              //   year
+              // });
+
+              const uid = song.id;
 
               // console.log(item);
               // todo: make function // processNewSong(song);
@@ -263,6 +291,7 @@ export default {
       // createSong(0);
       console.log('last line...', Date());
     },
+    //
     test(e) {
       const paths = [];
       e.dataTransfer.files.forEach(element => {

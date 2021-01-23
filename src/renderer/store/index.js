@@ -29,6 +29,7 @@ const store = new Vuex.Store({
     }],
     songToPlay: null,
     song: null,
+    songPaths: []
   },
   mutations: {
     SET_SEARCHING(state, value) {
@@ -39,6 +40,9 @@ const store = new Vuex.Store({
     },
     SET_SONG(state, value) {
       state.songToPlay = value;
+    },
+    SET_SONG_PATHS(state, value) {
+      state.songPaths = value;
     },
 
   },
@@ -111,6 +115,7 @@ const store = new Vuex.Store({
 
 ipcRenderer.on('ham', (e, args) => {
   store.commit('SET_SEARCHING', false);
+  store.commit('SET_SONG_PATHS', args);
   console.log(args);
 });
 

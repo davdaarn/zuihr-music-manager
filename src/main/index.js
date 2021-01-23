@@ -28,6 +28,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const chalk = require('chalk');
+const sharp = require('sharp');
 const {
   ipcMain,
   webContents
@@ -131,6 +132,82 @@ ipcMain.handle('getMetaData', async (event, args) => {
   // return data.common;
 })
 
+ipcMain.handle('compressImage', async (event, p) => {
+  console.log(p);
+  if (p) {
+    const metadata = await mm.parseFile(p, {
+      skipCovers: false
+    });
+    const {
+      common,
+      format
+    } = metadata;
+    const cover = mm.selectCover(common.picture);
+    console.log(cover);
+
+    let newImage = await sharp(cover.data).resize(64, 64, {}).toBuffer();
+
+    console.log(newImage);
+
+    const album = common.album ? common.album : '';
+    const artist = common.artist ? common.artist : '';
+    const diskNumber = common.disk ? common.disk : '';
+    const genre = common.genre ? common.genre : '';
+    // format, // to be determined
+    // image, // Too large, maybe create a thumbnail...
+    const length = format.duration ? format.duration : '';
+    const path = p;
+    const rating = 0;
+    const tags = [];
+    // Todo: if title is bad, use path to get title
+    const title = common.title ? common.title : '';
+    const trackNumber = common.track ? common.track : '';
+    const year = common.year ? common.year : '';
+
+    // Todo: better id generation
+    const uid = `${title}${album}${artist}`;
+
+    return {
+      id: uid,
+      album,
+      artist,
+      genre,
+      path,
+      length,
+      rating,
+      tags,
+      thumbnail: {
+        format: cover.format,
+        data: newImage
+      },
+      title,
+      trackNumber,
+      year
+    };
+
+  } else {
+    console.log('hell no')
+    // const thumbnail = await sharp({
+    //     create: {
+    //       width: 64,
+    //       height: 64,
+    //       channels: 4,
+    //       background: {
+    //         r: 255,
+    //         g: 0,
+    //         b: 0,
+    //         alpha: 0.5
+    //       }
+    //     }
+    //   })
+    //   .png()
+    //   .toBuffer()
+    //   .then(x => x).catch(x => null);
+
+    // return thumbnail
+  }
+})
+
 function runService(workerData) {
   return new Promise((resolve, reject) => {
 
@@ -140,8 +217,8 @@ function runService(workerData) {
 
     worker.on('message', (data) => {
       console.log(data);
-      win.webContents.send('ham', 'sexy baby');
-      return resolve('sexy baby');
+      win.webContents.send('ham', data);
+      return resolve('ten tons of ham burgers');
     });
     worker.on('error', (data) => {
       // console.log(data);

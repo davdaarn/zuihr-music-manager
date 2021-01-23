@@ -1,9 +1,5 @@
 <template>
-  <div
-    id="content-body"
-    class="bg-gradient-to-b from-gray-700 to-gray-900"
-    :class="theme"
-  >
+  <div id="content-body" class="bg-gray-800" :class="theme">
     <Content id="content" />
   </div>
 </template>

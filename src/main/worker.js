@@ -44,6 +44,6 @@ console.log(chalk.yellow(paths.length));
 console.log('hello from the inside');
 
 parentPort.postMessage({
-  filePaths: paths.length,
+  filePaths: paths,
   status: 'Done'
 });
