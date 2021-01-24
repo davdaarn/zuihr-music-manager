@@ -18,8 +18,8 @@ module.exports = {
           "**/*"
         ],
         extraFiles: [{
-          "from": "src/main",
-          "to": "src/main",
+          "from": "src/main/*",
+          "to": "src/main/*",
           "filter": ["**/*"]
         }]
       }
