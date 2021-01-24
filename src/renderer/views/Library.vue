@@ -23,7 +23,7 @@
       </div>
     </div>
 
-    <div class="px-4 pt-4 flex-grow">
+    <div class="px-4 py-4">
       <!-- controls -->
       <div
         class="flex justify-end space-x-4 text-theme-text-active items-center"
@@ -42,7 +42,7 @@
           ></div>
           <div
             v-if="showRowsPerPage"
-            class="absolute h-auto w-14 bg-gray-900 rounded-sm shadow-2xl top-8 z-50 flex flex-col items-center hover:text-theme-text-active text-theme-text-active"
+            class="absolute h-auto w-14 bg-gray-900 rounded-sm shadow-2xl top-8 flex flex-col items-center hover:text-theme-text-active text-theme-text-active picker"
           >
             <div
               class="p-2 hover:text-green-400 cursor-pointer"
@@ -89,8 +89,9 @@
       </div>
     </div>
     <!--  -->
-    <div class="px-4 flex-grow overflow-y-auto">
-      <table class="w-full text-theme-text-active text-left">
+    <div class="px-4 overflow-y-auto">
+      {{ log("redraw 1") }}
+      <table class="w-full text-theme-text-active text-left h-full">
         <thead class="">
           <tr class="h-20 z-50">
             <th class="bg-gray-800">#</th>
@@ -103,7 +104,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="(song, index) in allSongs"
+            v-for="(song, index) in filteredSongs"
             :key="index"
             class="hover:bg-gray-700 items-center h-14"
             :class="[focusedSong === index ? 'bg-gray-600' : '']"
@@ -115,11 +116,11 @@
                 <div
                   class="w-10 h-10 bg-cover shadow-2xl"
                   :style="{
-                    backgroundImage: `url(${renderImage(song)})`,
+                    backgroundImage: `url(${
+                      song.url ? song.url : placeHolderImage
+                    })`,
                   }"
-                >
-                  <!-- {{ renderImage(song) }} -->
-                </div>
+                ></div>
 
                 <div class="pl-2">
                   <div>
@@ -202,34 +203,38 @@ export default {
       maxLength: 40,
       showRowsPerPage: false,
       currentPage: 1,
-      songsPerPage: 100, // Todo: $db.settings.songsPerPage
-      focusedSong: null
+      songsPerPage: 50, // Todo: $db.settings.songsPerPage
+      focusedSong: null,
+      songs: [],
+      filteredSongs: []
     };
   },
-  computed: {
-    // songsToShow() {
-    //   // number to show'
-    //   // page number
-    //   return this.$store.state.allSongs;
-    // },
-    ...mapState(['allSongs'])
+  computed: {},
+  watch: {
+    '$store.state.allSongs'(state) {
+      console.log('watching state...');
+      this.songs = state;
+      this.filteredSongs = state.slice(0, this.songsPerPage);
+    }
   },
-  watch: {},
   methods: {
+    log(d) {
+      console.log(d);
+    },
     renderImage(song) {
       // console.log('cheese');
-      // console.log();
-      let dataArr = [];
-      Object.keys(song.songs[0].thumbnail.data).forEach(element => {
-        dataArr.push(song.songs[0].thumbnail.data[element]);
-      });
-      let buffer = Buffer.from(dataArr);
-      let blob = new Blob([buffer], {
-        type: song.songs[0].thumbnail.format
-      });
-      let urlCreator = window.URL || window.webkitURL;
-      let url = urlCreator.createObjectURL(blob);
-      return url;
+      // console.log(song.songs[0].thumbnail.data);
+      if (song.songs[0].thumbnail.data) {
+        let buffer = Buffer.from(song.songs[0].thumbnail.data);
+        let blob = new Blob([buffer], {
+          type: song.songs[0].thumbnail.format
+        });
+        let urlCreator = window.URL || window.webkitURL;
+        let url = urlCreator.createObjectURL(blob);
+        console.log(url);
+        return url;
+      }
+      return this.placeHolderImage;
     },
     setFocusedSong(song, index) {
       this.focusedSong = index;
@@ -243,6 +248,7 @@ export default {
     },
     updateSongsPerPage(count) {
       this.songsPerPage = count;
+      this.filteredSongs = this.songs.slice(0, count);
     },
     truncate(text) {
       if (text.length > this.maxLength) {
@@ -275,6 +281,10 @@ export default {
 </script>
 
 <style scoped>
+.picker {
+  z-index: 100;
+}
+
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
 }

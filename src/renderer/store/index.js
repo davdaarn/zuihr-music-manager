@@ -24,9 +24,7 @@ const store = new Vuex.Store({
     repeat: false,
     shuffle: false,
     songQueue: [],
-    allSongs: [{
-      title: 'test'
-    }],
+    allSongs: [],
     songToPlay: null,
     song: null,
     songPaths: []
@@ -79,13 +77,25 @@ const store = new Vuex.Store({
       db
     }) {
       console.log('calling loadAllSongs');
-      console.log(db.songs);
+      // console.log(db.songs);
       db.songs.find({}, (err, docs) => {
         if (err) {
           console.error(err);
         } else {
-          console.log(docs[0]);
-          commit('LOAD_ALL_SONGS', docs.slice(0, 500));
+          console.log(docs.length);
+          docs.forEach(song => {
+            // console.log(song.songs[0].thumbnail.data)
+            if (song.songs[0].thumbnail.data) {
+              let buffer = Buffer.from(song.songs[0].thumbnail.data);
+              let blob = new Blob([buffer], {
+                type: song.songs[0].thumbnail.format
+              });
+              let urlCreator = window.URL || window.webkitURL;
+              let url = urlCreator.createObjectURL(blob);
+              song.url = url;
+            }
+          });
+          commit('LOAD_ALL_SONGS', docs);
         }
       })
     },
@@ -114,8 +124,8 @@ const store = new Vuex.Store({
 });
 
 ipcRenderer.on('ham', (e, args) => {
-  store.commit('SET_SEARCHING', false);
-  store.commit('SET_SONG_PATHS', args);
+  // store.commit('SET_SEARCHING', false);
+  // store.commit('SET_SONG_PATHS', args);
   console.log(args);
 });
 

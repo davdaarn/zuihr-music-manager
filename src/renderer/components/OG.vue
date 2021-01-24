@@ -170,126 +170,126 @@ export default {
        * db querries probably faster than a file read
        * this might imporve performance when processing lots of songs
        */
-      const createSong = index => {
-        this.songIndex = index;
-        if (index <= paths.length - 1) {
-          const p = paths[index];
-          (async () => {
-            try {
-              // const metadata = await mm.parseFile(p, { skipCovers: false });
-              // const { common, format } = metadata;
-              // const cover = mm.selectCover(common.picture);
+      // const createSong = index => {
+      //   this.songIndex = index;
+      //   if (index <= paths.length - 1) {
+      //     const p = paths[index];
+      //     (async () => {
+      //       try {
+      //         // const metadata = await mm.parseFile(p, { skipCovers: false });
+      //         // const { common, format } = metadata;
+      //         // const cover = mm.selectCover(common.picture);
 
-              // console.log(
-              //   util.inspect(metadata, { showHidden: true, depth: null })
-              // );
+      //         // console.log(
+      //         //   util.inspect(metadata, { showHidden: true, depth: null })
+      //         // );
 
-              // console.log(
-              //   util.inspect(cover, { showHidden: true, depth: null })
-              // );
-              console.log(p);
-              const song = await ipcRenderer.invoke('compressImage', p);
+      //         // console.log(
+      //         //   util.inspect(cover, { showHidden: true, depth: null })
+      //         // );
+      //         console.log(p);
+      //         const song = await ipcRenderer.invoke('compressImage', p);
 
-              console.log(song);
-              // return;
+      //         console.log(song);
+      //         // return;
 
-              // // Todo: use more appropreate default values
-              // const album = common.album ? common.album : '';
-              // const artist = common.artist ? common.artist : '';
-              // const diskNumber = common.disk ? common.disk : '';
-              // const genre = common.genre ? common.genre : '';
-              // // format, // to be determined
-              // // image, // Too large, maybe create a thumbnail...
-              // const length = format.duration ? format.duration : '';
-              // const path = p;
-              // const rating = 0;
-              // const tags = [];
-              // // Todo: if title is bad, use path to get title
-              // const title = common.title ? common.title : '';
-              // const trackNumber = common.track ? common.track : '';
-              // const year = common.year ? common.year : '';
+      //         // // Todo: use more appropreate default values
+      //         // const album = common.album ? common.album : '';
+      //         // const artist = common.artist ? common.artist : '';
+      //         // const diskNumber = common.disk ? common.disk : '';
+      //         // const genre = common.genre ? common.genre : '';
+      //         // // format, // to be determined
+      //         // // image, // Too large, maybe create a thumbnail...
+      //         // const length = format.duration ? format.duration : '';
+      //         // const path = p;
+      //         // const rating = 0;
+      //         // const tags = [];
+      //         // // Todo: if title is bad, use path to get title
+      //         // const title = common.title ? common.title : '';
+      //         // const trackNumber = common.track ? common.track : '';
+      //         // const year = common.year ? common.year : '';
 
-              // // Todo: better id generation
-              // const uid = `${title}${album}${artist}`;
+      //         // // Todo: better id generation
+      //         // const uid = `${title}${album}${artist}`;
 
-              // const song = new Song({
-              //   id: uid,
-              //   album,
-              //   artist,
-              //   genre,
-              //   path,
-              //   length,
-              //   rating,
-              //   tags,
-              //   thumbnail: {
-              //     format: cover.format,
-              //     data: image
-              //   },
-              //   title,
-              //   trackNumber,
-              //   year
-              // });
+      //         // const song = new Song({
+      //         //   id: uid,
+      //         //   album,
+      //         //   artist,
+      //         //   genre,
+      //         //   path,
+      //         //   length,
+      //         //   rating,
+      //         //   tags,
+      //         //   thumbnail: {
+      //         //     format: cover.format,
+      //         //     data: image
+      //         //   },
+      //         //   title,
+      //         //   trackNumber,
+      //         //   year
+      //         // });
 
-              const uid = song.id;
+      //         const uid = song.id;
 
-              // console.log(item);
-              // todo: make function // processNewSong(song);
-              this.$db.songs.find({ _id: uid }, (err, docs) => {
-                if (err) {
-                  console.warn(err.message);
-                } else if (docs.length > 1) {
-                  console.error("Entities should have unique id's"); // This should never happen
-                } else if (docs.length === 1) {
-                  const exists = docs[0].songs.some(x => x.path === song.path); // check for existing file path
-                  if (!exists) {
-                    // update doc
-                    this.$db.songs.update(
-                      { _id: uid },
-                      { $push: { songs: song } },
-                      (err, numEffected, param3, param4) => {
-                        if (err) {
-                          console.error(err);
-                        } else if (numEffected === 0 || numEffected > 1) {
-                          console.error('Error updating document'); // Somthing when wrong
-                        } else {
-                          this.existingSongs++;
-                        }
-                      }
-                    );
-                  } else {
-                    console.warn('song already in library');
-                  }
-                } else {
-                  // insert new doc
-                  const songContainer = new SongContainer({
-                    _id: uid,
-                    songs: [song]
-                  });
-                  this.$db.songs.insert(songContainer, (err, newDoc) => {
-                    if (err) {
-                      console.error(err);
-                    } else {
-                      this.songsAdded++;
-                    }
-                  });
-                }
-              });
+      //         // console.log(item);
+      //         // todo: make function // processNewSong(song);
+      //         this.$db.songs.find({ _id: uid }, (err, docs) => {
+      //           if (err) {
+      //             console.warn(err.message);
+      //           } else if (docs.length > 1) {
+      //             console.error("Entities should have unique id's"); // This should never happen
+      //           } else if (docs.length === 1) {
+      //             const exists = docs[0].songs.some(x => x.path === song.path); // check for existing file path
+      //             if (!exists) {
+      //               // update doc
+      //               this.$db.songs.update(
+      //                 { _id: uid },
+      //                 { $push: { songs: song } },
+      //                 (err, numEffected, param3, param4) => {
+      //                   if (err) {
+      //                     console.error(err);
+      //                   } else if (numEffected === 0 || numEffected > 1) {
+      //                     console.error('Error updating document'); // Somthing when wrong
+      //                   } else {
+      //                     this.existingSongs++;
+      //                   }
+      //                 }
+      //               );
+      //             } else {
+      //               console.warn('song already in library');
+      //             }
+      //           } else {
+      //             // insert new doc
+      //             const songContainer = new SongContainer({
+      //               _id: uid,
+      //               songs: [song]
+      //             });
+      //             this.$db.songs.insert(songContainer, (err, newDoc) => {
+      //               if (err) {
+      //                 console.error(err);
+      //               } else {
+      //                 this.songsAdded++;
+      //               }
+      //             });
+      //           }
+      //         });
 
-              createSong(index + 1);
-            } catch (err) {
-              console.error(err.message);
-            }
-          })();
-        } else if (index > paths.length - 1) {
-          console.log('exiting', Date());
-          // Todo: currently assuming no errors...
-          this.isLoading = false;
-        }
-      };
+      //         createSong(index + 1);
+      //       } catch (err) {
+      //         console.error(err.message);
+      //       }
+      //     })();
+      //   } else if (index > paths.length - 1) {
+      //     console.log('exiting', Date());
+      //     // Todo: currently assuming no errors...
+      //     this.isLoading = false;
+      //   }
+      // };
 
-      console.log('creating playlist items', Date());
-      // createSong(0);
-      console.log('last line...', Date());
+      // console.log('creating playlist items', Date());
+      // // createSong(0);
+      // console.log('last line...', Date());
     },
     //
     test(e) {
