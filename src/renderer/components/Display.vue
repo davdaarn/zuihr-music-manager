@@ -1,15 +1,6 @@
 <template>
   <div class="flex flex-col">
     <!-- Replace with a header -->
-    <!-- <div class="h-20 bg-gray-900">
-      <v-progress-linear
-        :active="isSearching"
-        :indeterminate="isSearching"
-        color="green"
-        height="6"
-        fixed
-      ></v-progress-linear>
-    </div> -->
 
     <div class="h-20 flex-grow">
       <div class="h-full overflow-auto">

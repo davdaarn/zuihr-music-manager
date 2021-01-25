@@ -12,11 +12,6 @@ import {
 
 Vue.use(Vuex);
 
-// const fileWorker = new Worker('../utils/fileWorker.js', {
-//   type: 'module',
-//   credentials: 'include',
-// });
-
 const store = new Vuex.Store({
   state: {
     isSearching: false,
@@ -78,13 +73,10 @@ const store = new Vuex.Store({
     }) {
       console.log('calling loadAllSongs');
       // console.log(db.songs);
-      db.songs.find({}, (err, docs) => {
-        if (err) {
-          console.error(err);
-        } else {
-          console.log(docs.length);
+      ipcRenderer
+        .invoke('loadAllSongs')
+        .then(docs => {
           docs.forEach(song => {
-            // console.log(song.songs[0].thumbnail.data)
             if (song.songs[0].thumbnail.data) {
               let buffer = Buffer.from(song.songs[0].thumbnail.data);
               let blob = new Blob([buffer], {
@@ -95,9 +87,10 @@ const store = new Vuex.Store({
               song.url = url;
             }
           });
-          commit('LOAD_ALL_SONGS', docs);
-        }
-      })
+          commit('LOAD_ALL_SONGS', docs)
+        })
+        .catch(console.log)
+        .finally(x => {});
     },
 
     async playPause({

@@ -4,7 +4,7 @@ import {
   app,
   protocol,
   BrowserWindow,
-  WebContents
+  ipcMain
 } from 'electron';
 
 import {
@@ -19,29 +19,6 @@ import installExtension, {
 
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const drivelist = require('drivelist');
-const electron = require('electron');
-const mm = require('music-metadata');
-const util = require('util');
-const NodeID3 = require('node-id3');
-const NodeID3Promise = require('node-id3').Promise;
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
-const chalk = require('chalk');
-const sharp = require('sharp');
-const {
-  ipcMain,
-  webContents
-} = require('electron');
-const ipc = electron.ipcMain;
-const DataStore = require('nedb');
-const {
-  Worker
-} = require('worker_threads');
-const {
-  logStuff
-} = require('./utils/test');
-
 
 // handlers
 import './app';
@@ -73,7 +50,7 @@ async function createWindow() {
     // Load the url of the dev server if in development mode
     await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
     if (!process.env.IS_TEST) {
-      win.webContents.openDevTools();
+      // win.webContents.openDevTools();
     }
   } else {
     createProtocol('app')
@@ -135,7 +112,6 @@ app.on('ready', async () => {
   })
 
   createWindow();
-  // new Worker('./worker.js');
 })
 
 // Exit cleanly on request from parent process in development mode.

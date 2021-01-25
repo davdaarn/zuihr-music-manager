@@ -185,8 +185,7 @@ const processSongs = () => {
 function runService(workerData) {
   win = mainAppWindow.getInstance();
   return new Promise((resolve, reject) => {
-    const p = path.join(__dirname, '../../worker.js');
-    const worker = new Worker('./src/main/worker.js', {
+    const worker = new Worker('./src/main/workers/discoveryWorker.js', {
       workerData
     });
 
@@ -217,4 +216,18 @@ ipcMain.handle('findSongs', async (event, args) => {
   }).catch(err => {
     console.log(err)
   });
+})
+
+ipcMain.handle('loadAllSongs', async (even, args) => {
+  let res = 'poo';
+  res = await new Promise((resolve, reject) => {
+    db.songs.find({}, (err, docs) => {
+      if (err) {
+        return reject(err);
+      } else {
+        return resolve(docs);
+      }
+    });
+  })
+  return res;
 })

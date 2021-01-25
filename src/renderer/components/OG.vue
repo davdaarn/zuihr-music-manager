@@ -4,10 +4,10 @@
       <div class="h-full overflow-auto">
         <div class="h-24"></div>
         <!-- put router here... -->
-        <v-btn outlined v-on:click="playTest">Play</v-btn>
-        <v-btn outlined v-on:click="stopTest">Stop</v-btn>
-        <v-btn outlined v-on:click="directoryUp">Back</v-btn>
-        <v-btn outlined v-on:click="logDir">Directory</v-btn>
+        <button outlined v-on:click="playTest">Play</button>
+        <button outlined v-on:click="stopTest">Stop</button>
+        <button outlined v-on:click="directoryUp">Back</button>
+        <button outlined v-on:click="logDir">Directory</button>
         <div
           class="w-1/3 h-1/3"
           @dragenter.prevent
@@ -24,42 +24,27 @@
             New songs added: {{ songsAdded }}, Songs already in library:
             {{ existingSongs }}
           </p>
-          <v-progress-linear
-            v-model="progress"
-            striped
-            stream
-            color="green"
-            height="25"
-          >
-            <strong>{{ Math.ceil(progress) }}%</strong>
-          </v-progress-linear>
         </div>
-        <!-- <v-btn outlined v-on:click="testWalk">Test Walk</v-btn> -->
-        <v-btn outlined v-on:click="$store.dispatch('findSongs')"
-          >Test Worker</v-btn
-        >
-        <v-btn outlined v-on:click="test3">Test 3</v-btn>
+        <!-- <button outlined v-on:click="testWalk">Test Walk</button> -->
+        <button outlined v-on:click="$store.dispatch('findSongs')">
+          Test Worker
+        </button>
+        <button outlined v-on:click="test3">Test 3</button>
         <img v-if="dataURL" :src="dataURL" alt="Item Artwork" />
         <img v-if="dataURL" :src="dataURL" alt="Item Artwork" />
         <img v-if="dataURL" :src="dataURL" alt="Item Artwork" />
         <div>
           <span>Directory: </span>
           <span v-if="currentDir.length > 0" @click="toRoot">
-            <v-chip>Home</v-chip>
+            <span>Home</span>
           </span>
           <span v-for="(d, i) in currentDir" :key="d" v-on:click="getPath(i)">
             <span>
-              <v-icon>mdi-chevron-right</v-icon>
+              <span class="mdi mdi-chevron-right"></span>
             </span>
-            <v-chip>{{ d }}</v-chip>
+            <span>{{ d }}</span>
           </span>
         </div>
-        <v-progress-linear
-          :active="isSearching"
-          :indeterminate="isSearching"
-          top
-          color="deep-purple accent-4"
-        ></v-progress-linear>
         <div
           v-for="(d, i) in directoryItems"
           :key="i"
@@ -69,7 +54,7 @@
           v-bind:id="d.path"
           v-on:dragstart="updateTarget"
         >
-          <v-icon>{{ d.icon }}</v-icon>
+          <div class="mdi" :class="d.icon"></div>
           {{ d.path }}
         </div>
       </div>

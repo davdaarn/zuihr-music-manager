@@ -12,16 +12,17 @@ module.exports = {
       // },
       mainProcessFile: 'src/main/index.js',
       rendererProcessFile: 'src/renderer/main.js',
+      mainProcessWatch: ['src/main/app/*', 'src/main/shared/*', 'src/main/utils/*'],
       builderOptions: {
         // options placed here will be merged with default configuration and passed to electron-builder
         files: [
-          "**/*"
+          "**/*",
         ],
-        extraFiles: [{
-          "from": "src/main/*",
-          "to": "src/main/*",
-          "filter": ["**/*"]
-        }]
+        // extraFiles: [{
+        //   "from": "src/*",
+        //   "to": "src",
+        //   "filter": ["**/*"]
+        // }]
       }
     }
   }
