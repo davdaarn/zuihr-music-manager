@@ -65,7 +65,7 @@ const processSongs = () => {
 
         if (cover) {
           newImage = await (await sharp(cover.data).resize(64, 64, {}).jpeg().toBuffer()).toString('base64');
-          largeImage = await (await sharp(cover.data).resize(64, 64, {}).jpeg().toBuffer()).toString('base64');
+          largeImage = await (await sharp(cover.data).resize(256, 256, {}).jpeg().toBuffer()).toString('base64');
 
           // console.log(newImage)
           // console.log(newImage.buffer)
@@ -110,7 +110,7 @@ const processSongs = () => {
         const trackNumber = common.track ? common.track : '';
         const year = common.year ? common.year : '';
 
-        const cover = largeImage ? largeImage : null;
+        const coverArt = largeImage ? largeImage : null;
         const thumbnail = {
           format: cover ? cover.format : null,
           data: newImage ? newImage : null
@@ -123,6 +123,7 @@ const processSongs = () => {
           id: uid,
           album,
           artist,
+          coverArt,
           diskNumber,
           genre,
           path,
@@ -148,12 +149,12 @@ const processSongs = () => {
             if (!exists) {
               // update doc
               db.songs.update({
-                  _id: uid
-                }, {
-                  $push: {
-                    songs: song
-                  }
-                },
+                _id: uid
+              }, {
+                $push: {
+                  songs: song
+                }
+              },
                 (err, numEffected, param3, param4) => {
                   if (err) {
                     console.error('db error updating song', err);
