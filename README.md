@@ -45,8 +45,11 @@ npm run electron:rebuild:win
   - [x] mp3
 - [ ] Smooth launch experience
 - [ ] Non-blocking UI experience for all tasks
+- [ ] Setup github build tasks
+- [ ] Website to download builds
 - [ ] Experimental / Research
   - [ ] Strip / replace all metadata for cloud saved songs...
+  - [ ] Auto update
   
 
 ### Possible features for a paid subscription 
@@ -58,3 +61,4 @@ These features could require hosting costs, legal advisement, etc...
 - [ ] Syncing between devices
 - [ ] Songs and playlists saved to the cloud
 - [ ] Streaming
+- [ ] One day create a better spotify 😏
