@@ -76,17 +76,17 @@ const store = new Vuex.Store({
       ipcRenderer
         .invoke('loadAllSongs')
         .then(docs => {
-          docs.forEach(song => {
-            if (song.songs[0].thumbnail.data) {
-              let buffer = Buffer.from(song.songs[0].thumbnail.data);
-              let blob = new Blob([buffer], {
-                type: song.songs[0].thumbnail.format
-              });
-              let urlCreator = window.URL || window.webkitURL;
-              let url = urlCreator.createObjectURL(blob);
-              song.url = url;
-            }
-          });
+          // docs.forEach(song => {
+          //   if (song.songs[0].thumbnail.data) {
+          //     let buffer = Buffer.from(song.songs[0].thumbnail.data);
+          //     let blob = new Blob([buffer], {
+          //       type: song.songs[0].thumbnail.format
+          //     });
+          //     let urlCreator = window.URL || window.webkitURL;
+          //     let url = urlCreator.createObjectURL(blob);
+          //     song.url = url;
+          //   }
+          // });
           commit('LOAD_ALL_SONGS', docs)
         })
         .catch(console.log)

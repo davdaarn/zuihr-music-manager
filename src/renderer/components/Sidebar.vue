@@ -3,16 +3,16 @@
     <div class="h-20 p-4 text-theme-text-active">Fancy Logo</div>
 
     <div class="h-40 flex flex-col justify-around">
-      <router-link to="/home">
+      <router-link to="/">
         <div class="pl-6 pt-2 cursor-pointer">
           <span class="mdi mdi-home text-theme-text-active"></span>
           <span class="text-theme-text-active">Home</span>
         </div>
       </router-link>
-      <router-link to="/">
+      <router-link to="/test">
         <div class="pl-6 pt-2 cursor-pointer">
           <span class="mdi mdi-text-search text-theme-text-active"></span>
-          <span class="text-theme-text-active">Search</span>
+          <span class="text-theme-text-active">Test</span>
         </div>
       </router-link>
       <router-link to="/library">

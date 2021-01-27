@@ -12,7 +12,7 @@ module.exports = {
       // },
       mainProcessFile: 'src/main/index.js',
       rendererProcessFile: 'src/renderer/main.js',
-      mainProcessWatch: ['src/main/app/*', 'src/main/shared/*', 'src/main/utils/*'],
+      mainProcessWatch: ['src/main/app/*', 'src/main/shared/*', 'src/main/utils/*', 'src/main/app/handlers/*'],
       builderOptions: {
         // options placed here will be merged with default configuration and passed to electron-builder
         files: [

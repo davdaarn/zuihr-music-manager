@@ -14,6 +14,8 @@ const chalk = require('chalk');
 const mm = require('music-metadata');
 const sharp = require('sharp');
 
+const buffer = require('buffer');
+
 import {
   datastore
 } from '../../shared/datastore'
@@ -34,6 +36,7 @@ let watcher = setInterval(() => {
   // console.log('watcher');
   if (songsToProcess.length > 0 && !processingSongs) {
     processingSongs = true;
+    console.log(chalk.redBright('starting'), Date());
     processSongs();
   }
 }, 1000);
@@ -53,33 +56,45 @@ const processSongs = () => {
           format
         } = metadata;
 
+        // const cover = false;
         const cover = await mm.selectCover(common.picture);
         // console.log(cover);
 
         let newImage = null;
+        let largeImage = null;
 
         if (cover) {
-          newImage = await (await sharp(cover.data).resize(16, 16, {}).toBuffer());
-          newImage = [...newImage];
+          newImage = await (await sharp(cover.data).resize(64, 64, {}).jpeg().toBuffer()).toString('base64');
+          largeImage = await (await sharp(cover.data).resize(64, 64, {}).jpeg().toBuffer()).toString('base64');
+
+          // console.log(newImage)
+          // console.log(newImage.buffer)
+
+          // console.log('here!!!!!!!!!!!!!!!!')
+          // console.log(newImage.buffer.toString('base64'));
+
+          // newImage = [...newImage];
           // console.log(newImage);
-        } else {
-          newImage = await sharp({
-              create: {
-                width: 16,
-                height: 16,
-                channels: 4,
-                background: {
-                  r: 0,
-                  g: 0,
-                  b: 0,
-                  alpha: 0.5
-                }
-              }
-            })
-            .png()
-            .toBuffer();
-          newImage = [...newImage];
+
+          // newImage = newImage.toString('base64');
+          // console.log(newImage);
         }
+        // else {
+        //   newImage = await sharp({
+        //       create: {
+        //         width: 16,
+        //         height: 16,
+        //         channels: 3,
+        //         background: {
+        //           r: 0,
+        //           g: 0,
+        //           b: 0,
+        //         }
+        //       }
+        //     })
+        //     .jpeg().toBuffer()
+        //   newImage = [...newImage];
+        // }
 
         const album = common.album ? common.album : '';
         const artist = common.artist ? common.artist : '';
@@ -95,6 +110,7 @@ const processSongs = () => {
         const trackNumber = common.track ? common.track : '';
         const year = common.year ? common.year : '';
 
+        const cover = largeImage ? largeImage : null;
         const thumbnail = {
           format: cover ? cover.format : null,
           data: newImage ? newImage : null
@@ -124,7 +140,7 @@ const processSongs = () => {
           _id: uid
         }, (err, docs) => {
           if (err) {
-            console.warn(err.message);
+            console.warn(err);
           } else if (docs.length > 1) {
             console.error("Entities should have unique id's"); // This should never happen
           } else if (docs.length === 1) {
@@ -140,19 +156,22 @@ const processSongs = () => {
                 },
                 (err, numEffected, param3, param4) => {
                   if (err) {
-                    console.error(err);
+                    console.error('db error updating song', err);
                   } else if (numEffected === 0 || numEffected > 1) {
                     console.error('Error updating document'); // Something went wrong
                   } else {
                     // this.existingSongs++;
                     win.webContents.send('ham', `------- ${songsToProcess.length}`);
+                    processSongs();
                   }
                 }
               );
             } else {
               console.warn('song already in library');
               win.webContents.send('ham', `0000000 ${songsToProcess.length}`);
+              processSongs();
             }
+            // processSongs();
           } else {
             // insert new doc
             const songContainer = {
@@ -161,23 +180,22 @@ const processSongs = () => {
             };
             db.songs.insert(songContainer, (err, newDoc) => {
               if (err) {
-                console.error(err);
+                console.error('this should not be happening', err);
               } else {
                 // this.songsAdded++;
                 win.webContents.send('ham', `+++++++ ${songsToProcess.length}`);
+                processSongs();
               }
             });
           }
         });
-
-        processSongs();
       } catch (err) {
         console.error(err.message);
         processingSongs = false;
       }
     })();
   } else {
-    console.log('exiting', Date());
+    console.log(chalk.redBright('exiting'), Date());
     processingSongs = false;
   }
 }

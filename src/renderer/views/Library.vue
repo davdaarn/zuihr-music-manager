@@ -9,10 +9,16 @@
         <div class="img-blur w-full h-full"></div>
       </div>
       <div class="absolute inset-y-1/4 inset-x-10 flex">
-        <div
+        <!-- <div
           class="w-40 h-40 bg-cover shadow-2xl rounded-lg"
           :style="{ backgroundImage: `url(${placeHolderImage})` }"
-        ></div>
+        ></div> -->
+        <!-- {{ log(songs[focusedSong]) }} -->
+        <img
+          v-if="songs && focusedSong"
+          class="w-40 h-40 bg-cover shadow-2xl rounded-lg"
+          :src="`data:image/jpg;base64, ${songs[focusedSong].songs[0].thumbnail.data}`"
+        />
         <div class="flex flex-col glex-grow pl-6">
           <div class="flex-grow"></div>
           <div class="text-gray-300 text-7xl">
@@ -86,6 +92,7 @@
         <div>1-100 of 13492</div>
         <div class="mdi mdi-chevron-left text-xl"></div>
         <div class="mdi mdi-chevron-right text-xl"></div>
+        <div class="mdi mdi-refresh text-xl"></div>
       </div>
     </div>
     <!--  -->
@@ -110,25 +117,27 @@
             :class="[focusedSong === index ? 'bg-gray-600' : '']"
             @click="setFocusedSong(song, index)"
           >
-            <td>{{ index + 1 }}</td>
+            <td class="">{{ index + 1 }}</td>
             <td>
               <div class="flex items-center">
-                <div
+                <!-- {{ log(song) }} -->
+                <img
                   class="w-10 h-10 bg-cover shadow-2xl"
-                  :style="{
-                    backgroundImage: `url(${
-                      song.url ? song.url : placeHolderImage
-                    })`,
-                  }"
-                ></div>
+                  :src="`data:image/jpg;base64, ${song.songs[0].thumbnail.data}`"
+                />
 
                 <div class="pl-2">
                   <div>
                     {{ truncate(song.songs ? song.songs[0].title : "nope") }}
                   </div>
-                  <div style="text-sm">
-                    {{ truncate(song.songs ? song.songs[0].artist : "nope") }}
-                  </div>
+                  <router-link
+                    v-if="song.songs[0].artist"
+                    :to="`/artist/${song.songs[0].artist}`"
+                    class="text-sm"
+                  >
+                    {{ truncate(song.songs[0].artist) }}
+                  </router-link>
+                  <div v-else class="text-sm">...</div>
                 </div>
               </div>
             </td>

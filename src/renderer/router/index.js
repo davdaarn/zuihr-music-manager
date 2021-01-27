@@ -7,16 +7,18 @@ import Library from '../views/Library.vue';
 import Profile from '../views/Profile.vue';
 import Account from '../views/Account.vue';
 import Playlist from '../views/Playlist.vue';
+import Artist from '../views/Artist.vue';
+import Album from '../views/Album.vue';
 
 Vue.use(VueRouter)
 
 const routes = [{
-    path: '/',
-    name: 'Display',
+    path: '/test',
+    name: 'Test',
     component: OG
   },
   {
-    path: '/home',
+    path: '/',
     name: 'Home',
     component: Home
   },
@@ -29,6 +31,16 @@ const routes = [{
     path: '/playlist/:id',
     name: 'Playlist',
     component: Playlist
+  },
+  {
+    path: '/artist/:artist',
+    name: 'Artist',
+    component: Artist
+  },
+  {
+    path: '/album/:album',
+    name: 'Album',
+    component: Album
   },
   {
     path: '/about',
