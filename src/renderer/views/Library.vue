@@ -4,10 +4,21 @@
     <div class="w-full h-64 relative">
       <div
         class="w-full h-full bg-cover bg-fixed shadow-2xl"
-        :style="{ backgroundImage: `url(${placeHolderImage})` }"
+        :style="{
+          background:
+            'linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)',
+        }"
       >
         <div class="img-blur w-full h-full"></div>
       </div>
+      <!-- <div
+        class="w-full h-full bg-cover bg-fixed shadow-2xl"
+        :style="{ backgroundImage: `url(${placeHolderImage})` }"
+      >
+        <div class="img-blur w-full h-full"></div>
+      </div> -->
+
+      <!--  -->
       <div class="absolute inset-y-1/4 inset-x-10 flex">
         <!-- <div
           class="w-40 h-40 bg-cover shadow-2xl rounded-lg"

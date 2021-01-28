@@ -13,7 +13,8 @@ const os = require('os');
 const chalk = require('chalk');
 const mm = require('music-metadata');
 const sharp = require('sharp');
-
+const util = require('util');
+const Vibrant = require('node-vibrant');
 const buffer = require('buffer');
 
 import {
@@ -58,43 +59,18 @@ const processSongs = () => {
 
         // const cover = false;
         const cover = await mm.selectCover(common.picture);
-        // console.log(cover);
 
         let newImage = null;
         let largeImage = null;
 
         if (cover) {
           newImage = await (await sharp(cover.data).resize(64, 64, {}).jpeg().toBuffer()).toString('base64');
-          largeImage = await (await sharp(cover.data).resize(256, 256, {}).jpeg().toBuffer()).toString('base64');
+          let thing = await Vibrant.from(cover.data).getPalette();
 
-          // console.log(newImage)
-          // console.log(newImage.buffer)
+          console.log(thing);
 
-          // console.log('here!!!!!!!!!!!!!!!!')
-          // console.log(newImage.buffer.toString('base64'));
-
-          // newImage = [...newImage];
-          // console.log(newImage);
-
-          // newImage = newImage.toString('base64');
-          // console.log(newImage);
         }
-        // else {
-        //   newImage = await sharp({
-        //       create: {
-        //         width: 16,
-        //         height: 16,
-        //         channels: 3,
-        //         background: {
-        //           r: 0,
-        //           g: 0,
-        //           b: 0,
-        //         }
-        //       }
-        //     })
-        //     .jpeg().toBuffer()
-        //   newImage = [...newImage];
-        // }
+
 
         const album = common.album ? common.album : '';
         const artist = common.artist ? common.artist : '';
@@ -149,12 +125,12 @@ const processSongs = () => {
             if (!exists) {
               // update doc
               db.songs.update({
-                _id: uid
-              }, {
-                $push: {
-                  songs: song
-                }
-              },
+                  _id: uid
+                }, {
+                  $push: {
+                    songs: song
+                  }
+                },
                 (err, numEffected, param3, param4) => {
                   if (err) {
                     console.error('db error updating song', err);

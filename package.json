@@ -30,6 +30,7 @@
     "nedb-electron": "^1.0.0",
     "nedb-promise": "^2.0.1",
     "node-id3": "^0.2.2",
+    "node-vibrant": "^3.2.1-alpha.1",
     "sharp": "^0.27.0",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
