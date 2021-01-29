@@ -244,7 +244,7 @@ export default {
   },
   created() {
     if (this.$db) {
-      this.$store.dispatch('loadAllSongs', { db: this.$db });
+      this.$store.dispatch('loadLibrary', { db: this.$db });
     }
   }
 };

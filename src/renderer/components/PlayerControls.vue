@@ -49,8 +49,12 @@ export default {
   methods: {
     playPause() {
       this.$store.dispatch('playPause');
+    },
+    seeker() {
+      // if (this.)
     }
-  }
+  },
+  created() {}
 };
 </script>
 

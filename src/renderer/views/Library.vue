@@ -4,40 +4,34 @@
     <div class="w-full h-64 relative">
       <div
         class="w-full h-full bg-cover bg-fixed shadow-2xl"
-        :style="{
-          background:
-            'linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)',
-        }"
+        :style="{ background: getBackground() }"
+      ></div>
+      <!-- Image Highlight -->
+      <div
+        v-if="songs && songs.length > 0 && focusedSong !== null"
+        class="absolute inset-y-1/4 inset-x-10 flex"
       >
-        <div class="img-blur w-full h-full"></div>
-      </div>
-      <!-- <div
-        class="w-full h-full bg-cover bg-fixed shadow-2xl"
-        :style="{ backgroundImage: `url(${placeHolderImage})` }"
-      >
-        <div class="img-blur w-full h-full"></div>
-      </div> -->
-
-      <!--  -->
-      <div class="absolute inset-y-1/4 inset-x-10 flex">
-        <!-- <div
-          class="w-40 h-40 bg-cover shadow-2xl rounded-lg"
-          :style="{ backgroundImage: `url(${placeHolderImage})` }"
-        ></div> -->
-        <!-- {{ log(songs[focusedSong]) }} -->
-        <img
-          v-if="songs && focusedSong"
-          class="w-40 h-40 bg-cover shadow-2xl rounded-lg"
-          :src="`data:image/jpg;base64, ${songs[focusedSong].songs[0].thumbnail.data}`"
-        />
+        <div class="relative">
+          <img
+            class="w-40 h-40 bg-cover shadow-2xl rounded-lg"
+            :src="`data:image/jpg;base64, ${songs[focusedSong].songs[0].albumArt.image256}`"
+          />
+          <div
+            class="absolute mdi mdi-play-circle text-theme-text-active hover:text-green-500 text-5xl top-32 right-6 shadow-2xl rounded-full"
+            @click="playThis"
+          ></div>
+        </div>
         <div class="flex flex-col glex-grow pl-6">
           <div class="flex-grow"></div>
           <div class="text-gray-300 text-7xl">
-            Playlist ID:{{ $route.params.id }}
+            {{ songs[focusedSong].songs[0].title }}
           </div>
-          <div class="text-gray-300 p-2">some text skd</div>
+          <div class="text-gray-300 text-xl pt-4 pl-2">
+            {{ songs[focusedSong].songs[0].artist }}
+          </div>
         </div>
       </div>
+      <!--  -->
     </div>
 
     <div class="px-4 py-4">
@@ -134,7 +128,7 @@
                 <!-- {{ log(song) }} -->
                 <img
                   class="w-10 h-10 bg-cover shadow-2xl"
-                  :src="`data:image/jpg;base64, ${song.songs[0].thumbnail.data}`"
+                  :src="`data:image/jpg;base64, ${song.songs[0].albumArt.image64}`"
                 />
 
                 <div class="pl-2">
@@ -211,6 +205,7 @@
 </template>
 
 <script>
+// todo anything in the template referencing .songs[0] call method instead
 import placeHolderImage from '../assets/lava.jpeg';
 import { mapState } from 'vuex';
 export default {
@@ -224,14 +219,15 @@ export default {
       showRowsPerPage: false,
       currentPage: 1,
       songsPerPage: 50, // Todo: $db.settings.songsPerPage
-      focusedSong: null,
+      focusedSong: 0,
       songs: [],
-      filteredSongs: []
+      filteredSongs: [],
+      showPlayPauseButton: null
     };
   },
   computed: {},
   watch: {
-    '$store.state.allSongs'(state) {
+    '$store.state.library'(state) {
       console.log('watching state...');
       this.songs = state;
       this.filteredSongs = state.slice(0, this.songsPerPage);
@@ -241,13 +237,32 @@ export default {
     log(d) {
       console.log(d);
     },
+    playThis() {
+      this.$store.dispatch('playThis', this.songs[this.focusedSong]);
+    },
+
+    getBackground() {
+      console.log(this.focusedSong);
+      console.log(this.songs[this.focusedSong]);
+
+      if (
+        this.focusedSong !== null &&
+        this.songs[this.focusedSong] &&
+        this.songs[this.focusedSong].songs[0].colorPalette
+      ) {
+        let p = this.songs[this.focusedSong].songs[0].colorPalette;
+        return `linear-gradient(45deg, ${p.Vibrant.hex}, ${p.Vibrant.hex}, ${p.LightVibrant.hex})`;
+      }
+
+      return 'linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)';
+    },
     renderImage(song) {
       // console.log('cheese');
-      // console.log(song.songs[0].thumbnail.data);
-      if (song.songs[0].thumbnail.data) {
-        let buffer = Buffer.from(song.songs[0].thumbnail.data);
+      // console.log(song.songs[0].albumArt.image64);
+      if (song.songs[0].albumArt.image64) {
+        let buffer = Buffer.from(song.songs[0].albumArt.image64);
         let blob = new Blob([buffer], {
-          type: song.songs[0].thumbnail.format
+          type: song.songs[0].albumArt.format
         });
         let urlCreator = window.URL || window.webkitURL;
         let url = urlCreator.createObjectURL(blob);
@@ -258,7 +273,7 @@ export default {
     },
     setFocusedSong(song, index) {
       this.focusedSong = index;
-      this.$store.dispatch('setSongToPlay', { song });
+      this.$store.dispatch('setSongInFocus', { song });
     },
     songToShow() {
       return this.$store.state.allSongs;
@@ -294,7 +309,7 @@ export default {
   },
   created() {
     if (this.$db) {
-      this.$store.dispatch('loadAllSongs', { db: this.$db });
+      this.$store.dispatch('loadLibrary', { db: this.$db });
     }
   }
 };

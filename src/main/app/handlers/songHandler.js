@@ -47,6 +47,7 @@ const processSongs = () => {
 
     const p = songsToProcess.pop();
 
+    // todo song creation should not be aborted if album art is bad
     (async () => {
       try {
         const metadata = await mm.parseFile(p, {
@@ -60,14 +61,26 @@ const processSongs = () => {
         // const cover = false;
         const cover = await mm.selectCover(common.picture);
 
-        let newImage = null;
-        let largeImage = null;
+        let image64 = null;
+        let image256 = null;
+        let colorPalette = null;
 
         if (cover) {
-          newImage = await (await sharp(cover.data).resize(64, 64, {}).jpeg().toBuffer()).toString('base64');
-          let thing = await Vibrant.from(cover.data).getPalette();
+          image64 = await (await sharp(cover.data).resize(64, 64, {}).jpeg().toBuffer()).toString('base64');
+          image256 = await (await sharp(cover.data).resize(256, 256, {}).jpeg().toBuffer()).toString('base64');
 
-          console.log(thing);
+          await Vibrant.from(cover.data).getPalette().then(palette => {
+            console.log(palette);
+            const tempPalette = {};
+            Object.keys(palette).forEach(key => {
+              tempPalette[key] = {
+                hex: palette[key].hex,
+                rgb: palette[key].rgb,
+              }
+            });
+            // console.log(tempPalette);
+            colorPalette = tempPalette;
+          });
 
         }
 
@@ -85,11 +98,10 @@ const processSongs = () => {
         const title = common.title ? common.title : '';
         const trackNumber = common.track ? common.track : '';
         const year = common.year ? common.year : '';
-
-        const coverArt = largeImage ? largeImage : null;
-        const thumbnail = {
+        const albumArt = {
           format: cover ? cover.format : null,
-          data: newImage ? newImage : null
+          image64: image64 ? image64 : null,
+          image256: image256 ? image256 : null,
         }
 
         // Todo: better id generation
@@ -98,15 +110,15 @@ const processSongs = () => {
         const song = {
           id: uid,
           album,
+          albumArt,
           artist,
-          coverArt,
+          colorPalette,
           diskNumber,
           genre,
           path,
           length,
           rating,
           tags,
-          thumbnail,
           title,
           trackNumber,
           year
@@ -205,7 +217,7 @@ function runService(workerData) {
   })
 }
 
-ipcMain.handle('findSongs', async (event, args) => {
+ipcMain.handle('FIND_SONGS', async (event, args) => {
   runService(args).then(x => {
     console.log(x);
   }).catch(err => {
@@ -213,7 +225,7 @@ ipcMain.handle('findSongs', async (event, args) => {
   });
 })
 
-ipcMain.handle('loadAllSongs', async (even, args) => {
+ipcMain.handle('LOAD_LIBRARY', async (even, args) => {
   let res = 'poo';
   res = await new Promise((resolve, reject) => {
     db.songs.find({}, (err, docs) => {
