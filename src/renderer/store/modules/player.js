@@ -22,7 +22,11 @@ const state = {
   processingSongs: false,
 };
 
-const getters = {};
+const getters = {
+  songOnDeck: state => {
+    return state.onDeck.song;
+  },
+};
 
 const mutations = {
   SET_ON_DECK(state, value) {

@@ -1,5 +1,5 @@
 <template>
-  <div class="h-24">
+  <div class="h-24 bg-gray-900">
     <div class="flex h-full justify-around">
       <!-- song peak -->
       <div class="flex-initial self-center flex flex-col"></div>
@@ -25,11 +25,11 @@
           ></span>
         </div>
         <div class="flex pt-3">
-          <div class="text-theme-text-muted">0:00</div>
+          <div class="text-theme-text-muted">{{ time }}</div>
           <div class="pl-3 pr-3">
-            <input type="range" />
+            <input type="range" min="0" :max="max" :value="track" />
           </div>
-          <div class="text-theme-text-muted">4:18</div>
+          <div class="text-theme-text-muted">{{ duration }}</div>
         </div>
       </div>
       <!-- volume -->
@@ -39,22 +39,57 @@
 </template>
 
 <script>
+import Howl from '../libs/howler';
+
 export default {
   name: 'PlayerControls',
   data() {
     return {
-      testClass: true
+      testClass: true,
+      time: '0:00',
+      duration: '0:00',
+      track: 0,
+      max: 0
     };
+  },
+  watch: {
+    '$store.state': function(o, n) {
+      console.log('state changed');
+      console.log(o, n);
+    }
   },
   methods: {
     playPause() {
       this.$store.dispatch('player/playPause');
     },
+    formatTime: function(secs) {
+      var minutes = Math.floor(secs / 60) || 0;
+      var seconds = secs - minutes * 60 || 0;
+
+      return minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+    },
     seeker() {
-      // if (this.)
+      if (this.$store.state.player.onDeck.howl) {
+        let h = this.$store.state.player.onDeck.howl;
+        let seconds = Math.round(h.seek());
+        this.time = this.formatTime(seconds);
+        this.duration = this.formatTime(Math.round(h.duration()));
+        this.track = Math.round(h.seek());
+        this.max = Math.round(h.duration());
+      } else {
+        this.time = '0:00';
+        this.duration = '0:00';
+        this.track = 0;
+      }
+
+      setTimeout(() => {
+        this.seeker();
+      }, 1000);
     }
   },
-  created() {}
+  created() {
+    this.seeker();
+  }
 };
 </script>
 
