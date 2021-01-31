@@ -26,7 +26,7 @@
           </p>
         </div>
         <!-- <button outlined v-on:click="testWalk">Test Walk</button> -->
-        <button outlined v-on:click="$store.dispatch('findSongs')">
+        <button outlined v-on:click="$store.dispatch('library/findSongs')">
           Test Worker
         </button>
         <button outlined v-on:click="test3">Test 3</button>
@@ -146,7 +146,7 @@ export default {
         paths.push(file.path);
       });
 
-      this.$store.dispatch('findSongs', paths).then(x => {
+      this.$store.dispatch('library/findSongs', paths).then(x => {
         console.log(x);
       });
     },

@@ -209,7 +209,7 @@ export default {
   methods: {
     setFocusedSong(song, index) {
       this.focusedSong = index;
-      this.$store.dispatch('setSongToPlay', { song });
+      this.$store.dispatch('player/setSongToPlay', { song });
     },
     songToShow() {
       return this.$store.state.allSongs;
@@ -244,7 +244,7 @@ export default {
   },
   created() {
     if (this.$db) {
-      this.$store.dispatch('loadLibrary', { db: this.$db });
+      this.$store.dispatch('library/loadLibrary', { db: this.$db });
     }
   }
 };

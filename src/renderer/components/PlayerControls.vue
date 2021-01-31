@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     playPause() {
-      this.$store.dispatch('playPause');
+      this.$store.dispatch('player/playPause');
     },
     seeker() {
       // if (this.)

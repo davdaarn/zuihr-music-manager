@@ -227,7 +227,7 @@ export default {
   },
   computed: {},
   watch: {
-    '$store.state.library'(state) {
+    '$store.state.library.library'(state) {
       console.log('watching state...');
       this.songs = state;
       this.filteredSongs = state.slice(0, this.songsPerPage);
@@ -238,7 +238,7 @@ export default {
       console.log(d);
     },
     playThis() {
-      this.$store.dispatch('playThis', this.songs[this.focusedSong]);
+      this.$store.dispatch('player/playThis', this.songs[this.focusedSong]);
     },
 
     getBackground() {
@@ -273,7 +273,7 @@ export default {
     },
     setFocusedSong(song, index) {
       this.focusedSong = index;
-      this.$store.dispatch('setSongInFocus', { song });
+      this.$store.dispatch('app/setSongInFocus', { song });
     },
     songToShow() {
       return this.$store.state.allSongs;
@@ -309,7 +309,7 @@ export default {
   },
   created() {
     if (this.$db) {
-      this.$store.dispatch('loadLibrary', { db: this.$db });
+      this.$store.dispatch('library/loadLibrary', { db: this.$db });
     }
   }
 };
