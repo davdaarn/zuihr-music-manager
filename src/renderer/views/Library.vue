@@ -242,8 +242,8 @@ export default {
     },
 
     getBackground() {
-      console.log(this.focusedSong);
-      console.log(this.songs[this.focusedSong]);
+      // console.log(this.focusedSong);
+      // console.log(this.songs[this.focusedSong]);
 
       if (
         this.focusedSong !== null &&
@@ -266,7 +266,7 @@ export default {
         });
         let urlCreator = window.URL || window.webkitURL;
         let url = urlCreator.createObjectURL(blob);
-        console.log(url);
+        // console.log(url);
         return url;
       }
       return this.placeHolderImage;
@@ -298,7 +298,7 @@ export default {
       } else {
         this.songToShowOptions = index;
       }
-      console.log(song, index);
+      // console.log(song, index);
     },
     mouseup(e) {
       console.log(e);
@@ -308,9 +308,8 @@ export default {
     }
   },
   created() {
-    if (this.$db) {
-      this.$store.dispatch('library/loadLibrary', { db: this.$db });
-    }
+    this.songs = this.$store.state.library.library;
+    this.filteredSongs = this.songs.slice(0, this.songsPerPage);
   }
 };
 </script>

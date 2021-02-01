@@ -10,7 +10,11 @@ const state = {
   songPaths: [],
 };
 
-const getters = {};
+const getters = {
+  library: state => {
+    return state.library;
+  },
+};
 
 const actions = {
   async findSongs(context, baseDir) {

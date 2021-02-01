@@ -1,14 +1,15 @@
 <template>
-  <div class="h-24 bg-gray-900">
+  <div class="h-24 bg-gray-900 flex flex-col">
+    <!-- <div class="h-1 bg-gray-700"></div> -->
     <div class="flex h-full justify-around">
       <!-- song peak -->
       <div class="flex-initial self-center flex flex-col"></div>
       <!-- controls -->
-      <div class="flex-initial self-center flex flex-col">
+      <div class="flex-initial self-center flex flex-col pt-2">
         <div class="flex justify-between w-64 self-center items-center">
           <span
             class="mdi mdi-shuffle-variant text-theme-text-muted hover:text-theme-text-active text-xl"
-            v-bind:class="{ 'hover:text-red-700': testClass }"
+            :class="{ 'hover:text-red-700': testClass }"
           ></span>
           <span
             class="mdi mdi-skip-previous-outline text-theme-text-muted hover:text-theme-text-active text-2xl"
@@ -24,23 +25,22 @@
             class="mdi mdi-repeat text-theme-text-muted hover:text-theme-text-active text-xl"
           ></span>
         </div>
-        <div class="flex pt-3">
-          <div class="text-theme-text-muted">{{ time }}</div>
+        <div class="flex py-2">
+          <div class="text-theme-text-active">{{ time }}</div>
           <div class="pl-3 pr-3">
             <input type="range" min="0" :max="max" :value="track" />
           </div>
-          <div class="text-theme-text-muted">{{ duration }}</div>
+          <div class="text-theme-text-active">{{ duration }}</div>
         </div>
       </div>
       <!-- volume -->
       <div class="flex-initial self-center flex flex-col"></div>
     </div>
+    <div class="h-1" :class="railMode"></div>
   </div>
 </template>
 
 <script>
-import Howl from '../libs/howler';
-
 export default {
   name: 'PlayerControls',
   data() {
@@ -49,7 +49,9 @@ export default {
       time: '0:00',
       duration: '0:00',
       track: 0,
-      max: 0
+      max: 0,
+      deg: 0,
+      railMode: 'processing'
     };
   },
   watch: {
@@ -58,6 +60,7 @@ export default {
       console.log(o, n);
     }
   },
+  computed: {},
   methods: {
     playPause() {
       this.$store.dispatch('player/playPause');
@@ -94,6 +97,39 @@ export default {
 </script>
 
 <style lang="scss">
+.processing {
+  background: linear-gradient(
+    to right,
+    #15617c,
+    #15617c,
+    #15617c,
+    #15617c,
+    #15617c,
+    #2fac67,
+    #15617c,
+    #15617c,
+    #15617c,
+    #15617c,
+    #15617c
+  );
+  background-size: 200% 200%;
+  animation: Processing 5s ease infinite;
+}
+
+@keyframes Processing {
+  0% {
+    background-position: 120% 0%;
+  }
+  // 50% {
+  //   background-position: 100% 0%;
+  // }
+  100% {
+    background-position: -20% 0%;
+  }
+}
+
+///////////////////////////////
+
 input[type="range"] {
   -webkit-appearance: none;
   width: 400px;
@@ -114,11 +150,6 @@ input[type="range"]:hover {
   opacity: 1;
 }
 
-input[type="range"]:hover::-webkit-slider-thumb {
-  background: #53be57;
-  box-shadow: -403px 0 0 400px #53be57;
-}
-
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 10px;
@@ -127,6 +158,11 @@ input[type="range"]::-webkit-slider-thumb {
   cursor: pointer;
   border-radius: 50%;
   box-shadow: -403px 0 0 400px #d1d1d1;
+}
+
+input[type="range"]:hover::-webkit-slider-thumb {
+  background: #53be57;
+  box-shadow: -403px 0 0 400px #53be57;
 }
 
 input[type="range"]::-webkit-slider-runnable-track {

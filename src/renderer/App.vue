@@ -19,6 +19,11 @@ export default {
       // theme: 'dark' // 'dark' or null
       theme: 'theme-default-dark'
     };
+  },
+  created() {
+    // if (this.$db) {
+    this.$store.dispatch('library/loadLibrary');
+    // }
   }
 };
 </script>
