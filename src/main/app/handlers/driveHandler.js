@@ -10,8 +10,8 @@ ipcMain.handle('findAllMountedDrives', async (event, args) => {
   console.log(process.platform);
   if (process.platform === 'win32') {
 
-    const spawn = require("child_process").spawn;
-    const child = spawn("powershell.exe", [
+    const spawn = require('child_process').spawn;
+    const child = spawn('powershell.exe', [
       // `Write-Host "Drive information for $env:ComputerName"
       `Get-WmiObject -Class Win32_LogicalDisk |
         Where-Object {$_.DriveType -ne 5} |
@@ -25,7 +25,7 @@ ipcMain.handle('findAllMountedDrives', async (event, args) => {
 
     const win = mainAppWindow.getInstance();
 
-    child.stdout.on("data", function (data) {
+    child.stdout.on('data', function (data) {
       // todo: json error happens here
       if (data) {
         let dataArray = JSON.parse(data.toString());
@@ -34,11 +34,11 @@ ipcMain.handle('findAllMountedDrives', async (event, args) => {
 
       }
     });
-    child.stderr.on("data", function (data) {
+    child.stderr.on('data', function (data) {
       // console.log("Powershell Errors: " + data);
     });
-    child.on("exit", function () {
-      console.log("Powershell Script finished");
+    child.on('exit', function () {
+      console.log('Powershell Script finished');
     });
     child.stdin.end(); //end input
   }
