@@ -5,6 +5,10 @@ import store from './store';
 import '@mdi/font/css/materialdesignicons.css';
 import './assets/main.scss';
 import VueWorker from 'vue-worker';
+import VueVirtualScroller from 'vue-virtual-scroller';
+
+Vue.use(VueVirtualScroller);
+
 import {
   ipcRenderer
 } from 'electron';

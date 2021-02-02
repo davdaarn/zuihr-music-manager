@@ -39,167 +39,25 @@
       <div
         class="flex justify-end space-x-4 text-theme-text-active items-center"
       >
-        <div>Songs per page:</div>
-
-        <div
-          class="flex relative items-center cursor-pointer hover:bg-gray-700 translate hover:text-green-400"
-          class:bg-gray-600="showRowsPerPage"
-          @click="songsPerPageDropDown"
-        >
-          <div class="w-12 ml-1">{{ songsPerPage }}</div>
-          <div
-            class="mdi pl-2 text-2xl"
-            :class="showRowsPerPage ? 'mdi-menu-left' : 'mdi-menu-down'"
-          ></div>
-          <div
-            v-if="showRowsPerPage"
-            class="absolute h-auto w-14 bg-gray-900 rounded-sm shadow-2xl top-8 flex flex-col items-center hover:text-theme-text-active text-theme-text-active picker"
-          >
-            <div
-              class="p-2 hover:text-green-400 cursor-pointer"
-              @click="updateSongsPerPage(10)"
-            >
-              10
-            </div>
-            <div
-              class="p-2 hover:text-green-400 cursor-pointer"
-              @click="updateSongsPerPage(50)"
-            >
-              50
-            </div>
-            <div
-              class="p-2 hover:text-green-400 cursor-pointer"
-              @click="updateSongsPerPage(100)"
-            >
-              100
-            </div>
-            <div
-              class="p-2 hover:text-green-400 cursor-pointer"
-              @click="updateSongsPerPage(200)"
-            >
-              200
-            </div>
-            <div
-              class="p-2 hover:text-green-400 cursor-pointer"
-              @click="updateSongsPerPage(500)"
-            >
-              500
-            </div>
-            <div
-              class="p-2 hover:text-green-400 cursor-pointer"
-              @click="updateSongsPerPage(1000)"
-            >
-              1000
-            </div>
-          </div>
-        </div>
-
-        <div>1-100 of 13492</div>
-        <div class="mdi mdi-chevron-left text-xl"></div>
-        <div class="mdi mdi-chevron-right text-xl"></div>
         <div class="mdi mdi-refresh text-xl"></div>
       </div>
     </div>
     <!--  -->
-    <div class="px-4 overflow-y-auto">
-      {{ log("redraw 1") }}
-      <table class="w-full text-theme-text-active text-left h-full">
-        <thead class="">
-          <tr class="h-20 z-50">
-            <th class="bg-gray-800">#</th>
-            <th class="bg-gray-800">Title</th>
-            <th class="bg-gray-800">Album</th>
-            <th
-              class="mdi mdi-clock-time-eight-outline text-center bg-gray-800"
-            ></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="(song, index) in filteredSongs"
-            :key="index"
-            class="hover:bg-gray-700 items-center h-14"
-            :class="[focusedSong === index ? 'bg-gray-600' : '']"
-            @click="setFocusedSong(song, index)"
-          >
-            <td class="">{{ index + 1 }}</td>
-            <td>
-              <div class="flex items-center">
-                <!-- {{ log(song) }} -->
-                <img
-                  class="w-10 h-10 bg-cover shadow-2xl"
-                  :src="`data:image/jpg;base64, ${song.songs[0].albumArt.image64}`"
-                />
-
-                <div class="pl-2">
-                  <div>
-                    {{ truncate(song.songs ? song.songs[0].title : "nope") }}
-                  </div>
-                  <router-link
-                    v-if="song.songs[0].artist"
-                    :to="`/artist/${song.songs[0].artist}`"
-                    class="text-sm"
-                  >
-                    {{ truncate(song.songs[0].artist) }}
-                  </router-link>
-                  <div v-else class="text-sm">...</div>
-                </div>
-              </div>
-            </td>
-            <td>
-              {{ truncate(song.songs ? song.songs[0].album : "nope") }}
-            </td>
-            <!-- <td>Sometdin</td> -->
-            <td class="flex justify-around items-center h-10">
-              <div class="flex">
-                <div class="mdi mdi-heart-outline hover:text-red-500"></div>
-                <div class="pl-2 pr-2">
-                  <!-- Todo: make this accurate -->
-                  {{ Math.floor(song.songs[0].length / 60) }}:{{
-                    Math.round(song.songs[0].length) % 60
-                  }}
-                </div>
-                <div class="relative">
-                  <div
-                    class="mdi mdi-dots-horizontal hover:text-white select-auto"
-                    v-on:click="showOptions(song, index)"
-                  ></div>
-                  <div
-                    v-if="songToShowOptions === index"
-                    class="absolute h-auto w-48 bg-gray-900 rounded-sm shadow-2xl top-8 -left-24 z-50"
-                  >
-                    <div class="mdi mdi-heart-outline p-2 hover:text-red-500">
-                      Stuff
-                    </div>
-                    <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
-                      Stuff
-                    </div>
-                    <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
-                      Stuff
-                    </div>
-                    <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
-                      Stuff
-                    </div>
-                    <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
-                      Stuff
-                    </div>
-                    <hr />
-                    <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
-                      Other Stuff
-                    </div>
-                    <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
-                      Other Stuff
-                    </div>
-                    <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
-                      Other Stuff
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="px-4 overflow-hidden">
+      {{ log("redraw...") }}
+      {{ log(visibleItems.length) }}
+      <div class="overflow-y-scroll h-full" ref="root">
+        <div ref="viewport" :style="viewportStyle">
+          <div ref="spacer" :style="spacerStyle">
+            <SongRow
+              v-for="(song, index) in visibleItems"
+              :key="index"
+              :source="song"
+              :index="index"
+            ></SongRow>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -207,11 +65,46 @@
 <script>
 // todo anything in the template referencing .songs[0] call method instead
 import placeHolderImage from '../assets/lava.jpeg';
+import SongRow from '../components/SongRow';
 import { mapState } from 'vuex';
+
+const passiveSupportMixin = {
+  methods: {
+    // This snippet is taken straight from https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener
+    // It will only work on browser so if you are using in an SSR environment, keep your eyes open
+    doesBrowserSupportPassiveScroll() {
+      let passiveSupported = false;
+
+      try {
+        const options = {
+          get passive() {
+            // This function will be called when the browser
+            //   attempts to access the passive property.
+            passiveSupported = true;
+            return false;
+          }
+        };
+
+        window.addEventListener('test', null, options);
+        window.removeEventListener('test', null, options);
+      } catch (err) {
+        passiveSupported = false;
+      }
+      return passiveSupported;
+    }
+  }
+};
+
 export default {
   name: 'Library',
+  mixins: [passiveSupportMixin],
+  components: {
+    // 'virtual-list': VirtualListSongRowSongRow,
+    SongRow
+  },
   data() {
     return {
+      songComponent: SongRow,
       placeHolderImage: placeHolderImage,
       emptyArr: new Array(10).fill(-1),
       songToShowOptions: null,
@@ -222,20 +115,102 @@ export default {
       focusedSong: 0,
       songs: [],
       filteredSongs: [],
-      showPlayPauseButton: null
+      showPlayPauseButton: null,
+      totalContentHeight: null,
+      rowHeight: 55.99, // Todo: do better than this...
+      scrollTop: 0,
+      nodePadding: 20,
+      rootHeight: 400
     };
   },
-  computed: {},
+  computed: {
+    /**
+    Total height of the viewport = number of items in the array x height of each item
+    */
+    viewportHeight() {
+      return this.itemCount * this.rowHeight;
+    },
+    /**
+    Out of all the items in the massive array, we only render a subset of them
+    This is the starting index from which we show a few items
+    */
+    startIndex() {
+      let startNode =
+        Math.floor(this.scrollTop / this.rowHeight) - this.nodePadding;
+      startNode = Math.max(0, startNode);
+      return startNode;
+    },
+    /**
+    This is the number of items we show after the starting index
+    If the array has a total 10000 items, we want to show items from say index 1049 till 1069
+    visible node count is that number 20 and starting index is 1049
+    */
+    visibleNodeCount() {
+      let count =
+        Math.ceil(this.rootHeight / this.rowHeight) + 2 * this.nodePadding;
+      count = Math.min(this.itemCount - this.startIndex, count);
+      return count;
+    },
+    /**
+    Subset of items shown from the full array
+    */
+    visibleItems() {
+      return this.songs.slice(
+        this.startIndex,
+        this.startIndex + this.visibleNodeCount
+      );
+    },
+    itemCount() {
+      return this.songs.length;
+    },
+    /**
+    The amount by which we need to translateY the items shown on the screen so that the scrollbar shows up correctly
+    */
+    offsetY() {
+      return this.startIndex * this.rowHeight;
+    },
+    /**
+    This is the direct list container, we apply a translateY to this
+    */
+    spacerStyle() {
+      return {
+        transform: 'translateY(' + this.offsetY + 'px)'
+      };
+    },
+    viewportStyle() {
+      return {
+        overflow: 'hidden',
+        height: this.viewportHeight + 'px',
+        position: 'relative'
+      };
+    },
+    rootStyle() {
+      return {
+        height: this.rootHeight + 'px',
+        overflow: 'auto'
+      };
+    }
+  },
   watch: {
     '$store.state.library.library'(state) {
       console.log('watching state...');
       this.songs = state;
       this.filteredSongs = state.slice(0, this.songsPerPage);
+      console.log(this.songs);
+    },
+    songs: function(newsongs, oldsongs) {
+      console.log(newsongs.length, oldsongs.length);
+      this.totalContentHeight = newsongs.length * this.rowHeight;
+      console.log(this.totalContentHeight);
     }
   },
   methods: {
     log(d) {
       console.log(d);
+    },
+    handleScroll(event) {
+      console.log('scrolling');
+      this.scrollTop = this.$refs.root.scrollTop;
     },
     playThis() {
       this.$store.dispatch('player/playThis', this.songs[this.focusedSong]);
@@ -309,7 +284,26 @@ export default {
   },
   created() {
     this.songs = this.$store.state.library.library;
-    this.filteredSongs = this.songs.slice(0, this.songsPerPage);
+
+    // this.filteredSongs = this.songs.slice(0, this.songsPerPage);
+  },
+  mounted() {
+    this.$refs.root.addEventListener(
+      'scroll',
+      this.handleScroll,
+      this.doesBrowserSupportPassiveScroll() ? { passive: true } : false
+    );
+    this.rootHeight = this.$refs.root.clientHeight;
+    // console.log();
+
+    // const largestHeight = this.calculateInitialRowHeight();
+    // this.rowHeight =
+    //   typeof largestHeight !== 'undefined' && largestHeight !== null
+    //     ? largestHeight
+    //     : 30;
+  },
+  destroyed() {
+    // this.$refs.root.removeEventListener('scroll', this.handleScroll);
   }
 };
 </script>
