@@ -2,11 +2,9 @@ import {
   Howl
 } from '../../libs/howler';
 
-const playerState = {
-  stopped: 0,
-  paused: 1,
-  playing: 2
-}
+import {
+  playerState
+} from '../../types';
 
 const state = {
   onDeck: {
@@ -46,24 +44,37 @@ const mutations = {
   },
 };
 const actions = {
+  async playPrevious(context) {},
+  async playNext(context) {
+    console.log('****************PLAY_NEXT*******************');
+  },
   async playThis(context, song) {
+    let deck = context.state.onDeck;
+    if (deck.howl && deck.song && deck.song._id === song._id) {
+      context.dispatch('playPause');
+    } else {
+      if (context.state.onDeck.howl) {
+        context.state.onDeck.howl.unload();
+      }
 
-    if (context.state.onDeck.howl) {
-      context.state.onDeck.howl.unload();
+      await context.commit('SET_ON_DECK', {
+        song: song,
+        howl: new Howl({
+          src: `safe-file-protocol://${song.songs[0].path}`,
+          volume: context.state.playerVolume,
+          // preload: true,
+          onend: function () {
+            context.commit('SET_PLAYER_STATE', playerState.stopped);
+            context.dispatch('playNext')
+          }
+        })
+      });
+
+      context.state.onDeck.howl.play();
+
+      context.commit('SET_PLAYER_STATE', playerState.playing);
+
     }
-
-    await context.commit('SET_ON_DECK', {
-      song: song,
-      howl: new Howl({
-        src: `safe-file-protocol://${song.songs[0].path}`,
-        volume: context.state.playerVolume,
-        // preload: true,
-      })
-    });
-
-    context.state.onDeck.howl.play();
-
-    context.commit('SET_PLAYER_STATE', playerState.playing);
   },
 
   async playPause(context) {

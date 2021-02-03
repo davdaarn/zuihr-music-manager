@@ -23,7 +23,7 @@
         </div>
         <div
           class="flex flex-col glex-grow pl-6"
-          style="text-shadow: #33333380 0 0 10px"
+          style="text-shadow: #33333399 0 0 10px"
         >
           <div class="flex-grow"></div>
           <div class="text-gray-300 text-7xl">
@@ -58,7 +58,20 @@
         <SongRow :source="item"></SongRow>
       </template>
     </v-virtual-scroll> -->
-    <div class="px-4 overflow-hidden">
+
+    <div class="text-gray-300 h-14 px-4">
+      <div class="flex flex-row justify-items-start p-2">
+        <div class="w-12 flex items-center mx-2 flex-none">#</div>
+        <div class="w-4/12">Song</div>
+        <div class="w-4/12 flex items-center">Album</div>
+        <div
+          class="flex justify-around items-center h-10 w-4/12 mdi mdi-clock-outline"
+        ></div>
+      </div>
+      <div class="h-1 z-50" :class="railMode"></div>
+    </div>
+
+    <div class="px-4 overflow-hidden mt-4">
       <div class="overflow-y-scroll h-full" ref="root">
         <div ref="viewport" :style="viewportStyle">
           <div ref="spacer" :style="spacerStyle">
@@ -80,7 +93,6 @@
 import placeHolderImage from '../assets/lava.jpeg';
 import SongRow from '../components/SongRow';
 import { mapState } from 'vuex';
-import { red } from 'chalk';
 
 const passiveSupportMixin = {
   methods: {
@@ -134,7 +146,8 @@ export default {
       rowHeight: 55.99, // Todo: get from dom element
       scrollTop: 0,
       nodePadding: 20,
-      rootHeight: 400
+      rootHeight: 400,
+      railMode: 'processing'
     };
   },
   computed: {
@@ -245,7 +258,7 @@ export default {
         this.songs[this.focusedSong].songs[0].colorPalette
       ) {
         let p = this.songs[this.focusedSong].songs[0].colorPalette;
-        return `linear-gradient(45deg, ${p.Vibrant.hex}, ${p.Vibrant.hex}, ${p.LightVibrant.hex})`;
+        return `linear-gradient(45deg, ${p.DarkMuted.hex}, ${p.DarkMuted.hex}, ${p.DarkMuted.hex})`;
       }
 
       return 'linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)';
@@ -326,10 +339,43 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .picker {
   z-index: 100;
 }
+
+.processing {
+  background: linear-gradient(
+    to right,
+    #15617c,
+    #15617c,
+    #15617c,
+    #15617c,
+    #15617c,
+    #2fac67,
+    #15617c,
+    #15617c,
+    #15617c,
+    #15617c,
+    #15617c
+  );
+  background-size: 200% 200%;
+  animation: Processing 5s ease infinite;
+}
+
+@keyframes Processing {
+  0% {
+    background-position: 120% 0%;
+  }
+  // 50% {
+  //   background-position: 100% 0%;
+  // }
+  100% {
+    background-position: -20% 0%;
+  }
+}
+
+///////////////////////////////
 
 input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;

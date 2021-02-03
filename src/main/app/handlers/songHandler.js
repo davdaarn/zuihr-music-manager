@@ -47,35 +47,30 @@ const processSongs = () => {
   if (songsToProcess.length > 0) {
 
     const p = songsToProcess.pop();
-    let tempPalette = {
+    let colorPalette = {
       Vibrant: {
-        _rgb: [212.49999999999997, 58.43750000000002, 42.50000000000002],
-        _population: 0
+        hex: '#232323',
+        rgb: [35, 35, 35],
       },
       DarkVibrant: {
-        _rgb: [40, 11, 8],
-        _population: 21,
-        _hsl: [0.015625, 0.6666666666666666, 0.09411764705882353]
+        hex: '#232323',
+        rgb: [35, 35, 35],
       },
       LightVibrant: {
-        _rgb: [195, 236, 251],
-        _population: 29,
-        _hsl: [0.5446428571428571, 0.875, 0.8745098039215686]
+        hex: '#383838',
+        rgb: [56, 56, 56],
       },
       Muted: {
-        _rgb: [106, 143, 122],
-        _population: 193,
-        _hsl: [0.40540540540540543, 0.14859437751004012, 0.4882352941176471]
+        hex: '#232323',
+        rgb: [35, 35, 35],
       },
       DarkMuted: {
-        _rgb: [54, 77, 60],
-        _population: 231,
-        _hsl: [0.3768115942028986, 0.17557251908396945, 0.2568627450980392]
+        hex: '#232323',
+        rgb: [35, 35, 35],
       },
       LightMuted: {
-        _rgb: [153, 209, 208],
-        _population: 200,
-        _hsl: [0.49702380952380953, 0.37837837837837834, 0.7098039215686274]
+        hex: '#383838',
+        rgb: [56, 56, 56],
       }
     };
 
@@ -95,15 +90,14 @@ const processSongs = () => {
 
         let image64 = null;
         let image256 = null;
-        let colorPalette = null;
 
         if (cover) {
           image64 = await (await sharp(cover.data).resize(64, 64, {}).jpeg().toBuffer()).toString('base64');
           image256 = await (await sharp(cover.data).resize(256, 256, {}).jpeg().toBuffer()).toString('base64');
 
-          await Vibrant.from(cover.data).getPalette().then(palette => {
+          await Vibrant.from(cover.data).maxColorCount(20).getPalette().then(palette => {
             // console.log(palette);
-            tempPalette = {}
+            let tempPalette = {}
             Object.keys(palette).forEach(key => {
               tempPalette[key] = {
                 hex: palette[key].hex,
@@ -249,6 +243,7 @@ const processSongs = () => {
       }
     })();
   } else {
+    // todo: set is dirty flag on state
     console.log(chalk.redBright('exiting'), Date());
     processingSongs = false;
   }

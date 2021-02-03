@@ -85,3 +85,9 @@ export class SongContainer {
     Object.assign(this, data);
   }
 }
+
+export const playerState = {
+  stopped: 0,
+  paused: 1,
+  playing: 2
+}

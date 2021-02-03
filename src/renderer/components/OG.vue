@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-full">
+  <div class="flex flex-col h-full text-gray-300">
     <div class="h-20 flex-grow pl-2">
       <div class="h-full overflow-auto">
         <div class="h-24"></div>
