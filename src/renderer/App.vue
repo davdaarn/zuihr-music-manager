@@ -1,7 +1,9 @@
 <template>
+  <!-- <v-app id="content-body" class="bg-gray-800 select-none" :class="theme"> -->
   <div id="content-body" class="bg-gray-800 select-none" :class="theme">
     <Content id="content" />
   </div>
+  <!-- </v-app> -->
 </template>
 
 <script>

@@ -1,17 +1,17 @@
 <template>
-  <div class="text-gray-400 hover:bg-gray-700 h-14 p-2">
+  <div class="text-gray-400 h-14 p-2 hover:bg-gray-700" @click="setFocusedSong">
     <div class="flex flex-row justify-items-start">
-      <!-- <div class="w-12 flex items-center ml-2">
+      <div class="w-12 flex items-center ml-2">
         <div class="align-middle">
           {{ index + 1 }}
         </div>
-      </div> -->
+      </div>
 
       <div class="w-4/12">
         <div class="flex items-center">
           <!-- {{ log(song) }} -->
           <img
-            class="w-10 h-10 bg-cover shadow-2xl"
+            class="w-10 h-10 bg-cover shadow-2xl rounded-md"
             :src="`data:image/jpg;base64, ${source.songs[0].albumArt.image64}`"
           />
 
@@ -86,6 +86,7 @@ export default {
   name: 'SongRow',
   props: {
     index: Number,
+    displayType: String,
     source: {
       type: Object,
       default() {
@@ -108,6 +109,13 @@ export default {
       } else {
         return text;
       }
+    },
+    setFocusedSong() {
+      console.log(this.index);
+      this.$store.dispatch('app/setSongInFocus', {
+        song: this.source,
+        index: this.index
+      });
     }
   }
 };

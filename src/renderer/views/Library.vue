@@ -21,10 +21,13 @@
             @click="playThis"
           ></div>
         </div>
-        <div class="flex flex-col glex-grow pl-6">
+        <div
+          class="flex flex-col glex-grow pl-6"
+          style="text-shadow: #33333380 0 0 10px"
+        >
           <div class="flex-grow"></div>
           <div class="text-gray-300 text-7xl">
-            {{ songs[focusedSong].songs[0].title }}
+            {{ truncate(songs[focusedSong].songs[0].title) }}
           </div>
           <div class="text-gray-300 text-xl pt-4 pl-2">
             {{ songs[focusedSong].songs[0].artist }}
@@ -43,9 +46,19 @@
       </div>
     </div>
     <!--  -->
+    <!-- <v-virtual-scroll
+      class="px-4 h-full"
+      ref="root"
+      :bench="0"
+      :items="songs"
+      :height="rootHeight"
+      :item-height="rowHeight"
+    >
+      <template v-slot:default="{ item }">
+        <SongRow :source="item"></SongRow>
+      </template>
+    </v-virtual-scroll> -->
     <div class="px-4 overflow-hidden">
-      {{ log("redraw...") }}
-      {{ log(visibleItems.length) }}
       <div class="overflow-y-scroll h-full" ref="root">
         <div ref="viewport" :style="viewportStyle">
           <div ref="spacer" :style="spacerStyle">
@@ -53,7 +66,7 @@
               v-for="(song, index) in visibleItems"
               :key="index"
               :source="song"
-              :index="index"
+              :index="startIndex + index"
             ></SongRow>
           </div>
         </div>
@@ -67,6 +80,7 @@
 import placeHolderImage from '../assets/lava.jpeg';
 import SongRow from '../components/SongRow';
 import { mapState } from 'vuex';
+import { red } from 'chalk';
 
 const passiveSupportMixin = {
   methods: {
@@ -117,7 +131,7 @@ export default {
       filteredSongs: [],
       showPlayPauseButton: null,
       totalContentHeight: null,
-      rowHeight: 55.99, // Todo: do better than this...
+      rowHeight: 55.99, // Todo: get from dom element
       scrollTop: 0,
       nodePadding: 20,
       rootHeight: 400
@@ -196,7 +210,11 @@ export default {
       console.log('watching state...');
       this.songs = state;
       this.filteredSongs = state.slice(0, this.songsPerPage);
-      console.log(this.songs);
+      console.log(this.songs.length);
+    },
+    '$store.state.app.songInFocusIndex'(state) {
+      console.log(state);
+      this.focusedSong = state;
     },
     songs: function(newsongs, oldsongs) {
       console.log(newsongs.length, oldsongs.length);
@@ -208,14 +226,15 @@ export default {
     log(d) {
       console.log(d);
     },
+    shadow() {
+      return '';
+    },
     handleScroll(event) {
-      console.log('scrolling');
       this.scrollTop = this.$refs.root.scrollTop;
     },
     playThis() {
       this.$store.dispatch('player/playThis', this.songs[this.focusedSong]);
     },
-
     getBackground() {
       // console.log(this.focusedSong);
       // console.log(this.songs[this.focusedSong]);
@@ -246,10 +265,10 @@ export default {
       }
       return this.placeHolderImage;
     },
-    setFocusedSong(song, index) {
-      this.focusedSong = index;
-      this.$store.dispatch('app/setSongInFocus', { song });
-    },
+    // setFocusedSong(song, index) {
+    //   this.focusedSong = index;
+    //   this.$store.dispatch('app/setSongInFocus', { song });
+    // },
     songToShow() {
       return this.$store.state.allSongs;
     },
@@ -285,7 +304,7 @@ export default {
   created() {
     this.songs = this.$store.state.library.library;
 
-    // this.filteredSongs = this.songs.slice(0, this.songsPerPage);
+    this.filteredSongs = this.songs.slice(0, this.songsPerPage);
   },
   mounted() {
     this.$refs.root.addEventListener(
@@ -295,15 +314,14 @@ export default {
     );
     this.rootHeight = this.$refs.root.clientHeight;
     // console.log();
-
     // const largestHeight = this.calculateInitialRowHeight();
     // this.rowHeight =
     //   typeof largestHeight !== 'undefined' && largestHeight !== null
     //     ? largestHeight
     //     : 30;
   },
-  destroyed() {
-    // this.$refs.root.removeEventListener('scroll', this.handleScroll);
+  beforeDestroy() {
+    this.$refs.root.removeEventListener('scroll', this.handleScroll);
   }
 };
 </script>

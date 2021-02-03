@@ -1,20 +1,27 @@
 const state = {
   songInFocus: null,
+  songInFocusIndex: null
 };
 
 const getters = {};
 
 const actions = {
   setSongInFocus(context, {
-    song
+    song,
+    index
   }) {
-    context.commit('SET_SONG_IN_FOCUS', song);
+    context.commit('SET_SONG_IN_FOCUS', {
+      song,
+      index
+    });
   },
 };
 
 const mutations = {
   SET_SONG_IN_FOCUS(state, value) {
-    state.songInFocus = value;
+    console.log(value);
+    state.songInFocus = value.song;
+    state.songInFocusIndex = value.index;
   },
 };
 
