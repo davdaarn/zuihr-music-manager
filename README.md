@@ -37,7 +37,7 @@ npm run electron:rebuild:win
 - [ ] Duplicate song management
   - [x] Backend
   - [ ] UI
-- [ ] Virtual / infinite scrolling
+- [x] Virtual / infinite scrolling
 - [x] Use file metadata to build a song object
 - [x] Resize album art to 64x64 and 256x256
 - [x] Convert and store album art to base64 for faster processing on frontend
