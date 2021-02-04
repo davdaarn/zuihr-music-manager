@@ -18,6 +18,10 @@ export const datastore = {
         filename: `${app.getPath('appData')}\\playlister\\db\\songs.db`,
         autoload: true
       }),
+      songs: new DataStore({
+        filename: `${app.getPath('appData')}\\playlister\\db\\stats.db`,
+        autoload: true
+      }),
     }
 
     return instance;
