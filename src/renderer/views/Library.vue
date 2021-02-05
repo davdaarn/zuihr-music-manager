@@ -1,3 +1,4 @@
+// Todo: fiqure out why Vuter extention hates this file
 <template>
   <div class="flex flex-col">
     <!-- header -->
