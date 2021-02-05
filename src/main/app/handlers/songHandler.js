@@ -1,4 +1,5 @@
 const {
+  app,
   ipcMain,
   webContents
 } = require('electron');
@@ -30,22 +31,33 @@ import {
 
 let win = null;
 
+app.on('browser-window-created', () => {
+  console.log('browser window created...')
+  // win = mainAppWindow.getInstance();
+})
+
 let songsToProcess = [];
 let processingSongs = false;
+let processingSongNumber = 0;
 
 // watchdog
 let watcher = setInterval(() => {
   // console.log('watcher');
   if (songsToProcess.length > 0 && !processingSongs) {
     processingSongs = true;
+    win.webContents.send('PROCESSING_SONGS', processingSongs);
     console.log(chalk.redBright('starting'), Date());
     processSongs();
   }
 }, 1000);
 
 const processSongs = () => {
+  if (!win) {
+    win = mainAppWindow.getInstance();
+  }
   if (songsToProcess.length > 0) {
-
+    processingSongNumber++;
+    win.webContents.send('PROCESSING_SONG_NUMBER', processingSongNumber);
     const p = songsToProcess.pop();
     let colorPalette = {
       Vibrant: {
@@ -244,13 +256,17 @@ const processSongs = () => {
     })();
   } else {
     // todo: set is dirty flag on state
+    //
     console.log(chalk.redBright('exiting'), Date());
     processingSongs = false;
+    processingSongNumber = 0;
+    win.webContents.send('PROCESSING_SONGS', processingSongs);
+    win.webContents.send('PROCESSING_SONG_NUMBER', processingSongNumber);
+    win.webContents.send('SET_IS_LIBRARY_DIRTY', true);
   }
 }
 
 function runService(workerData) {
-  win = mainAppWindow.getInstance();
   return new Promise((resolve, reject) => {
     const worker = new Worker('./src/main/workers/discoveryWorker.js', {
       workerData
@@ -258,7 +274,7 @@ function runService(workerData) {
 
     worker.on('message', (data) => {
       // console.log(data);
-      // win.webContents.send('ham', data);
+      win.webContents.send('SONGS_TO_PROCESS_COUNT', data.filePaths.length);
       songsToProcess.push(...data.filePaths);
       return resolve('ten tons of ham burgers');
     });
@@ -278,13 +294,18 @@ function runService(workerData) {
 }
 
 ipcMain.handle('FIND_SONGS', async (event, args) => {
+  if (!win) {
+    win = mainAppWindow.getInstance();
+  }
+  win.webContents.send('PROCESSING_SONGS', true);
   runService(args).then(x => {
-    console.log(x);
+    console.log('FIND_SONGS', x);
   }).catch(err => {
-    console.log(err)
+    console.log('FIND_SONGS', err);
   });
 })
 
+// todo: prevent this from locking up the UI
 ipcMain.handle('LOAD_LIBRARY', async (even, args) => {
   let res = 'poo';
   res = await new Promise((resolve, reject) => {
@@ -292,9 +313,14 @@ ipcMain.handle('LOAD_LIBRARY', async (even, args) => {
       if (err) {
         return reject(err);
       } else {
+        if (!win) {
+          win = mainAppWindow.getInstance();
+        }
+        win.webContents.send('SET_IS_LIBRARY_DIRTY', false);
         return resolve(docs);
       }
     });
   })
+
   return res;
 })

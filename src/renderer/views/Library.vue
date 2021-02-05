@@ -52,6 +52,7 @@
             class="px-4 py-2 rounded-md bg-gray-700 focus:outline-none border border-solid border-gray-700 focus:border-green-500 disabled:opacity-25"
             :disabled="songs.length < 1 ? true : false"
           />
+          <span>{{ songsToProcessCount }}</span>
         </div>
         <!-- Right Side -->
         <div class="flex items-center">
@@ -93,6 +94,7 @@
     </div>
 
     <div class="px-4 overflow-hidden mt-4">
+      {{ log(isLibraryDirty) }}
       <div class="overflow-y-scroll h-full" ref="root">
         <div ref="viewport" :style="viewportStyle">
           <div ref="spacer" :style="spacerStyle">
@@ -199,8 +201,9 @@ export default {
       nodePadding: 20,
       rootHeight: 400,
       railMode: 'processing',
-      dragZoneActive: false,
-      processing: false
+      dragZoneActive: false
+      // processing: false
+      // songsToProcessCount: 0
     };
   },
   computed: {
@@ -269,8 +272,14 @@ export default {
         height: this.rootHeight + 'px',
         overflow: 'auto'
       };
-    }
+    },
     //
+    ...mapState({
+      songsToProcessCount: state => state.library.songsToProcessCount,
+      processing: state => state.library.processing,
+      library: state => state.library.library,
+      isLibraryDirty: state => state.library.isDirty
+    })
   },
   watch: {
     '$store.state.library.library'(state) {
@@ -280,15 +289,19 @@ export default {
       console.log(this.songs.length);
     },
 
-    '$store.state.library.processing'(state) {
-      console.log(state);
-      this.processing = state;
-    },
+    // '$store.state.library.processing'(state) {
+    //   console.log(state);
+    //   this.processing = state;
+    // },
+
+    // '$store.state.library.songsToProcessCount'(state) {
+    //   this.songsToProcessCount = state;
+    // },
 
     '$store.state.app.songInFocusIndex'(state) {
-      console.log(state);
       this.focusedSong = state;
     },
+
     songs: function(newsongs, oldsongs) {
       console.log(newsongs.length, oldsongs.length);
       this.totalContentHeight = newsongs.length * this.rowHeight;

@@ -1,5 +1,12 @@
 <template>
-  <div class="w-full h-6 bg-gray-900 flex text-gray-500">
+  <div class="flex justify-between w-full h-6 bg-gray-900 text-gray-500">
+    <!-- left -->
+    <div></div>
+    <!-- middle -->
+    <div class="flex">
+      <!-- <div>{{ songsToProcessCount }}</div> -->
+    </div>
+    <!-- right -->
     <div class="flex">
       <div
         class="mx-2 cursor-pointer hover:text-green-400 mdi mdi-head-snowflake-outline"
@@ -18,8 +25,18 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
-  name: 'StatusBar'
+  name: 'StatusBar',
+  data() {
+    return {};
+  },
+  computed: {
+    ...mapState({
+      songsToProcessCount: state => state.library.songsToProcessCount
+    })
+  }
 };
 </script>
 

@@ -14,12 +14,12 @@ npm run electron:serve
 
 ## Building
 
-``` json
-npm run electron:build // for sharp
+```
+npm run electron:build
 ```
 
-``` 
-npm run electron:rebuild
+``` json
+npm run electron:rebuild // c++ dependencies
 ```
 
 

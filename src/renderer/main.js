@@ -22,6 +22,12 @@ ipcRenderer
   .invoke('getPathToAppData')
   .then(appdata => {
     console.log(appdata);
+
+    /**  
+     * ! todo: 
+     * ! create a guard if db files are deleted while app is running
+     * ! db will update wrong file 
+     */
     Vue.prototype.$db = {
       // playlists
       playlists: new DataStore({
@@ -33,7 +39,16 @@ ipcRenderer
         filename: `${appdata}\\playlister\\db\\songs.db`,
         autoload: true
       }),
-      // settings
+      // // stats
+      // stats: new DataStore({
+      //   filename: `${appdata}\\playlister\\db\\stats.db`,
+      //   autoload: true
+      // }),
+      // // settings
+      // settings: new DataStore({
+      //   filename: `${appdata}\\playlister\\db\\settings.db`,
+      //   autoload: true
+      // }),
     };
   })
   .catch(console.log)

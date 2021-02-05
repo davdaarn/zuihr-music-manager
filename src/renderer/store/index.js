@@ -21,10 +21,33 @@ const store = new Vuex.Store({
   }
 });
 
+
+// todo: create an ipc handler class
+
 ipcRenderer.on('ham', (e, args) => {
   // store.commit('SET_SEARCHING', false);
   // store.commit('SET_SONG_PATHS', args);
   console.log(args);
+});
+
+ipcRenderer.on('SONGS_TO_PROCESS_COUNT', (e, count) => {
+  console.log('count', count);
+  store.dispatch('library/setSongsToProcessCount', count);
+});
+
+ipcRenderer.on('PROCESSING_SONG_NUMBER', (e, number) => {
+  console.log('processing song #', number);
+  store.dispatch('library/setProcessingSongNumber', number);
+});
+
+ipcRenderer.on('PROCESSING_SONGS', (e, value) => {
+  console.log('processing songs', value);
+  store.dispatch('library/setProcessing', value);
+});
+
+ipcRenderer.on('SET_IS_LIBRARY_DIRTY', (e, value) => {
+  console.log('is library dirty', value);
+  store.dispatch('library/setIsLibraryDirty', value);
 });
 
 export default store;

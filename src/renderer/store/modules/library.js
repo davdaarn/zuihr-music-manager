@@ -8,7 +8,10 @@ const state = {
   isSearching: false,
   isPlayingSong: false,
   songPaths: [],
-  processing: false
+  processing: false,
+  isDirty: false,
+  songsToProcessCount: 0,
+  processingSongNumber: 0,
 };
 
 const getters = {
@@ -18,14 +21,29 @@ const getters = {
 };
 
 const actions = {
-  async setProcessing(context) {
-    context.commit('SET_PROCESSING', !context.state.processing);
+  async setProcessing(context, value) {
+    context.commit('SET_PROCESSING', value);
+  },
+
+  async setProcessingSongNumber(context, number) {
+
+    context.commit('SET_PROCESSING_SONG_NUMBER', number);
+  },
+
+  async setSongsToProcessCount(context, count) {
+    context.commit('SET_SONGS_TO_PROCESS_COUNT', count);
+  },
+
+  async setIsLibraryDirty(context, value) {
+    console.log('is library dirty', value);
+    if (value) {
+      context.dispatch('loadLibrary');
+    }
+    context.commit('SET_IS_LIBRARY_DIRTY', value);
   },
 
   async findSongs(context, baseDir) {
     context.commit('SET_SEARCHING', true);
-    console.log('calling findSongs')
-    console.log(baseDir);
     // fileWorker.postMessage('findSongs');
     ipcRenderer.invoke('FIND_SONGS', baseDir).then(x => {
       console.log(x);
@@ -40,7 +58,6 @@ const actions = {
     ipcRenderer
       .invoke('LOAD_LIBRARY')
       .then(docs => {
-        console.log(docs.length);
         context.commit('LOAD_LIBRARY', docs)
       })
       .catch(console.log)
@@ -50,6 +67,7 @@ const actions = {
 
 const mutations = {
   LOAD_LIBRARY(state, value) {
+    console.log('loading library', value);
     state.library = value;
   },
   SET_SEARCHING(state, value) {
@@ -60,6 +78,17 @@ const mutations = {
   },
   SET_PROCESSING(state, value) {
     state.processing = value;
+    state.songsToProcessCount = 0;
+  },
+  SET_SONGS_TO_PROCESS_COUNT(state, value) {
+    state.songsToProcessCount = value;
+  },
+  SET_PROCESSING_SONG_NUMBER(state, value) {
+    state.processingSongNumber = value;
+  },
+  SET_IS_LIBRARY_DIRTY(state, value) {
+    console.log('is library dirty', value);
+    state.isDirty = value;
   }
 };
 
@@ -70,3 +99,9 @@ export default {
   actions,
   mutations
 }
+
+// ipcRenderer.on('SONGS_TO_PROCESS_COUNT', (e, count) => {
+//   state.songsToProcessCount += count;
+//   // store.commit('SET_SONGS_TO_PROCESS_COUNT', count);
+//   console.log('Songs To Process', count);
+// });
