@@ -40,9 +40,29 @@
     <div class="px-4 py-4">
       <!-- controls -->
       <div
-        class="flex justify-end space-x-4 text-theme-text-active items-center"
+        class="flex justify-between mx-4 text-theme-text-active items-center"
       >
-        <div class="mdi mdi-refresh text-xl"></div>
+        <!-- Left Side -->
+        <div>
+          <!-- Todo: incorporate debounce time -->
+          <input
+            type="text"
+            placeholder="Search"
+            class="px-4 py-2 rounded-md bg-gray-700 focus:outline-none border border-solid border-gray-700 focus:border-green-500 disabled:opacity-25"
+            :disabled="songs.length < 1 ? true : false"
+          />
+        </div>
+        <!-- Right Side -->
+        <div class="flex items-center">
+          <div
+            class="mx-2 mdi mdi-plus text-2xl hover:text-green-300 cursor-pointer"
+            title="Add New Songs"
+          ></div>
+          <div
+            class="mx-2 mdi mdi-refresh text-xl hover:text-green-300 cursor-pointer"
+            title="Refresh List"
+          ></div>
+        </div>
       </div>
     </div>
     <!--  -->
@@ -62,7 +82,7 @@
     <div class="text-gray-300 h-14 px-4">
       <div class="flex flex-row justify-items-start p-2">
         <div class="w-12 flex items-center mx-2 flex-none">#</div>
-        <div class="w-4/12">Song</div>
+        <div class="w-4/12 flex items-center">Song</div>
         <div class="w-4/12 flex items-center">Album</div>
         <div
           class="flex justify-around items-center h-10 w-4/12 mdi mdi-clock-outline"
@@ -83,6 +103,37 @@
             ></SongRow>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div
+      v-if="songs.length < 1"
+      class="h-full w-full flex justify-center items-center text-gray-300 drag-zone"
+    >
+      <div
+        class="w-5/6 h-5/6 border-dashed border-4 border-gray-600 rounded-md shadow-md flex flex-col justify-center items-center"
+        :class="{ 'bg-gray-600 opacity-75': dragZoneActive }"
+        @dragenter.prevent="updateDragZoneStyles"
+        @dragleave.prevent="updateDragZoneStyles"
+        @dragover.prevent
+        @drop.prevent="updateDragZoneStyles"
+      >
+        <!--  -->
+        <div
+          v-if="!dragZoneActive && !processing"
+          class="flex flex-col justify-center items-center pointer-events-none"
+        >
+          <div class="p-2 text-2xl">Drag Your Music Here!</div>
+          <div class="p-2 text-2xl">Or</div>
+          <div class="p-2 text-2xl">Click The Plus Button!</div>
+        </div>
+        <!--  -->
+        <div
+          v-else-if="dragZoneActive && !processing"
+          class="mdi mdi-plus text-9xl text-gray-800 pointer-events-none"
+        ></div>
+        <!--  -->
+        <div v-else-if="!dragZoneActive && processing" class="">Processing</div>
       </div>
     </div>
   </div>
@@ -125,7 +176,6 @@ export default {
   name: 'Library',
   mixins: [passiveSupportMixin],
   components: {
-    // 'virtual-list': VirtualListSongRowSongRow,
     SongRow
   },
   data() {
@@ -147,7 +197,9 @@ export default {
       scrollTop: 0,
       nodePadding: 20,
       rootHeight: 400,
-      railMode: 'processing'
+      railMode: 'processing',
+      dragZoneActive: false,
+      processing: false
     };
   },
   computed: {
@@ -217,6 +269,7 @@ export default {
         overflow: 'auto'
       };
     }
+    //
   },
   watch: {
     '$store.state.library.library'(state) {
@@ -225,6 +278,12 @@ export default {
       this.filteredSongs = state.slice(0, this.songsPerPage);
       console.log(this.songs.length);
     },
+
+    '$store.state.library.processing'(state) {
+      console.log(state);
+      this.processing = state;
+    },
+
     '$store.state.app.songInFocusIndex'(state) {
       console.log(state);
       this.focusedSong = state;
@@ -239,6 +298,28 @@ export default {
     log(d) {
       console.log(d);
     },
+    updateDragZoneStyles(event) {
+      console.log(event.type, 'here');
+      if (event.type === 'dragenter' && !this.processing) {
+        this.dragZoneActive = true;
+      } else if (event.type === 'drop') {
+        this.dragZoneActive = false;
+
+        // when dragged from desktop
+        // Todo: handle drag from computer or from app
+        let paths = [];
+        event.dataTransfer.files.forEach(file => {
+          paths.push(file.path);
+        });
+
+        this.$store.dispatch('library/findSongs', paths).then(x => {
+          console.log(x);
+        });
+      } else {
+        this.dragZoneActive = false;
+      }
+    },
+    findSongs() {},
     shadow() {
       return '';
     },
@@ -320,6 +401,7 @@ export default {
     this.filteredSongs = this.songs.slice(0, this.songsPerPage);
   },
   mounted() {
+    // todo: maybe replce with v-on:scroll.capture ???
     this.$refs.root.addEventListener(
       'scroll',
       this.handleScroll,
@@ -334,7 +416,9 @@ export default {
     //     : 30;
   },
   beforeDestroy() {
-    this.$refs.root.removeEventListener('scroll', this.handleScroll);
+    if (this.$refs.root) {
+      this.$refs.root.removeEventListener('scroll', this.handleScroll);
+    }
   }
 };
 </script>
@@ -343,6 +427,20 @@ export default {
 .picker {
   z-index: 100;
 }
+
+.search {
+  border: 1px solid #00000000;
+}
+
+.search:focus {
+  border: 1px solid #2fac67;
+}
+
+.drag-zone::after {
+  // content: "Drag Your Music Here Or Click The Plus Icon";
+}
+
+///////////////////////////////
 
 .processing {
   background: linear-gradient(

@@ -10,6 +10,7 @@
       </div>
       <!-- player -->
       <PlayerControls />
+      <StatusBar />
     </div>
   </div>
 </template>
@@ -18,6 +19,7 @@
 import Display from '../components/Display';
 import Sidebar from '../components/Sidebar';
 import PlayerControls from '../components/PlayerControls';
+import StatusBar from '../components/StatusBar';
 
 export default {
   name: 'Content',
@@ -25,7 +27,8 @@ export default {
   components: {
     Display,
     Sidebar,
-    PlayerControls
+    PlayerControls,
+    StatusBar
   },
 
   data: () => ({})

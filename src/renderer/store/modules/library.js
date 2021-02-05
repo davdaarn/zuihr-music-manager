@@ -8,6 +8,7 @@ const state = {
   isSearching: false,
   isPlayingSong: false,
   songPaths: [],
+  processing: false
 };
 
 const getters = {
@@ -17,6 +18,10 @@ const getters = {
 };
 
 const actions = {
+  async setProcessing(context) {
+    context.commit('SET_PROCESSING', !context.state.processing);
+  },
+
   async findSongs(context, baseDir) {
     context.commit('SET_SEARCHING', true);
     console.log('calling findSongs')
@@ -53,6 +58,9 @@ const mutations = {
   SET_SONG_PATHS(state, value) {
     state.songPaths = value;
   },
+  SET_PROCESSING(state, value) {
+    state.processing = value;
+  }
 };
 
 export default {

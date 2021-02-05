@@ -110,10 +110,10 @@ export default {
     #15617c,
     #15617c,
     #15617c,
-    #15617c
+    // #15617c
   );
   background-size: 200% 200%;
-  animation: Processing 5s ease infinite;
+  animation: Processing 2s ease infinite;
 }
 
 @keyframes Processing {
