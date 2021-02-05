@@ -4,17 +4,24 @@ An app for managing your music library
 
 ## Installation
 
-```
+``` 
 npm i
 ```
 
+``` 
+npm run electron:serve
 ```
+
+## Building
+
+``` json
+npm run electron:build // for sharp
+```
+
+``` 
 npm run electron:rebuild
 ```
 
-```
-npm run electron:serve
-```
 
 If on windows and `electron:rebuild` causes issues try:
 ```
