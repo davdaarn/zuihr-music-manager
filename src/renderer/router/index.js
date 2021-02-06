@@ -12,11 +12,12 @@ import Album from '../views/Album.vue';
 
 Vue.use(VueRouter)
 
-const routes = [{
-    path: '/test',
-    name: 'Test',
-    component: OG
-  },
+const routes = [
+  // {
+  //   path: '/test',
+  //   name: 'Test',
+  //   component: OG
+  // },
   {
     path: '/',
     name: 'Home',

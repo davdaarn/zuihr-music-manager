@@ -59,36 +59,42 @@ const processSongs = () => {
     processingSongNumber++;
     win.webContents.send('PROCESSING_SONG_NUMBER', processingSongNumber);
     const p = songsToProcess.pop();
-    let colorPalette = {
-      Vibrant: {
-        hex: '#232323',
-        rgb: [35, 35, 35],
-      },
-      DarkVibrant: {
-        hex: '#232323',
-        rgb: [35, 35, 35],
-      },
-      LightVibrant: {
-        hex: '#383838',
-        rgb: [56, 56, 56],
-      },
-      Muted: {
-        hex: '#232323',
-        rgb: [35, 35, 35],
-      },
-      DarkMuted: {
-        hex: '#232323',
-        rgb: [35, 35, 35],
-      },
-      LightMuted: {
-        hex: '#383838',
-        rgb: [56, 56, 56],
-      }
-    };
+
+
+
 
     // todo song creation should not be aborted if album art is bad
     (async () => {
       try {
+
+        //#region create song object
+        let colorPalette = {
+          Vibrant: {
+            hex: '#232323',
+            rgb: [35, 35, 35],
+          },
+          DarkVibrant: {
+            hex: '#232323',
+            rgb: [35, 35, 35],
+          },
+          LightVibrant: {
+            hex: '#383838',
+            rgb: [56, 56, 56],
+          },
+          Muted: {
+            hex: '#232323',
+            rgb: [35, 35, 35],
+          },
+          DarkMuted: {
+            hex: '#232323',
+            rgb: [35, 35, 35],
+          },
+          LightMuted: {
+            hex: '#383838',
+            rgb: [56, 56, 56],
+          }
+        };
+
         const metadata = await mm.parseFile(p, {
           skipCovers: false
         });
@@ -194,6 +200,7 @@ const processSongs = () => {
           trackNumber,
           year
         };
+        //#endregion
 
         // todo: make function // processNewSong(song);
         db.songs.find({
@@ -221,14 +228,14 @@ const processSongs = () => {
                     console.error('Error updating document'); // Something went wrong
                   } else {
                     // this.existingSongs++;
-                    win.webContents.send('ham', `------- ${songsToProcess.length}`);
+                    // win.webContents.send('ham', `------- ${songsToProcess.length}`);
                     processSongs();
                   }
                 }
               );
             } else {
               console.warn('song already in library');
-              win.webContents.send('ham', `0000000 ${songsToProcess.length}`);
+              // win.webContents.send('ham', `0000000 ${songsToProcess.length}`);
               processSongs();
             }
             // processSongs();
@@ -243,7 +250,7 @@ const processSongs = () => {
                 console.error('this should not be happening', err);
               } else {
                 // this.songsAdded++;
-                win.webContents.send('ham', `+++++++ ${songsToProcess.length}`);
+                // win.webContents.send('ham', `+++++++ ${songsToProcess.length}`);
                 processSongs();
               }
             });

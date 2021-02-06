@@ -9,12 +9,12 @@
           <span class="text-theme-text-active">Home</span>
         </div>
       </router-link>
-      <router-link to="/test">
+      <!-- <router-link to="/test">
         <div class="pl-6 pt-2 cursor-pointer">
           <span class="mdi mdi-text-search text-theme-text-active"></span>
           <span class="text-theme-text-active">Test</span>
         </div>
-      </router-link>
+      </router-link> -->
       <router-link to="/library">
         <div class="pl-6 pt-2 cursor-pointer">
           <span class="mdi mdi-playlist-music text-theme-text-active"></span>
