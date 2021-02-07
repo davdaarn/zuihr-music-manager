@@ -52,7 +52,6 @@
             class="px-4 py-2 rounded-md bg-gray-700 focus:outline-none border border-solid border-gray-700 focus:border-green-500 disabled:opacity-25"
             :disabled="songs.length < 1 ? true : false"
           />
-          <span>{{ songsToProcessCount }}</span>
         </div>
         <!-- Right Side -->
         <div class="flex items-center">
@@ -67,19 +66,6 @@
         </div>
       </div>
     </div>
-    <!--  -->
-    <!-- <v-virtual-scroll
-      class="px-4 h-full"
-      ref="root"
-      :bench="0"
-      :items="songs"
-      :height="rootHeight"
-      :item-height="rowHeight"
-    >
-      <template v-slot:default="{ item }">
-        <SongRow :source="item"></SongRow>
-      </template>
-    </v-virtual-scroll> -->
 
     <div class="text-gray-300 h-14 px-4">
       <div class="flex flex-row justify-items-start p-2">
@@ -90,53 +76,101 @@
           class="flex justify-around items-center h-10 w-4/12 mdi mdi-clock-outline"
         ></div>
       </div>
-      <div class="h-1 z-50" :class="railMode"></div>
-    </div>
-
-    <div class="px-4 overflow-hidden mt-4">
-      {{ log(isLibraryDirty) }}
-      <div class="overflow-y-scroll h-full" ref="root">
-        <div ref="viewport" :style="viewportStyle">
-          <div ref="spacer" :style="spacerStyle">
-            <SongRow
-              v-for="(song, index) in visibleItems"
-              :key="index"
-              :source="song"
-              :index="startIndex + index"
-            ></SongRow>
-          </div>
-        </div>
-      </div>
+      <div
+        class="h-1 z-50"
+        :class="processing ? 'processing' : 'inactive'"
+      ></div>
     </div>
 
     <div
-      v-if="songs.length < 1"
-      class="h-full w-full flex justify-center items-center text-gray-300 drag-zone"
+      class="h-full"
+      @dragenter.capture.prevent="updateDragZoneStyles"
+      @dragleave.capture.prevent="updateDragZoneStyles"
+      @dragover.capture.prevent
+      @drop.capture.prevent="updateDragZoneStyles"
     >
-      <div
-        class="w-5/6 h-5/6 border-dashed border-4 border-gray-600 rounded-md shadow-md flex flex-col justify-center items-center"
-        :class="{ 'bg-gray-600 opacity-75': dragZoneActive }"
-        @dragenter.prevent="updateDragZoneStyles"
-        @dragleave.prevent="updateDragZoneStyles"
-        @dragover.prevent
-        @drop.prevent="updateDragZoneStyles"
-      >
-        <!--  -->
-        <div
-          v-if="!dragZoneActive && !processing"
-          class="flex flex-col justify-center items-center pointer-events-none"
-        >
-          <div class="p-2 text-2xl">Drag Your Music Here!</div>
-          <div class="p-2 text-2xl">Or</div>
-          <div class="p-2 text-2xl">Click The Plus Button!</div>
+      <div v-if="!dragZoneActive" class="px-4 overflow-hidden mt-4">
+        <div class="overflow-y-scroll h-full" ref="root">
+          <div ref="viewport" :style="viewportStyle">
+            <div ref="spacer" :style="spacerStyle">
+              <SongRow
+                v-for="(song, index) in visibleItems"
+                :key="index"
+                :source="song"
+                :index="startIndex + index"
+              ></SongRow>
+            </div>
+          </div>
         </div>
-        <!--  -->
+      </div>
+      <div
+        v-else-if="dragZoneActive"
+        class="h-full w-full flex justify-center items-center text-gray-300 drag-zone"
+      >
         <div
-          v-else-if="dragZoneActive && !processing"
-          class="mdi mdi-plus text-9xl text-gray-800 pointer-events-none"
-        ></div>
-        <!--  -->
-        <div v-else-if="!dragZoneActive && processing" class="">Processing</div>
+          class="w-5/6 h-5/6 border-dashed border-4 border-gray-600 rounded-md shadow-md flex flex-col justify-center items-center"
+          :class="{ 'bg-gray-600 opacity-75': dragZoneActive }"
+        >
+          <!--  -->
+          <div
+            v-if="!dragZoneActive && !processing"
+            class="flex flex-col justify-center items-center pointer-events-none"
+          >
+            <div class="p-2 text-2xl">Drag Your Music Here!</div>
+            <div class="p-2 text-2xl">Or</div>
+            <div class="p-2 text-2xl">Click The Plus Button!</div>
+          </div>
+          <!--  -->
+          <div
+            v-else-if="dragZoneActive"
+            class="mdi mdi-plus text-9xl text-gray-800 pointer-events-none"
+          ></div>
+          <!--  -->
+          <div
+            v-else-if="!dragZoneActive && processing"
+            class=""
+            @dragenter.prevent.self
+            @dragleave.prevent.self
+            @dragover.prevent.self
+            @drop.prevent.self
+          >
+            <div class="text-2xl m-2">
+              Discovered
+              <span class="text-green-500 mx-2 text-3xl">{{
+                songsToProcessCount
+              }}</span>
+              Songs!
+            </div>
+
+            <div class="text-2xl m-2">
+              Processing Song:
+              <span class="text-green-500 mx-2 text-3xl">{{
+                processingSongNumber
+              }}</span>
+            </div>
+
+            <div class="text-2xl m-2">
+              Songs Added:
+              <span class="text-green-500 mx-2 text-3xl">{{
+                songsAddedCount
+              }}</span>
+            </div>
+
+            <div class="text-2xl m-2">
+              Duplicates Found:
+              <span class="text-yellow-600 mx-2 text-3xl">{{
+                duplicateSongCount
+              }}</span>
+            </div>
+
+            <div class="text-2xl m-2">
+              Songs Already In Library:
+              <span class="text-yellow-600 mx-2 text-3xl">{{
+                existingSongCount
+              }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -147,6 +181,7 @@
 import placeHolderImage from '../assets/lava.jpeg';
 import SongRow from '../components/SongRow';
 import { mapState } from 'vuex';
+import _ from 'lodash';
 
 const passiveSupportMixin = {
   methods: {
@@ -200,13 +235,25 @@ export default {
       scrollTop: 0,
       nodePadding: 20,
       rootHeight: 400,
-      railMode: 'processing',
+      railMode: 'incative',
       dragZoneActive: false
       // processing: false
       // songsToProcessCount: 0
     };
   },
   computed: {
+    //
+    ...mapState({
+      library: state => state.library.library,
+      processing: state => state.library.processing,
+      isLibraryDirty: state => state.library.isDirty,
+      songsAddedCount: state => state.library.songsAddedCount,
+      existingSongCount: state => state.library.existingSongCount,
+      duplicateSongCount: state => state.library.duplicateSongCount,
+      songsToProcessCount: state => state.library.songsToProcessCount,
+      processingSongNumber: state => state.library.processingSongNumber
+    }),
+    //
     /**
     Total height of the viewport = number of items in the array x height of each item
     */
@@ -272,14 +319,7 @@ export default {
         height: this.rootHeight + 'px',
         overflow: 'auto'
       };
-    },
-    //
-    ...mapState({
-      songsToProcessCount: state => state.library.songsToProcessCount,
-      processing: state => state.library.processing,
-      library: state => state.library.library,
-      isLibraryDirty: state => state.library.isDirty
-    })
+    }
   },
   watch: {
     '$store.state.library.library'(state) {
@@ -314,7 +354,7 @@ export default {
     },
     updateDragZoneStyles(event) {
       console.log(event.type, 'here');
-      if (event.type === 'dragenter' && !this.processing) {
+      if (event.type === 'dragenter') {
         this.dragZoneActive = true;
       } else if (event.type === 'drop') {
         this.dragZoneActive = false;
@@ -333,6 +373,27 @@ export default {
         this.dragZoneActive = false;
       }
     },
+    // updateDragZoneStyles: _.debounce(function(event) {
+    //   console.log(event.type, 'here');
+    //   if (event.type === 'dragenter' && !this.processing) {
+    //     this.dragZoneActive = true;
+    //   } else if (event.type === 'drop') {
+    //     this.dragZoneActive = false;
+
+    //     // when dragged from desktop
+    //     // Todo: handle drag from computer or from app
+    //     let paths = [];
+    //     event.dataTransfer.files.forEach(file => {
+    //       paths.push(file.path);
+    //     });
+
+    //     this.$store.dispatch('library/findSongs', paths).then(x => {
+    //       console.log(x);
+    //     });
+    //   } else {
+    //     this.dragZoneActive = false;
+    //   }
+    // }, 300),
     findSongs() {},
     shadow() {
       return '';
@@ -356,7 +417,8 @@ export default {
         return `linear-gradient(45deg, ${p.DarkMuted.hex}, ${p.DarkMuted.hex}, ${p.DarkMuted.hex})`;
       }
 
-      return 'linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)';
+      return '#383838';
+      // return 'linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)';
     },
     renderImage(song) {
       // console.log('cheese');
@@ -455,6 +517,10 @@ export default {
 }
 
 ///////////////////////////////
+
+.inactive {
+  background: #15617c;
+}
 
 .processing {
   background: linear-gradient(

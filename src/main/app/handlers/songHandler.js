@@ -39,6 +39,9 @@ app.on('browser-window-created', () => {
 let songsToProcess = [];
 let processingSongs = false;
 let processingSongNumber = 0;
+let duplicateSongs = 0;
+let songsAlreadyInLibrary = 0;
+let songsAdded = 0;
 
 // watchdog
 let watcher = setInterval(() => {
@@ -203,39 +206,36 @@ const processSongs = () => {
         //#endregion
 
         // todo: make function // processNewSong(song);
-        db.songs.find({
-          _id: uid
-        }, (err, docs) => {
+        // * 1 - check if song exists in db
+        db.songs.find({_id: uid }, (err, docs) => {
           if (err) {
             console.warn(err);
           } else if (docs.length > 1) {
-            console.error("Entities should have unique id's"); // This should never happen
+            console.error("Entities should have unique id's"); // this should never happen
           } else if (docs.length === 1) {
+            /**
+            ** 1.2 - if song is not unique but has a different path
+            ** add song as duplicate
+            */ 
             const exists = docs[0].songs.some(x => x.path === song.path); // check for existing file path
             if (!exists) {
-              // update doc
-              db.songs.update({
-                  _id: uid
-                }, {
-                  $push: {
-                    songs: song
-                  }
-                },
+              db.songs.update({ _id: uid }, { $push: { songs: song } },
                 (err, numEffected, param3, param4) => {
                   if (err) {
                     console.error('db error updating song', err);
                   } else if (numEffected === 0 || numEffected > 1) {
                     console.error('Error updating document'); // Something went wrong
                   } else {
-                    // this.existingSongs++;
-                    // win.webContents.send('ham', `------- ${songsToProcess.length}`);
+                    duplicateSongs++;
+                    win.webContents.send('SET_DUPLICATE_SONG_COUNT', duplicateSongs);
                     processSongs();
                   }
                 }
               );
             } else {
               console.warn('song already in library');
-              // win.webContents.send('ham', `0000000 ${songsToProcess.length}`);
+              songsAlreadyInLibrary++
+              win.webContents.send('setExistingSongCount', songsAlreadyInLibrary);
               processSongs();
             }
             // processSongs();
@@ -249,8 +249,8 @@ const processSongs = () => {
               if (err) {
                 console.error('this should not be happening', err);
               } else {
-                // this.songsAdded++;
-                // win.webContents.send('ham', `+++++++ ${songsToProcess.length}`);
+                songsAdded++;
+                win.webContents.send('SET_SONGS_ADDED_COUNT', songsAdded);
                 processSongs();
               }
             });
@@ -262,14 +262,32 @@ const processSongs = () => {
       }
     })();
   } else {
-    // todo: set is dirty flag on state
-    //
     console.log(chalk.redBright('exiting'), Date());
+    win.webContents.send('SET_PROCESSING_COMPLETE_SUMMARY', {
+      songsAdded,
+      duplicateSongs,
+      songsToProcess,
+      processingSongs,
+      processingSongNumber,
+      songsAlreadyInLibrary,
+    });
+
+    songsAdded = 0;
+    duplicateSongs = 0;
+    songsToProcess = 0;
     processingSongs = false;
     processingSongNumber = 0;
+    songsAlreadyInLibrary = 0;
+
     win.webContents.send('PROCESSING_SONGS', processingSongs);
+    win.webContents.send('SET_SONGS_ADDED_COUNT', songsAdded);
+    win.webContents.send('SET_DUPLICATE_SONG_COUNT', duplicateSongs);
+    win.webContents.send('SET_SONGS_TO_PROCESS_COUNT', songsToProcess);
     win.webContents.send('PROCESSING_SONG_NUMBER', processingSongNumber);
+    win.webContents.send('SET_EXISTING_SONG_COUNT', songsAlreadyInLibrary);
+    
     win.webContents.send('SET_IS_LIBRARY_DIRTY', true);
+
   }
 }
 
@@ -287,7 +305,7 @@ function runService(workerData) {
     });
     worker.on('error', (data) => {
       console.log(data);
-      win.webContents.send('ham', 'hairy baby');
+      // todo: send error here
       return reject('oh snap!!!');
     });
     worker.on('exit', code => {

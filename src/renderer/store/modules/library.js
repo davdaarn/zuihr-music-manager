@@ -12,6 +12,10 @@ const state = {
   isDirty: false,
   songsToProcessCount: 0,
   processingSongNumber: 0,
+  duplicateSongCount: 0,
+  existingSongCount: 0,
+  songsAddedCount: 0,
+  processingCompleteSummary: null,
 };
 
 const getters = {
@@ -30,8 +34,27 @@ const actions = {
     context.commit('SET_PROCESSING_SONG_NUMBER', number);
   },
 
+  async setDuplicateSongCount(context, number) {
+
+    context.commit('SET_DUPLICATE_SONG_COUNT', number);
+  },
+
+  async setExistingSongCount(context, number) {
+
+    context.commit('SET_EXISTING_SONG_COUNT', number);
+  },
+
+  async setSongsAddedCount(context, number) {
+
+    context.commit('SET_SONGS_ADDED_COUNT', number);
+  },
+
   async setSongsToProcessCount(context, count) {
     context.commit('SET_SONGS_TO_PROCESS_COUNT', count);
+  },
+
+  async setProcessingCompleteSummary(context, count) {
+    context.commit('SET_PROCESSING_COMPLETE_SUMMARY', count);
   },
 
   async setIsLibraryDirty(context, value) {
@@ -44,7 +67,6 @@ const actions = {
 
   async findSongs(context, baseDir) {
     context.commit('SET_SEARCHING', true);
-    // fileWorker.postMessage('findSongs');
     ipcRenderer.invoke('FIND_SONGS', baseDir).then(x => {
       console.log(x);
     }).catch(err => {
@@ -78,13 +100,24 @@ const mutations = {
   },
   SET_PROCESSING(state, value) {
     state.processing = value;
-    state.songsToProcessCount = 0;
   },
   SET_SONGS_TO_PROCESS_COUNT(state, value) {
-    state.songsToProcessCount = value;
+    state.songsToProcessCount += value;
   },
   SET_PROCESSING_SONG_NUMBER(state, value) {
     state.processingSongNumber = value;
+  },
+  SET_DUPLICATE_SONG_COUNT(state, value) {
+    state.duplicateSongCount = value;
+  },
+  SET_EXISTING_SONG_COUNT(state, value) {
+    state.existingSongCount = value;
+  },
+  SET_SONGS_ADDED_COUNT(state, value) {
+    state.songsAddedCount = value;
+  },
+  SET_PROCESSING_COMPLETE_SUMMARY(state, value) {
+    state.processingCompleteSummary = value;
   },
   SET_IS_LIBRARY_DIRTY(state, value) {
     console.log('is library dirty', value);
@@ -100,8 +133,3 @@ export default {
   mutations
 }
 
-// ipcRenderer.on('SONGS_TO_PROCESS_COUNT', (e, count) => {
-//   state.songsToProcessCount += count;
-//   // store.commit('SET_SONGS_TO_PROCESS_COUNT', count);
-//   console.log('Songs To Process', count);
-// });

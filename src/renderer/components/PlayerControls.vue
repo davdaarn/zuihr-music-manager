@@ -36,11 +36,13 @@
       <!-- volume -->
       <div class="flex-initial self-center flex flex-col"></div>
     </div>
-    <div class="h-1" :class="railMode"></div>
+    <div class="h-1" :class="processing ? `incative` : `inactive`"></div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
   name: 'PlayerControls',
   data() {
@@ -51,7 +53,7 @@ export default {
       track: 0,
       max: 0,
       deg: 0,
-      railMode: 'processing'
+      railMode: 'inactive'
     };
   },
   watch: {
@@ -60,7 +62,18 @@ export default {
       console.log(o, n);
     }
   },
-  computed: {},
+  computed: {
+    ...mapState({
+      library: state => state.library.library,
+      processing: state => state.library.processing,
+      isLibraryDirty: state => state.library.isDirty,
+      songsAddedCount: state => state.library.songsAddedCount,
+      existingSongCount: state => state.library.existingSongCount,
+      duplicateSongCount: state => state.library.duplicateSongCount,
+      songsToProcessCount: state => state.library.songsToProcessCount,
+      processingSongNumber: state => state.library.processingSongNumber
+    })
+  },
   methods: {
     playPause() {
       this.$store.dispatch('player/playPause');
@@ -97,6 +110,10 @@ export default {
 </script>
 
 <style lang="scss">
+.inactive {
+  background: #15617c;
+}
+
 .processing {
   background: linear-gradient(
     to right,

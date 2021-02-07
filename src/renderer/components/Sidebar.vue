@@ -23,7 +23,7 @@
       </router-link>
     </div>
 
-    <hr />
+    <!-- <hr /> -->
 
     <div class="pt-4 pl-4 text-sm text-theme-text-muted">Playlists</div>
     <div class="pt-4 pl-4 text-sm">
@@ -31,7 +31,7 @@
       <span class="text-theme-text-active">Create new</span>
     </div>
 
-    <hr />
+    <!-- <hr /> -->
 
     <div class="h-20 flex-grow pr-4 pt-4 pb-4">
       <ul class="h-full overflow-auto flex flex-col">
