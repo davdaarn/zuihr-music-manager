@@ -28,7 +28,6 @@ Vue.config.productionTip = false
 //     /**  
 //      * ! todo: 
 //      * ! create a guard if db files are deleted while app is running
-//      * ! db will update wrong file 
 //      */
 //     Vue.prototype.$db = {
 //       // playlists

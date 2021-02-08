@@ -21,9 +21,7 @@ export default {
     };
   },
   created() {
-    // if (this.$db) {
     this.$store.dispatch('library/loadLibrary');
-    // }
   }
 };
 </script>

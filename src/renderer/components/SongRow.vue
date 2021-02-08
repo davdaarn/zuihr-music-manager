@@ -68,9 +68,7 @@
           <div class="pl-2 pr-2 w-20 flex justify-center">
             <!-- Todo: make this accurate -->
             <div>
-              {{ Math.floor(source.songs[0].length / 60) }}:{{
-                Math.round(source.songs[0].length) % 60
-              }}
+              {{ songDuration() }}
             </div>
           </div>
           <div class="relative">
@@ -128,7 +126,7 @@ export default {
   components: {},
   data() {
     return {
-      maxLength: 40,
+      maxLength: 30,
       hover: false
     };
   },
@@ -173,6 +171,16 @@ export default {
       }
 
       return false;
+    },
+    songDuration() {
+      let m = Math.floor(this.source.songs[0].length / 60);
+      let s = Math.round(this.source.songs[0].length) % 60;
+
+      if (s < 10) {
+        s = `0${s}`;
+      }
+
+      return `${m}:${s}`;
     }
   },
   computed: {

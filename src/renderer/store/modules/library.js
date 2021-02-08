@@ -58,7 +58,6 @@ const actions = {
   },
 
   async setIsLibraryDirty(context, value) {
-    console.log('is library dirty', value);
     if (value) {
       context.dispatch('loadLibrary');
     }
@@ -120,7 +119,6 @@ const mutations = {
     state.processingCompleteSummary = value;
   },
   SET_IS_LIBRARY_DIRTY(state, value) {
-    console.log('is library dirty', value);
     state.isDirty = value;
   }
 };

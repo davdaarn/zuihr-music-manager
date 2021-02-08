@@ -266,7 +266,7 @@ const processSongs = () => {
     win.webContents.send('SET_PROCESSING_COMPLETE_SUMMARY', {
       songsAdded,
       duplicateSongs,
-      songsToProcess,
+      songsToProcess: songsToProcess.length,
       processingSongs,
       processingSongNumber,
       songsAlreadyInLibrary,
@@ -274,7 +274,7 @@ const processSongs = () => {
 
     songsAdded = 0;
     duplicateSongs = 0;
-    songsToProcess = 0;
+    songsToProcess = [];
     processingSongs = false;
     processingSongNumber = 0;
     songsAlreadyInLibrary = 0;
@@ -282,7 +282,7 @@ const processSongs = () => {
     win.webContents.send('PROCESSING_SONGS', processingSongs);
     win.webContents.send('SET_SONGS_ADDED_COUNT', songsAdded);
     win.webContents.send('SET_DUPLICATE_SONG_COUNT', duplicateSongs);
-    win.webContents.send('SET_SONGS_TO_PROCESS_COUNT', songsToProcess);
+    win.webContents.send('SET_SONGS_TO_PROCESS_COUNT', songsToProcess.length);
     win.webContents.send('PROCESSING_SONG_NUMBER', processingSongNumber);
     win.webContents.send('SET_EXISTING_SONG_COUNT', songsAlreadyInLibrary);
     
@@ -298,10 +298,15 @@ function runService(workerData) {
     });
 
     worker.on('message', (data) => {
-      // console.log(data);
+      console.log(data);
       win.webContents.send('SONGS_TO_PROCESS_COUNT', data.filePaths.length);
-      songsToProcess.push(...data.filePaths);
-      return resolve('ten tons of ham burgers');
+      if (data.filePaths.length < 1 && songsToProcess.length < 1) {
+        win.webContents.send('PROCESSING_SONGS', processingSongs);
+        return resolve(`Nothing to process`);
+      } else {
+        songsToProcess.push(...data.filePaths);
+        return resolve(`Added ${data.filePaths.length} songs to process`);
+      }
     });
     worker.on('error', (data) => {
       console.log(data);

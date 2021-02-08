@@ -2,7 +2,7 @@
 <template>
   <div class="flex flex-col">
     <!-- header -->
-    <div class="w-full h-64 relative">
+    <div class="w-full h-48 relative">
       <div
         class="w-full h-full bg-cover bg-fixed shadow-2xl"
         :style="{ background: getBackground() }"
@@ -10,24 +10,24 @@
       <!-- Image Highlight -->
       <div
         v-if="songs && songs.length > 0 && focusedSong !== null"
-        class="absolute inset-y-1/4 inset-x-10 flex"
+        class="absolute top-10 inset-x-10 flex"
       >
         <div class="relative">
           <img
-            class="w-40 h-40 bg-cover shadow-2xl rounded-lg"
+            class="w-32 h-32 bg-cover shadow-2xl rounded-lg"
             :src="`data:image/jpg;base64, ${songs[focusedSong].songs[0].albumArt.image256}`"
           />
-          <div
+          <!-- <div
             class="absolute mdi mdi-play-circle text-theme-text-active hover:text-green-500 text-5xl top-32 right-6 shadow-2xl rounded-full"
             @click="playThis"
-          ></div>
+          ></div> -->
         </div>
         <div
-          class="flex flex-col glex-grow pl-6"
+          class="flex flex-col glex-grow pl-6 justify-between my-4"
           style="text-shadow: #33333399 0 0 10px"
         >
-          <div class="flex-grow"></div>
-          <div class="text-gray-300 text-7xl">
+          <!-- <div class="flex-grow"></div> -->
+          <div class="text-gray-300 text-5xl">
             {{ truncate(songs[focusedSong].songs[0].title) }}
           </div>
           <div class="text-gray-300 text-xl pt-4 pl-2">
@@ -38,8 +38,8 @@
       <!--  -->
     </div>
 
-    <div class="px-4 py-4">
-      <!-- controls -->
+    <!-- controls -->
+    <div class="px-4 py-2">
       <div
         class="flex justify-between mx-4 text-theme-text-active items-center"
       >
@@ -53,22 +53,29 @@
             :disabled="songs.length < 1 ? true : false"
           />
         </div>
+        <!-- center -->
+        <div>
+          <!-- <div>{{ songs.length }} songs in library</div> -->
+        </div>
         <!-- Right Side -->
         <div class="flex items-center">
           <div
             class="mx-2 mdi mdi-plus text-2xl hover:text-green-300 cursor-pointer"
             title="Add New Songs"
+            @click="toggleOpen(!manualOpen)"
           ></div>
           <div
             class="mx-2 mdi mdi-refresh text-xl hover:text-green-300 cursor-pointer"
             title="Refresh List"
+            @click="reloadLibrary()"
           ></div>
         </div>
       </div>
     </div>
 
+    <!-- content header -->
     <div class="text-gray-300 h-14 px-4">
-      <div class="flex flex-row justify-items-start p-2">
+      <div class="flex flex-row justify-items-start px-2">
         <div class="w-12 flex items-center mx-2 flex-none">#</div>
         <div class="w-4/12 flex items-center">Song</div>
         <div class="w-4/12 flex items-center">Album</div>
@@ -82,58 +89,67 @@
       ></div>
     </div>
 
+    <!-- Contents -->
+
     <div
-      class="h-full"
-      @dragenter.capture.prevent="updateDragZoneStyles"
-      @dragleave.capture.prevent="updateDragZoneStyles"
-      @dragover.capture.prevent
-      @drop.capture.prevent="updateDragZoneStyles"
+      id="drag-zone"
+      class="px-4 pt-4 pb-1 h-full w-full overflow-hidden"
+      @dragenter.prevent="updateDragZoneStyles"
+      @dragleave.prevent="updateDragZoneStyles"
+      @dragover.prevent
+      @drop.prevent="updateDragZoneStyles"
     >
-      <div v-if="!dragZoneActive" class="px-4 overflow-hidden mt-4">
-        <div class="overflow-y-scroll h-full" ref="root">
-          <div ref="viewport" :style="viewportStyle">
-            <div ref="spacer" :style="spacerStyle">
-              <SongRow
-                v-for="(song, index) in visibleItems"
-                :key="index"
-                :source="song"
-                :index="startIndex + index"
-              ></SongRow>
-            </div>
+      <div
+        v-if="!dragZoneActive && !processing && !manualOpen && songs.length > 0"
+        class="overflow-y-scroll h-full pointer-event-none"
+        ref="root"
+      >
+        <div ref="viewport" :style="viewportStyle" class="">
+          <div ref="spacer" :style="spacerStyle" class="">
+            <SongRow
+              class=""
+              v-for="(song, index) in visibleItems"
+              :key="index"
+              :source="song"
+              :index="startIndex + index"
+            ></SongRow>
           </div>
         </div>
       </div>
+
       <div
-        v-else-if="dragZoneActive"
-        class="h-full w-full flex justify-center items-center text-gray-300 drag-zone"
+        v-else-if="
+          dragZoneActive || processing || manualOpen || songs.length < 1
+        "
+        class="h-full w-full flex justify-center items-center text-gray-300 drag-zone pointer-events-none"
       >
         <div
           class="w-5/6 h-5/6 border-dashed border-4 border-gray-600 rounded-md shadow-md flex flex-col justify-center items-center"
           :class="{ 'bg-gray-600 opacity-75': dragZoneActive }"
         >
-          <!--  -->
           <div
             v-if="!dragZoneActive && !processing"
-            class="flex flex-col justify-center items-center pointer-events-none"
+            class="flex flex-col justify-center items-center"
           >
             <div class="p-2 text-2xl">Drag Your Music Here!</div>
-            <div class="p-2 text-2xl">Or</div>
-            <div class="p-2 text-2xl">Click The Plus Button!</div>
+            <!-- <div class="p-2 text-2xl">Or</div>
+            <div class="p-2 text-2xl">Click The Plus Button!</div> -->
           </div>
-          <!--  -->
+
           <div
             v-else-if="dragZoneActive"
-            class="mdi mdi-plus text-9xl text-gray-800 pointer-events-none"
+            class="mdi mdi-plus text-9xl text-gray-800"
           ></div>
-          <!--  -->
+
           <div
-            v-else-if="!dragZoneActive && processing"
-            class=""
-            @dragenter.prevent.self
-            @dragleave.prevent.self
-            @dragover.prevent.self
-            @drop.prevent.self
+            v-else-if="
+              (!dragZoneActive && processing) || (!dragZoneActive && manualOpen)
+            "
           >
+            <div
+              class="mdi mdi-close text-2xl"
+              @click="toggleOpen(false)"
+            ></div>
             <div class="text-2xl m-2">
               Discovered
               <span class="text-green-500 mx-2 text-3xl">{{
@@ -173,6 +189,8 @@
         </div>
       </div>
     </div>
+
+    <!-- End Contents -->
   </div>
 </template>
 
@@ -199,9 +217,6 @@ const passiveSupportMixin = {
             return false;
           }
         };
-
-        window.addEventListener('test', null, options);
-        window.removeEventListener('test', null, options);
       } catch (err) {
         passiveSupported = false;
       }
@@ -236,7 +251,8 @@ export default {
       nodePadding: 20,
       rootHeight: 400,
       railMode: 'incative',
-      dragZoneActive: false
+      dragZoneActive: false,
+      manualOpen: false
       // processing: false
       // songsToProcessCount: 0
     };
@@ -352,25 +368,34 @@ export default {
     log(d) {
       console.log(d);
     },
+    toggleOpen(value) {
+      this.manualOpen = value;
+    },
+    reloadLibrary() {
+      this.$store.dispatch('library/loadLibrary');
+    },
     updateDragZoneStyles(event) {
-      console.log(event.type, 'here');
-      if (event.type === 'dragenter') {
-        this.dragZoneActive = true;
-      } else if (event.type === 'drop') {
-        this.dragZoneActive = false;
+      // console.log(event);
+      console.log(event.type, event.target.id);
+      if (event.target.id === 'drag-zone') {
+        if (event.type === 'dragenter') {
+          this.dragZoneActive = true;
+        } else if (event.type === 'drop') {
+          this.dragZoneActive = false;
 
-        // when dragged from desktop
-        // Todo: handle drag from computer or from app
-        let paths = [];
-        event.dataTransfer.files.forEach(file => {
-          paths.push(file.path);
-        });
+          // when dragged from desktop
+          // Todo: handle drag from computer or from app
+          let paths = [];
+          event.dataTransfer.files.forEach(file => {
+            paths.push(file.path);
+          });
 
-        this.$store.dispatch('library/findSongs', paths).then(x => {
-          console.log(x);
-        });
-      } else {
-        this.dragZoneActive = false;
+          this.$store.dispatch('library/findSongs', paths).then(x => {
+            console.log(x);
+          });
+        } else {
+          this.dragZoneActive = false;
+        }
       }
     },
     // updateDragZoneStyles: _.debounce(function(event) {

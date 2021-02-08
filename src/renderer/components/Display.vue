@@ -5,17 +5,17 @@
     <div class="h-20 flex-grow">
       <div class="h-full overflow-auto relative">
         <!-- Todo - Header Bar: not using yet - make a component -->
-        <div class="h-12 absolute top-0 w-full flex items-center menu-bar">
+        <div class="h-10 absolute top-0 w-full flex items-center menu-bar">
           <div
             class="text-white h-full w-full flex justify-between items-center mx-4"
           >
             <div class=""></div>
             <div class="flex w-1/12 justify-end items-center">
               <div
-                class="mr-4 mdi mdi-account-outline text-2xl text-gray-300 hover:text-green-500 cursor-pointer"
+                class="mr-4 mdi mdi-account-outline text-xl text-gray-300 hover:text-green-500 cursor-pointer"
               ></div>
               <div
-                class="mdi mdi-cog-outline text-2xl text-gray-300 hover:text-green-500 cursor-pointer"
+                class="mdi mdi-cog-outline text-xl text-gray-300 hover:text-green-500 cursor-pointer"
               ></div>
             </div>
           </div>
