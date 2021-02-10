@@ -3,6 +3,8 @@
     <!-- <div class="h-1 bg-gray-700"></div> -->
     <div class="flex h-full justify-between">
       <!-- song peak -->
+      <!-- todo: click on song to navigate to position in library -->
+      <!-- todo: add quick actions -->
       <div class="flex-initial self-center flex flex-col w-4/12">
         <div v-if="songOnDeck" class="ml-4">
           <div class="flex items-center">
@@ -87,7 +89,7 @@
         </div>
       </div>
     </div>
-    <div class="h-0.5" :class="processing ? `incative` : `inactive`"></div>
+    <!-- <div class="h-0.5" :class="processing ? `incative` : `inactive`"></div> -->
   </div>
 </template>
 

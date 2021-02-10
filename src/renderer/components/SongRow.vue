@@ -1,14 +1,14 @@
 <template>
   <div
-    class="text-gray-300 h-14 p-2 hover:bg-gray-700"
+    class="text-gray-300 h-14 p-2 hover:bg-gray-600 song-row-item"
     :class="isInFocus"
     @click="setFocusedSong"
     @mouseover="hover = true"
     @mouseleave="hover = false"
   >
-    <div class="flex flex-row justify-items-start">
+    <div class="flex flex-row justify-items-start pointer-events-none">
       <!--  -->
-      <div class="w-12 flex items-center mx-2 flex-none">
+      <div class="w-12 flex items-center mx-2 flex-none pointer-events-auto">
         <div class="align-middle">
           <div
             v-if="hover"
@@ -43,11 +43,13 @@
             <router-link
               v-if="source.songs[0].artist"
               :to="`/artist/${source.songs[0].artist}`"
-              class="text-sm text-gray-400 hover:text-gray-300 link"
+              class="text-sm text-gray-400 hover:text-gray-300 link pointer-events-auto"
             >
               {{ truncate(source.songs[0].artist) }}
             </router-link>
-            <div v-else class="text-sm text-gray-400">...</div>
+            <div v-else class="text-sm text-gray-400 pointer-events-auto">
+              ...
+            </div>
           </div>
         </div>
       </div>
@@ -56,7 +58,7 @@
         <router-link
           v-if="source.songs[0].artist"
           :to="`/album/${source.songs[0].album}`"
-          class="link"
+          class="link pointer-events-auto"
         >
           {{ truncate(source.songs ? source.songs[0].album : "nope") }}
         </router-link>
@@ -64,7 +66,9 @@
       <!-- <div>Sometdin</div> -->
       <div class="flex justify-around items-center h-10 w-4/12">
         <div class="flex">
-          <div class="mdi mdi-heart-outline hover:text-red-500"></div>
+          <div
+            class="mdi mdi-heart-outline text-gray-400 hover:text-red-500 cursor-pointer pointer-events-auto"
+          ></div>
           <div class="pl-2 pr-2 w-20 flex justify-center">
             <!-- Todo: make this accurate -->
             <div>
@@ -72,14 +76,19 @@
             </div>
           </div>
           <div class="relative">
-            <div
-              class="mdi mdi-dots-horizontal hover:text-white select-auto"
-            ></div>
             <!-- <div
               class="mdi mdi-dots-horizontal hover:text-white select-auto"
-              v-on:click="showOptions(song, index)"
             ></div> -->
-            <!-- <div
+            <div
+              class="mdi select-auto cursor-pointer pointer-events-auto text-gray-400"
+              :class="
+                source.songs.length > 1
+                  ? 'mdi-music-box-multiple-outline text-yellow-300 hover:text-yellow-200'
+                  : 'mdi-dots-horizontal hover:text-white'
+              "
+              v-on:click="showOptions(source, index)"
+            ></div>
+            <div
               v-if="songToShowOptions === index"
               class="absolute h-auto w-48 bg-gray-900 rounded-sm shadow-2xl top-8 -left-24 z-50"
             >
@@ -100,7 +109,7 @@
               <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
                 Other Stuff
               </div>
-            </div> -->
+            </div>
           </div>
         </div>
       </div>
@@ -127,7 +136,8 @@ export default {
   data() {
     return {
       maxLength: 30,
-      hover: false
+      hover: false,
+      songToShowOptions: null
     };
   },
   created() {
@@ -146,6 +156,14 @@ export default {
         song: this.source,
         index: this.index
       });
+    },
+    showOptions(song, index) {
+      if (this.songToShowOptions === index) {
+        this.songToShowOptions = null;
+      } else {
+        this.songToShowOptions = index;
+      }
+      console.log(song, index);
     },
     playPauseThis() {
       this.$store.dispatch('player/playThis', this.source);
@@ -186,7 +204,7 @@ export default {
   computed: {
     isInFocus: function() {
       if (this.$store.state.app.songInFocusIndex === this.index) {
-        return 'bg-gray-600';
+        return 'bg-gray-700';
       }
 
       return '';

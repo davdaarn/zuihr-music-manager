@@ -1,5 +1,11 @@
 <template>
-  <div id="content-body" class="bg-blueGray-800 select-none" :class="theme">
+  <div
+    id="content-body"
+    class="bg-gray-800 select-none"
+    :class="theme"
+    @click.right="rightClick"
+    @contextmenu.prevent
+  >
     <Content id="content" />
   </div>
 </template>
@@ -13,12 +19,17 @@ export default {
   components: {
     Content
   },
-
   data() {
     return {
       // theme: 'dark' // 'dark' or null
       theme: 'theme-default-dark'
     };
+  },
+  methods: {
+    rightClick(e) {
+      console.log(e);
+      console.log(e.target.classList.value.includes('song-row-item'));
+    }
   },
   created() {
     this.$store.dispatch('library/loadLibrary');
@@ -29,5 +40,9 @@ export default {
 <style>
 body::-webkit-scrollbar {
   display: none;
+}
+
+.point-to-me {
+  pointer-events: all;
 }
 </style>
