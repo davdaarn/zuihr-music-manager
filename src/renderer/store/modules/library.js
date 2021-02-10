@@ -95,7 +95,7 @@ const mutations = {
   LOAD_LIBRARY(state, value) {
     console.log('loading library', value);
     state.library = value;
-    state.filteredSongs = value;
+    // state.filteredSongs = value;
   },
   SET_FILTERED_SONGS(state, value) {
     state.filteredSongs = value;

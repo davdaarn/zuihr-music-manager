@@ -240,7 +240,7 @@ export default {
       maxLength: 40,
       focusedSong: 0,
       songs: [],
-      // filteredSongs: [],
+      filteredSongs: [],
       showPlayPauseButton: null,
       totalContentHeight: null,
       rowHeight: 55.99,
@@ -265,9 +265,9 @@ export default {
       existingSongCount: state => state.library.existingSongCount,
       duplicateSongCount: state => state.library.duplicateSongCount,
       songsToProcessCount: state => state.library.songsToProcessCount,
-      processingSongNumber: state => state.library.processingSongNumber,
+      processingSongNumber: state => state.library.processingSongNumber
       // todo: maybe this should stay local...
-      filteredSongs: state => state.library.filteredSongs
+      // filteredSongs: state => state.library.filteredSongs
     }),
     //
     /**
@@ -340,7 +340,7 @@ export default {
   watch: {
     '$store.state.library.library'(state) {
       this.songs = state;
-      // this.filteredSongs = state;
+      this.filteredSongs = state;
     },
 
     '$store.state.app.songInFocusIndex'(state) {
@@ -348,34 +348,28 @@ export default {
     },
 
     songs: function(newsongs, oldsongs) {
-      console.log(newsongs.length, oldsongs.length);
       this.totalContentHeight = newsongs.length * this.rowHeight;
-      console.log(this.totalContentHeight);
     },
+
     userSearch: _.debounce(function(e) {
       let query = this.userSearch;
       if (query.length < 1 || typeof query === 'undefined' || query === null) {
-        if (
-          this.$store.library &&
-          this.$store.library.filteredSongs.length < this.songs.length
-        ) {
-          // this.filteredSongs = this.songs;
-          this.$store.dispatch('library/setFilteredSongs', this.songs);
+        if (this.filteredSongs.length < this.songs.length) {
+          this.filteredSongs = this.songs;
+          // this.$store.dispatch('library/setFilteredSongs', this.songs);
         }
         // ignore empty or whitespace
       } else if (query.replace(/\s*/g, '').length < 1) {
-        if (
-          this.$store.library &&
-          this.$store.library.filteredSongs.length < this.songs.length
-        ) {
+        if (this.filteredSongs.length < this.songs.length) {
           // this.filteredSongs = this.songs;
-          this.$store.dispatch('library/setFilteredSongs', this.songs);
+          // this.$store.dispatch('library/setFilteredSongs', this.songs);
         }
       } else {
         let filteredSongs = this.songs.filter(s => {
           return s._id.toLowerCase().includes(query.toLowerCase());
         });
-        this.$store.dispatch('library/setFilteredSongs', filteredSongs);
+        this.filteredSongs = filteredSongs;
+        // this.$store.dispatch('library/setFilteredSongs', filteredSongs);
       }
     }, 300)
   },
@@ -466,7 +460,7 @@ export default {
   },
   created() {
     this.songs = this.$store.state.library.library;
-    // this.filteredSongs = this.songs;
+    this.filteredSongs = this.songs;
   },
   mounted() {
     // todo: maybe replce with v-on:scroll.capture ???
