@@ -19,7 +19,7 @@ const actions = {
 
 const mutations = {
   SET_SONG_IN_FOCUS(state, value) {
-    // console.log(value);
+    console.log(value.index);
     state.songInFocus = value.song;
     state.songInFocusIndex = value.index;
   },

@@ -4,6 +4,7 @@ const {
 
 const state = {
   library: [],
+  filteredSongs: [],
   // 
   isSearching: false,
   isPlayingSong: false,
@@ -25,6 +26,10 @@ const getters = {
 };
 
 const actions = {
+  async setFilteredSongs(context, value) {
+    context.commit('SET_FILTERED_SONGS', value);
+  },
+
   async setProcessing(context, value) {
     context.commit('SET_PROCESSING', value);
   },
@@ -90,6 +95,10 @@ const mutations = {
   LOAD_LIBRARY(state, value) {
     console.log('loading library', value);
     state.library = value;
+    state.filteredSongs = value;
+  },
+  SET_FILTERED_SONGS(state, value) {
+    state.filteredSongs = value;
   },
   SET_SEARCHING(state, value) {
     state.isSearching = value;

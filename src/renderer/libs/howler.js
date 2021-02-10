@@ -2435,7 +2435,7 @@
 
       xhr.onload = function () {
         // Make sure we get a successful response back.
-        console.log(xhr);
+        // console.log(xhr);
         var code = (xhr.status + '')[0];
         if (code !== '0' && code !== '2' && code !== '3') {
           self._emit('loaderror', null, 'Failed loading audio file with status: ' + xhr.status + '.');
@@ -2466,7 +2466,7 @@
     try {
       xhr.send();
     } catch (e) {
-      console.log(e);
+      console.error(e);
       xhr.onerror();
     }
   };

@@ -81,10 +81,18 @@
         <div class="flex py-2">
           <div
             class="mdi text-2xl text-theme-text-active self-center cursor-pointer"
-            :class="volumeIcon()"
+            :class="volumeIcon"
           ></div>
           <div class="pl-3 pr-3 volume flex flex-col justify-center">
-            <input type="range" min="0" :max="100" :value="volume" />
+            <input
+              type="range"
+              min="0"
+              :max="100"
+              :value="playerVolume"
+              @mousedown="volumeControl"
+              @mouseup="volumeControl"
+              @input="volumeControl"
+            />
           </div>
         </div>
       </div>
@@ -108,8 +116,7 @@ export default {
       max: 0,
       deg: 0,
       railMode: 'inactive',
-      haltTrackUpdate: false,
-      volume: 50
+      haltTrackUpdate: false
     };
   },
   watch: {
@@ -130,13 +137,26 @@ export default {
       processingSongNumber: state => state.library.processingSongNumber,
       songOnDeck: state => state.player.onDeck.song,
       playerState: state => state.player.playerState,
-      playerVolume: state => state.player.playerVolume
+      playerVolume: state => state.player.playerVolume * 100
     }),
     playIcon() {
       if (this.playerState === playerState.playing) {
         return 'mdi-motion-pause-outline text-gray-300';
       } else {
         return 'mdi-motion-play-outline';
+      }
+    },
+    volumeIcon() {
+      if (this.playerVolume > 75) {
+        return 'mdi-volume-high';
+      } else if (this.playerVolume <= 75 && this.playerVolume > 25) {
+        return 'mdi-volume-medium';
+      } else if (this.playerVolume <= 25 && this.playerVolume > 0) {
+        return 'mdi-volume-low';
+      } else if (this.playerVolume === 0) {
+        return 'mdi-volume-variant-off';
+      } else {
+        return 'mdi-volume-variant-off';
       }
     }
   },
@@ -145,7 +165,6 @@ export default {
       playNext: 'player/playNext'
     }),
     seekControl(e) {
-      console.log(e);
       if (e.type === 'mousedown') {
         this.haltTrackUpdate = true;
         this.track = e.target.value;
@@ -163,6 +182,11 @@ export default {
         this.track = e.target.value;
       } else {
         this.haltTrackUpdate = false;
+      }
+    },
+    volumeControl(e) {
+      if (e.type === 'input') {
+        this.$store.dispatch('player/setVolume', e.target.value / 100);
       }
     },
     playPause() {
@@ -200,9 +224,6 @@ export default {
       setTimeout(() => {
         this.seeker();
       }, 1000);
-    },
-    volumeIcon() {
-      return 'mdi-volume-high';
     }
   },
   created() {

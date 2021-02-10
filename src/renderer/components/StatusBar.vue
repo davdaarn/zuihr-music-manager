@@ -1,7 +1,13 @@
 <template>
-  <div class="flex justify-between w-full h-6 bg-gray-900 text-gray-500">
+  <div
+    class="flex justify-between w-full h-6 bg-gray-900 text-gray-500 text-sm"
+  >
     <!-- left -->
-    <div></div>
+    <div class="flex mx-2">
+      <div>
+        <span class="">{{ totalSongs }}</span> songs in library
+      </div>
+    </div>
     <!-- middle -->
     <div class="flex">
       <!-- <div>{{ songsToProcessCount }}</div> -->
@@ -34,7 +40,9 @@ export default {
   },
   computed: {
     ...mapState({
-      songsToProcessCount: state => state.library.songsToProcessCount
+      songsToProcessCount: state => state.library.songsToProcessCount,
+      totalSongs: state =>
+        new Intl.NumberFormat().format(state.library.library.length)
     })
   }
 };

@@ -15,7 +15,7 @@ const state = {
   repeat: false,
   shuffle: false,
   playerState: playerState.stopped,
-  playerVolume: 0.5,
+  playerVolume: 0.25,
   playerMuted: false,
   processingSongs: false,
 };
@@ -115,7 +115,14 @@ const actions = {
   },
 
   setVolume(context, value) {
-    context.commit('SET_PLAYER_VOLUME', value)
+    if (value < 0 || value > 1) {
+      // don't update...
+    } else {
+      context.commit('SET_PLAYER_VOLUME', value)
+      if (context.state.onDeck.howl) {
+        context.state.onDeck.howl.volume(value);
+      }
+    }
   }
 };
 

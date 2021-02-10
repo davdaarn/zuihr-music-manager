@@ -184,7 +184,7 @@ const processSongs = () => {
           image256: image256 ? image256 : null,
         }
 
-        // Todo: better id generation
+        // Todo: better id generation. Maybe remove spaces to simplify search process
         const uid = `${title}${album}${artist}`;
 
         const song = {

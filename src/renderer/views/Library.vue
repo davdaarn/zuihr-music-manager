@@ -15,7 +15,7 @@
         <div class="relative">
           <img
             class="w-32 h-32 bg-cover shadow-2xl rounded-lg"
-            :src="`data:image/jpg;base64, ${songs[focusedSong].songs[0].albumArt.image256}`"
+            :src="`data:image/jpg;base64, ${filteredSongs[focusedSong].songs[0].albumArt.image256}`"
           />
           <!-- <div
             class="absolute mdi mdi-play-circle text-theme-text-active hover:text-green-500 text-5xl top-32 right-6 shadow-2xl rounded-full"
@@ -28,10 +28,10 @@
         >
           <!-- <div class="flex-grow"></div> -->
           <div class="text-gray-300 text-5xl">
-            {{ truncate(songs[focusedSong].songs[0].title) }}
+            {{ truncate(filteredSongs[focusedSong].songs[0].title) }}
           </div>
           <div class="text-gray-300 text-xl pt-4 pl-2">
-            {{ songs[focusedSong].songs[0].artist }}
+            {{ filteredSongs[focusedSong].songs[0].artist }}
           </div>
         </div>
       </div>
@@ -51,6 +51,7 @@
             placeholder="Search"
             class="px-4 py-2 rounded-md bg-gray-700 focus:outline-none border border-solid border-gray-700 focus:border-green-500 disabled:opacity-25"
             :disabled="songs.length < 1 ? true : false"
+            v-model="userSearch"
           />
         </div>
         <!-- center -->
@@ -235,24 +236,21 @@ export default {
     return {
       songComponent: SongRow,
       placeHolderImage: placeHolderImage,
-      emptyArr: new Array(10).fill(-1),
-      songToShowOptions: null,
+      // emptyArr: new Array(10).fill(-1),
       maxLength: 40,
-      showRowsPerPage: false,
-      currentPage: 1,
-      songsPerPage: 50, // Todo: $db.settings.songsPerPage
       focusedSong: 0,
       songs: [],
-      filteredSongs: [],
+      // filteredSongs: [],
       showPlayPauseButton: null,
       totalContentHeight: null,
-      rowHeight: 55.99, // Todo: get from dom element
+      rowHeight: 55.99,
       scrollTop: 0,
       nodePadding: 0,
-      rootHeight: 400,
+      rootHeight: 1500,
       railMode: 'incative',
       dragZoneActive: false,
-      manualOpen: false
+      manualOpen: false,
+      userSearch: ''
       // processing: false
       // songsToProcessCount: 0
     };
@@ -267,7 +265,9 @@ export default {
       existingSongCount: state => state.library.existingSongCount,
       duplicateSongCount: state => state.library.duplicateSongCount,
       songsToProcessCount: state => state.library.songsToProcessCount,
-      processingSongNumber: state => state.library.processingSongNumber
+      processingSongNumber: state => state.library.processingSongNumber,
+      // todo: maybe this should stay local...
+      filteredSongs: state => state.library.filteredSongs
     }),
     //
     /**
@@ -301,13 +301,13 @@ export default {
     Subset of items shown from the full array
     */
     visibleItems() {
-      return this.songs.slice(
+      return this.filteredSongs.slice(
         this.startIndex,
         this.startIndex + this.visibleNodeCount
       );
     },
     itemCount() {
-      return this.songs.length;
+      return this.filteredSongs.length;
     },
     /**
     The amount by which we need to translateY the items shown on the screen so that the scrollbar shows up correctly
@@ -339,20 +339,9 @@ export default {
   },
   watch: {
     '$store.state.library.library'(state) {
-      console.log('watching state...');
       this.songs = state;
-      this.filteredSongs = state.slice(0, this.songsPerPage);
-      console.log(this.songs.length);
+      // this.filteredSongs = state;
     },
-
-    // '$store.state.library.processing'(state) {
-    //   console.log(state);
-    //   this.processing = state;
-    // },
-
-    // '$store.state.library.songsToProcessCount'(state) {
-    //   this.songsToProcessCount = state;
-    // },
 
     '$store.state.app.songInFocusIndex'(state) {
       this.focusedSong = state;
@@ -362,7 +351,33 @@ export default {
       console.log(newsongs.length, oldsongs.length);
       this.totalContentHeight = newsongs.length * this.rowHeight;
       console.log(this.totalContentHeight);
-    }
+    },
+    userSearch: _.debounce(function(e) {
+      let query = this.userSearch;
+      if (query.length < 1 || typeof query === 'undefined' || query === null) {
+        if (
+          this.$store.library &&
+          this.$store.library.filteredSongs.length < this.songs.length
+        ) {
+          // this.filteredSongs = this.songs;
+          this.$store.dispatch('library/setFilteredSongs', this.songs);
+        }
+        // ignore empty or whitespace
+      } else if (query.replace(/\s*/g, '').length < 1) {
+        if (
+          this.$store.library &&
+          this.$store.library.filteredSongs.length < this.songs.length
+        ) {
+          // this.filteredSongs = this.songs;
+          this.$store.dispatch('library/setFilteredSongs', this.songs);
+        }
+      } else {
+        let filteredSongs = this.songs.filter(s => {
+          return s._id.toLowerCase().includes(query.toLowerCase());
+        });
+        this.$store.dispatch('library/setFilteredSongs', filteredSongs);
+      }
+    }, 300)
   },
   methods: {
     log(d) {
@@ -398,27 +413,6 @@ export default {
         }
       }
     },
-    // updateDragZoneStyles: _.debounce(function(event) {
-    //   console.log(event.type, 'here');
-    //   if (event.type === 'dragenter' && !this.processing) {
-    //     this.dragZoneActive = true;
-    //   } else if (event.type === 'drop') {
-    //     this.dragZoneActive = false;
-
-    //     // when dragged from desktop
-    //     // Todo: handle drag from computer or from app
-    //     let paths = [];
-    //     event.dataTransfer.files.forEach(file => {
-    //       paths.push(file.path);
-    //     });
-
-    //     this.$store.dispatch('library/findSongs', paths).then(x => {
-    //       console.log(x);
-    //     });
-    //   } else {
-    //     this.dragZoneActive = false;
-    //   }
-    // }, 300),
     findSongs() {},
     shadow() {
       return '';
@@ -426,19 +420,22 @@ export default {
     handleScroll(event) {
       this.scrollTop = this.$refs.root.scrollTop;
     },
+    handleResize() {
+      this.rootHeight = this.$refs.root.clientHeight;
+    },
     playThis() {
-      this.$store.dispatch('player/playThis', this.songs[this.focusedSong]);
+      this.$store.dispatch(
+        'player/playThis',
+        this.filteredSongs[this.focusedSong]
+      );
     },
     getBackground() {
-      // console.log(this.focusedSong);
-      // console.log(this.songs[this.focusedSong]);
-
       if (
         this.focusedSong !== null &&
-        this.songs[this.focusedSong] &&
-        this.songs[this.focusedSong].songs[0].colorPalette
+        this.filteredSongs[this.focusedSong] &&
+        this.filteredSongs[this.focusedSong].songs[0].colorPalette
       ) {
-        let p = this.songs[this.focusedSong].songs[0].colorPalette;
+        let p = this.filteredSongs[this.focusedSong].songs[0].colorPalette;
         return `linear-gradient(45deg, ${p.DarkMuted.hex}, ${p.DarkMuted.hex}, ${p.DarkMuted.hex})`;
       }
 
@@ -446,7 +443,6 @@ export default {
       // return 'linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)';
     },
     renderImage(song) {
-      // console.log('cheese');
       // console.log(song.songs[0].albumArt.image64);
       if (song.songs[0].albumArt.image64) {
         let buffer = Buffer.from(song.songs[0].albumArt.image64);
@@ -460,45 +456,17 @@ export default {
       }
       return this.placeHolderImage;
     },
-    // setFocusedSong(song, index) {
-    //   this.focusedSong = index;
-    //   this.$store.dispatch('app/setSongInFocus', { song });
-    // },
-    songToShow() {
-      return this.$store.state.allSongs;
-    },
-    songsPerPageDropDown() {
-      this.showRowsPerPage = !this.showRowsPerPage;
-    },
-    updateSongsPerPage(count) {
-      this.songsPerPage = count;
-      this.filteredSongs = this.songs.slice(0, count);
-    },
     truncate(text) {
       if (text.length > this.maxLength) {
         return text.substring(0, this.maxLength) + '...';
       } else {
         return text;
       }
-    },
-    showOptions(song, index) {
-      if (this.songToShowOptions === index) {
-        this.songToShowOptions = null;
-      } else {
-        this.songToShowOptions = index;
-      }
-      // console.log(song, index);
-    },
-    mouseup(e) {
-      console.log(e);
-    },
-    mousedown(e) {
-      console.log(e);
     }
   },
   created() {
     this.songs = this.$store.state.library.library;
-    this.filteredSongs = this.songs.slice(0, this.songsPerPage);
+    // this.filteredSongs = this.songs;
   },
   mounted() {
     // todo: maybe replce with v-on:scroll.capture ???
@@ -507,11 +475,13 @@ export default {
       this.handleScroll,
       this.doesBrowserSupportPassiveScroll() ? { passive: true } : false
     );
+
+    window.addEventListener('resize', this.handleResize);
+
     this.rootHeight = this.$refs.root.clientHeight;
     if (this.$refs && this.$refs.spacer && this.$refs.spacer.children[0]) {
       this.rowHeight = this.$refs.spacer.children[0].clientHeight || 55.9;
     }
-
     // console.log();
     // const largestHeight = this.calculateInitialRowHeight();
     // this.rowHeight =
@@ -519,10 +489,13 @@ export default {
     //     ? largestHeight
     //     : 30;
   },
+  ready: function() {},
   beforeDestroy() {
     if (this.$refs.root) {
       this.$refs.root.removeEventListener('scroll', this.handleScroll);
     }
+
+    window.removeEventListener('resize', this.handleResize);
   }
 };
 </script>
