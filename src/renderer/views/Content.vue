@@ -3,7 +3,7 @@
     <div class="flex flex-col h-screen">
       <div class="flex-grow flex max-h-screen">
         <!-- sidebar -->
-        <Sidebar class="w-72" />
+        <Sidebar class="w-72 sidebar" />
         <!-- content -->
         <Display class="w-full" />
         <!-- </div> -->
@@ -36,16 +36,12 @@ export default {
 </script>
 
 <style >
-::-webkit-scrollbar-track {
-  /* background-color: dimgray; */
-}
+/* ::-webkit-scrollbar-track {
+  background-color: rgb(71, 71, 71);
+} */
 
 ::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar:hover {
-  width: 8px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -54,7 +50,6 @@ export default {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  border-radius: 10px;
-  background-color: rgb(104, 104, 104);
+  background-color: rgb(112, 112, 112);
 }
 </style>

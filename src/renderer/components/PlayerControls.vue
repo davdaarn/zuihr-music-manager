@@ -11,7 +11,7 @@
               :src="`data:image/jpg;base64, ${songOnDeck.songs[0].albumArt.image64}`"
             />
 
-            <div class="pl-2 flex flex-col text-gray-300">
+            <div class="pl-4 flex flex-col text-gray-300">
               <div class="">
                 {{
                   truncate(
@@ -52,6 +52,7 @@
           ></span>
           <span
             class="mdi mdi-skip-next-outline hover:text-theme-text-active text-2xl"
+            @click="playNext()"
           ></span>
           <span
             class="mdi mdi-repeat hover:text-theme-text-active text-xl"
@@ -74,15 +75,25 @@
         </div>
       </div>
       <!-- volume -->
-      <div class="flex-initial self-center flex flex-col w-4/12"></div>
+      <div class="self-center flex flex-col w-4/12 items-end mr-4">
+        <div class="flex py-2">
+          <div
+            class="mdi text-2xl text-theme-text-active self-center cursor-pointer"
+            :class="volumeIcon()"
+          ></div>
+          <div class="pl-3 pr-3 volume flex flex-col justify-center">
+            <input type="range" min="0" :max="100" :value="volume" />
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="h-1" :class="processing ? `incative` : `inactive`"></div>
+    <div class="h-0.5" :class="processing ? `incative` : `inactive`"></div>
   </div>
 </template>
 
 <script>
 import { playerState } from '../types';
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
   name: 'PlayerControls',
@@ -95,7 +106,8 @@ export default {
       max: 0,
       deg: 0,
       railMode: 'inactive',
-      haltTrackUpdate: false
+      haltTrackUpdate: false,
+      volume: 50
     };
   },
   watch: {
@@ -115,7 +127,8 @@ export default {
       songsToProcessCount: state => state.library.songsToProcessCount,
       processingSongNumber: state => state.library.processingSongNumber,
       songOnDeck: state => state.player.onDeck.song,
-      playerState: state => state.player.playerState
+      playerState: state => state.player.playerState,
+      playerVolume: state => state.player.playerVolume
     }),
     playIcon() {
       if (this.playerState === playerState.playing) {
@@ -126,6 +139,9 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      playNext: 'player/playNext'
+    }),
     seekControl(e) {
       console.log(e);
       if (e.type === 'mousedown') {
@@ -182,6 +198,9 @@ export default {
       setTimeout(() => {
         this.seeker();
       }, 1000);
+    },
+    volumeIcon() {
+      return 'mdi-volume-high';
     }
   },
   created() {
@@ -211,8 +230,7 @@ export default {
     #15617c,
     #15617c,
     #15617c,
-    #15617c,
-    // #15617c
+    #15617c
   );
   background-size: 200% 200%;
   animation: Processing 2s ease infinite;
@@ -248,6 +266,13 @@ input[type="range"] {
   transition: opacity 0.3s;
 }
 
+.volume input[type="range"] {
+  -webkit-appearance: none;
+  width: 200px;
+  height: 8px;
+  box-shadow: none;
+}
+
 input[type="range"]:hover {
   opacity: 1;
 }
@@ -262,14 +287,29 @@ input[type="range"]::-webkit-slider-thumb {
   box-shadow: -403px 0 0 400px #d1d1d1;
 }
 
+.volume input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 8px;
+  height: 8px;
+  box-shadow: -203px 0 0 200px #d1d1d1;
+}
+
 input[type="range"]:hover::-webkit-slider-thumb {
   background: #53be57;
   box-shadow: -403px 0 0 400px #53be57;
+}
+
+.volume input[type="range"]:hover::-webkit-slider-thumb {
+  box-shadow: -203px 0 0 200px #53be57;
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
   height: 10px;
   background: #5757576c;
   border: none;
+}
+
+.volume input[type="range"]::-webkit-slider-runnable-track {
+  height: 8px;
 }
 </style>

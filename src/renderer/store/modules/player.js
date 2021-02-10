@@ -42,12 +42,29 @@ const mutations = {
   SET_PLAYER_STATE(state, value) {
     state.playerState = value;
   },
+  SET_PLAYER_VOLUME(state, value) {
+    state.playerVolume = value;
+  },
 };
 const actions = {
   async playPrevious(context) {},
+
   async playNext(context) {
-    console.log('****************PLAY_NEXT*******************');
+    // todo: determine queue position and run next song logic
+    // queue position
+    // repeat
+    // shuffle
+    // discovery mode
+    // previous 1000
+
+    
+    let totalSongsInLibrary = context.rootState.library.library.length
+    if (totalSongsInLibrary > 0) {
+      context.dispatch('playThis', 
+      context.rootState.library.library[Math.floor(Math.random() * Math.floor(totalSongsInLibrary))])
+    }
   },
+
   async playThis(context, song) {
     let deck = context.state.onDeck;
     if (deck.howl && deck.song && deck.song._id === song._id) {
@@ -95,6 +112,10 @@ const actions = {
 
     }
 
+  },
+
+  setVolume(context, value) {
+    context.commit('SET_PLAYER_VOLUME', value)
   }
 };
 

@@ -84,7 +84,7 @@
         ></div>
       </div>
       <div
-        class="h-1 z-50"
+        class="h-0.5 z-50"
         :class="processing ? 'processing' : 'inactive'"
       ></div>
     </div>
@@ -248,7 +248,7 @@ export default {
       totalContentHeight: null,
       rowHeight: 55.99, // Todo: get from dom element
       scrollTop: 0,
-      nodePadding: 20,
+      nodePadding: 0,
       rootHeight: 400,
       railMode: 'incative',
       dragZoneActive: false,
@@ -498,7 +498,6 @@ export default {
   },
   created() {
     this.songs = this.$store.state.library.library;
-
     this.filteredSongs = this.songs.slice(0, this.songsPerPage);
   },
   mounted() {
@@ -509,6 +508,10 @@ export default {
       this.doesBrowserSupportPassiveScroll() ? { passive: true } : false
     );
     this.rootHeight = this.$refs.root.clientHeight;
+    if (this.$refs && this.$refs.spacer && this.$refs.spacer.children[0]) {
+      this.rowHeight = this.$refs.spacer.children[0].clientHeight || 55.9;
+    }
+
     // console.log();
     // const largestHeight = this.calculateInitialRowHeight();
     // this.rowHeight =
