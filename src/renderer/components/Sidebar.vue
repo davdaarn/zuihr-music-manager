@@ -1,11 +1,16 @@
 <template>
   <div class="flex flex-col">
-    <div class="h-20 p-4 text-theme-text-active">Fancy Logo</div>
+    <div
+      class="h-20 mx-20 my-2 bg-contain bg-no-repeat bg-center"
+      :style="{ backgroundImage: `url(${logo_blue})` }"
+    ></div>
 
-    <div class="h-40 flex flex-col justify-around">
-      <router-link to="/">
-        <div class="pl-6 pt-2 cursor-pointer">
-          <span class="mdi mdi-home text-theme-text-active"></span>
+    <div class="p-2 flex flex-col justify-around">
+      <router-link to="/" class="rounded">
+        <div class="p-2 cursor-pointer flex items-center">
+          <span
+            class="pr-2 mdi mdi-home text-theme-text-active text-2xl"
+          ></span>
           <span class="text-theme-text-active">Home</span>
         </div>
       </router-link>
@@ -15,9 +20,11 @@
           <span class="text-theme-text-active">Test</span>
         </div>
       </router-link> -->
-      <router-link to="/library">
-        <div class="pl-6 pt-2 cursor-pointer">
-          <span class="mdi mdi-playlist-music text-theme-text-active"></span>
+      <router-link to="/library" class="rounded">
+        <div class="p-2 cursor-pointer flex items-center">
+          <span
+            class="pr-2 mdi mdi-playlist-music text-theme-text-active text-2xl"
+          ></span>
           <span class="text-theme-text-active">Libary</span>
         </div>
       </router-link>
@@ -51,6 +58,8 @@
 </template>
 
 <script>
+import logo_blue from '../assets/own_blue.png';
+
 export default {
   name: 'Sidebar',
   data: () => ({
@@ -58,6 +67,7 @@ export default {
     drawer: false,
     selectedItem: 0,
     maxLength: 18,
+    logo_blue,
     items: [
       { text: 'First', icon: 'mdi-folder' },
       {
@@ -66,41 +76,41 @@ export default {
       },
       { text: 'Starred', icon: 'mdi-star' },
       { text: 'Recent', icon: 'mdi-history' },
-      { text: 'Offline', icon: 'mdi-check-circle' },
-      { text: 'Uploads', icon: 'mdi-upload' },
-      { text: 'Backups', icon: 'mdi-cloud-upload' },
-      { text: 'My Files', icon: 'mdi-folder' },
-      { text: 'Shared with me', icon: 'mdi-account-multiple' },
-      { text: 'Starred', icon: 'mdi-star' },
-      { text: 'Recent', icon: 'mdi-history' },
-      { text: 'Offline', icon: 'mdi-check-circle' },
-      { text: 'Uploads', icon: 'mdi-upload' },
-      { text: 'Backups', icon: 'mdi-cloud-upload' },
-      { text: 'My Files', icon: 'mdi-folder' },
-      { text: 'Shared with me', icon: 'mdi-account-multiple' },
-      { text: 'Starred', icon: 'mdi-star' },
-      { text: 'Recent', icon: 'mdi-history' },
-      { text: 'Offline', icon: 'mdi-check-circle' },
-      { text: 'Uploads', icon: 'mdi-upload' },
-      { text: 'Starred', icon: 'mdi-star' },
-      { text: 'Recent', icon: 'mdi-history' },
-      { text: 'Offline', icon: 'mdi-check-circle' },
-      { text: 'Uploads', icon: 'mdi-upload' },
-      { text: 'Backups', icon: 'mdi-cloud-upload' },
-      { text: 'My Files', icon: 'mdi-folder' },
-      { text: 'Shared with me', icon: 'mdi-account-multiple' },
-      { text: 'Starred', icon: 'mdi-star' },
-      { text: 'Recent', icon: 'mdi-history' },
-      { text: 'Offline', icon: 'mdi-check-circle' },
-      { text: 'Uploads', icon: 'mdi-upload' },
-      { text: 'Backups', icon: 'mdi-cloud-upload' },
-      { text: 'My Files', icon: 'mdi-folder' },
-      { text: 'Shared with me', icon: 'mdi-account-multiple' },
-      { text: 'Starred', icon: 'mdi-star' },
-      { text: 'Recent', icon: 'mdi-history' },
-      { text: 'Offline', icon: 'mdi-check-circle' },
-      { text: 'Uploads', icon: 'mdi-upload' },
-      { text: 'Last', icon: 'mdi-cloud-upload' }
+      { text: 'Offline', icon: 'mdi-check-circle' }
+      // { text: 'Uploads', icon: 'mdi-upload' },
+      // { text: 'Backups', icon: 'mdi-cloud-upload' },
+      // { text: 'My Files', icon: 'mdi-folder' },
+      // { text: 'Shared with me', icon: 'mdi-account-multiple' },
+      // { text: 'Starred', icon: 'mdi-star' },
+      // { text: 'Recent', icon: 'mdi-history' },
+      // { text: 'Offline', icon: 'mdi-check-circle' },
+      // { text: 'Uploads', icon: 'mdi-upload' },
+      // { text: 'Backups', icon: 'mdi-cloud-upload' },
+      // { text: 'My Files', icon: 'mdi-folder' },
+      // { text: 'Shared with me', icon: 'mdi-account-multiple' },
+      // { text: 'Starred', icon: 'mdi-star' },
+      // { text: 'Recent', icon: 'mdi-history' },
+      // { text: 'Offline', icon: 'mdi-check-circle' },
+      // { text: 'Uploads', icon: 'mdi-upload' },
+      // { text: 'Starred', icon: 'mdi-star' },
+      // { text: 'Recent', icon: 'mdi-history' },
+      // { text: 'Offline', icon: 'mdi-check-circle' },
+      // { text: 'Uploads', icon: 'mdi-upload' },
+      // { text: 'Backups', icon: 'mdi-cloud-upload' },
+      // { text: 'My Files', icon: 'mdi-folder' },
+      // { text: 'Shared with me', icon: 'mdi-account-multiple' },
+      // { text: 'Starred', icon: 'mdi-star' },
+      // { text: 'Recent', icon: 'mdi-history' },
+      // { text: 'Offline', icon: 'mdi-check-circle' },
+      // { text: 'Uploads', icon: 'mdi-upload' },
+      // { text: 'Backups', icon: 'mdi-cloud-upload' },
+      // { text: 'My Files', icon: 'mdi-folder' },
+      // { text: 'Shared with me', icon: 'mdi-account-multiple' },
+      // { text: 'Starred', icon: 'mdi-star' },
+      // { text: 'Recent', icon: 'mdi-history' },
+      // { text: 'Offline', icon: 'mdi-check-circle' },
+      // { text: 'Uploads', icon: 'mdi-upload' },
+      // { text: 'Last', icon: 'mdi-cloud-upload' }
     ]
   }),
   methods: {

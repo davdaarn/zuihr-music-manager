@@ -2,9 +2,9 @@
 <template>
   <div class="flex flex-col">
     <!-- header -->
-    <div class="w-full h-48 relative">
+    <div class="w-full h-64 relative">
       <div
-        class="w-full h-full bg-cover bg-fixed shadow-2xl"
+        class="w-full h-full bg-cover bg-fixed shadow-2xl position absolute"
         :style="{ background: getBackground() }"
       ></div>
       <!-- Image Highlight -->

@@ -10,7 +10,7 @@
       </div>
       <!-- player -->
       <PlayerControls />
-      <StatusBar />
+      <!-- <StatusBar /> -->
     </div>
   </div>
 </template>
@@ -27,8 +27,8 @@ export default {
   components: {
     Display,
     Sidebar,
-    PlayerControls,
-    StatusBar
+    PlayerControls
+    // StatusBar
   },
 
   data: () => ({})
