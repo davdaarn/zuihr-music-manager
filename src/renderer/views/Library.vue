@@ -2,20 +2,27 @@
 <template>
   <div class="flex flex-col">
     <!-- header -->
-    <div class="w-full h-64 relative">
+    <div class="w-full h-48 relative">
+      <!-- <img
+        class="w-full h-full shadow-2xl blurred"
+        :src="`data:image/jpg;base64, ${filteredSongs[focusedSong].songs[0].albumArt.image256}`"
+      /> -->
+      <!-- </div> -->
       <div
-        class="w-full h-full bg-cover bg-fixed shadow-2xl position absolute"
+        class="w-full h-full bg-cover bg-fixed shadow-2xl"
         :style="{ background: getBackground() }"
-      ></div>
+      >
+        <!-- <div class="img-blur w-full h-full absolute"></div> -->
+      </div>
       <!-- Image Highlight -->
       <div
-        v-if="songs && songs.length > 0 && focusedSong !== null"
+        v-if="songs && songs.length > 0 && songInFocus"
         class="absolute top-10 inset-x-10 flex"
       >
         <div class="relative">
           <img
             class="w-32 h-32 bg-cover shadow-2xl rounded-lg"
-            :src="`data:image/jpg;base64, ${filteredSongs[focusedSong].songs[0].albumArt.image256}`"
+            :src="`data:image/jpg;base64, ${songInFocus.songs[0].albumArt.image256}`"
           />
           <!-- <div
             class="absolute mdi mdi-play-circle text-theme-text-active hover:text-green-500 text-5xl top-32 right-6 shadow-2xl rounded-full"
@@ -26,12 +33,11 @@
           class="flex flex-col glex-grow pl-6 justify-between my-4"
           style="text-shadow: #33333399 0 0 10px"
         >
-          <!-- <div class="flex-grow"></div> -->
-          <div class="text-gray-300 text-5xl">
-            {{ truncate(filteredSongs[focusedSong].songs[0].title) }}
+          <div class="text-gray-300 text-4xl">
+            {{ truncate(songInFocus.songs[0].title) || "" }}
           </div>
           <div class="text-gray-300 text-xl pt-4 pl-2">
-            {{ filteredSongs[focusedSong].songs[0].artist }}
+            {{ songInFocus.songs[0].artist || "" }}
           </div>
         </div>
       </div>
@@ -39,7 +45,7 @@
     </div>
 
     <!-- controls -->
-    <div class="px-4 py-2">
+    <div class="px-4 py-3">
       <div
         class="flex justify-between mx-4 text-theme-text-active items-center"
       >
@@ -258,6 +264,8 @@ export default {
   computed: {
     //
     ...mapState({
+      songInFocus: state => state.app.songInFocus,
+
       library: state => state.library.library,
       processing: state => state.library.processing,
       isLibraryDirty: state => state.library.isDirty,
@@ -418,38 +426,74 @@ export default {
       this.rootHeight = this.$refs.root.clientHeight;
     },
     playThis() {
-      this.$store.dispatch(
-        'player/playThis',
-        this.filteredSongs[this.focusedSong]
-      );
+      this.$store.dispatch('player/playThis', songInFocus);
     },
     getBackground() {
       if (
-        this.focusedSong !== null &&
-        this.filteredSongs[this.focusedSong] &&
-        this.filteredSongs[this.focusedSong].songs[0].colorPalette
+        this.songInFocus !== null &&
+        this.songInFocus &&
+        this.songInFocus.songs[0].colorPalette
       ) {
-        let p = this.filteredSongs[this.focusedSong].songs[0].colorPalette;
+        let p = this.songInFocus.songs[0].colorPalette;
         return `linear-gradient(45deg, ${p.DarkMuted.hex}, ${p.DarkMuted.hex}, ${p.DarkMuted.hex})`;
       }
 
-      return '#383838';
-      // return 'linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)';
+      return '#27272a';
     },
-    renderImage(song) {
-      // console.log(song.songs[0].albumArt.image64);
-      if (song.songs[0].albumArt.image64) {
-        let buffer = Buffer.from(song.songs[0].albumArt.image64);
-        let blob = new Blob([buffer], {
-          type: song.songs[0].albumArt.format
-        });
-        let urlCreator = window.URL || window.webkitURL;
-        let url = urlCreator.createObjectURL(blob);
-        // console.log(url);
-        return url;
+    getBackgroundImage() {
+      if (
+        this.songInFocus !== null &&
+        this.songInFocus &&
+        this.songInFocus.songs[0].albumArt
+      ) {
+        console.log(this.songInFocus.songs[0].albumArt);
+        return this.songInFocus.songs[0].albumArt.image64;
+
+        // let buffer = Buffer.from(
+        //   this.filteredSongs[this.focusedSong].songs[0].albumArt.image64
+        // );
+
+        // console.log(buffer);
+
+        // let blob = null;
+
+        // try {
+        //   blob = new Blob([...buffer], {
+        //     type:
+        //       this.filteredSongs[this.focusedSong].songs[0].albumArt.format ||
+        //       'image/jpeg'
+        //   });
+        //   console.log(blob);
+        // } catch (error) {
+        //   console.log(error);
+        // }
+
+        // if (blob) {
+        //   let urlCreator = window.URL || window.webkitURL;
+        //   let url = urlCreator.createObjectURL(blob);
+        //   console.log(url);
+        //   return `url(${url})`;
+        // }
+
+        // let p = this.filteredSongs[this.focusedSong].songs[0].colorPalette;
+        // return `linear-gradient(45deg, ${p.DarkMuted.hex}, ${p.DarkMuted.hex}, ${p.DarkMuted.hex})`;
       }
-      return this.placeHolderImage;
+
+      return '#383838';
     },
+    // renderImage(song) {
+    //   if (song.songs[0].albumArt.image64) {
+    //     let buffer = Buffer.from(song.songs[0].albumArt.image256);
+    //     let blob = new Blob([buffer], {
+    //       type: song.songs[0].albumArt.format
+    //     });
+    //     let urlCreator = window.URL || window.webkitURL;
+    //     let url = urlCreator.createObjectURL(blob);
+    //     console.log(url);
+    //     return url;
+    //   }
+    //   return this.placeHolderImage;
+    // },
     truncate(text) {
       if (text.length > this.maxLength) {
         return text.substring(0, this.maxLength) + '...';
@@ -497,6 +541,10 @@ export default {
 <style scoped lang="scss">
 .picker {
   z-index: 100;
+}
+
+.blurred {
+  filter: blur(50px);
 }
 
 .search {

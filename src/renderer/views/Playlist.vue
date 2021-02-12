@@ -2,6 +2,7 @@
   <div class="w-full h-full flex flex-col">
     <!-- header -->
     <div class="w-full h-64 relative">
+      {{ log() }}
       <div
         class="w-full h-full bg-cover bg-fixed shadow-2xl"
         :style="{ backgroundImage: `url(${placeHolderImage})` }"
@@ -144,6 +145,9 @@ export default {
     },
     mousedown(e) {
       console.log(e);
+    },
+    log() {
+      console.log(this.placeHolderImage);
     }
   },
   watch: {
