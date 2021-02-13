@@ -10,6 +10,7 @@ module.exports = {
 
       black: colors.black,
       white: colors.white,
+      cyan: colors.cyan,
       gray: colors.gray,
       blueGray: colors.blueGray,
       coolGray: colors.coolGray,
@@ -24,6 +25,7 @@ module.exports = {
       indigo: colors.indigo,
       purple: colors.violet,
       pink: colors.pink,
+      customGray: '#002842',
 
       // background: {
       //   primary: 'var(--bg-primary)',

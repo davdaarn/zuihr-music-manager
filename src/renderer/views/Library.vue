@@ -3,17 +3,15 @@
   <div class="flex flex-col">
     <!-- header -->
     <div class="w-full h-48 relative">
-      <!-- <img
-        class="w-full h-full shadow-2xl blurred"
-        :src="`data:image/jpg;base64, ${filteredSongs[focusedSong].songs[0].albumArt.image256}`"
-      /> -->
-      <!-- </div> -->
-      <div
+      <!-- <div
         class="w-full h-full bg-cover bg-fixed shadow-2xl"
         :style="{ background: getBackground() }"
-      >
-        <!-- <div class="img-blur w-full h-full absolute"></div> -->
-      </div>
+      ></div> -->
+      <img
+        class="w-full h-full shadow-2xl rounded-lg header-image-bg"
+        :src="`data:image/jpg;base64, ${songInFocus.songs[0].albumArt.image256}`"
+      />
+      <div class="img-blur w-full h-full absolute top-0"></div>
       <!-- Image Highlight -->
       <div
         v-if="songs && songs.length > 0 && songInFocus"
@@ -55,7 +53,7 @@
           <input
             type="text"
             placeholder="Search"
-            class="px-4 py-2 rounded-md bg-gray-700 focus:outline-none border border-solid border-gray-700 focus:border-green-500 disabled:opacity-25"
+            class="px-4 py-2 rounded-md bg-blueGray-800 focus:outline-none border border-solid border-blueGray-800 focus:border-lightBlue-500 disabled:opacity-25"
             :disabled="songs.length < 1 ? true : false"
             v-model="userSearch"
           />
@@ -97,7 +95,6 @@
     </div>
 
     <!-- Contents -->
-
     <div
       id="drag-zone"
       class="px-4 pt-4 pb-1 h-full w-full overflow-hidden"
@@ -108,7 +105,7 @@
     >
       <div
         v-if="!dragZoneActive && !processing && !manualOpen && songs.length > 0"
-        class="overflow-y-scroll h-full pointer-event-none"
+        class="overflow-y-scroll h-full pointer-event-none root"
         ref="root"
       >
         <div ref="viewport" :style="viewportStyle" class="">
@@ -120,6 +117,9 @@
               :source="song"
               :index="startIndex + index"
             ></SongRow>
+            <div class="h-14 p-2 spacer"></div>
+            <div class="h-14 p-2 spacer"></div>
+            <div class="h-14 p-2 spacer"></div>
           </div>
         </div>
       </div>
@@ -315,7 +315,7 @@ export default {
       );
     },
     itemCount() {
-      return this.filteredSongs.length;
+      return this.filteredSongs.length + 3;
     },
     /**
     The amount by which we need to translateY the items shown on the screen so that the scrollbar shows up correctly
@@ -555,6 +555,10 @@ export default {
   border: 1px solid #2fac67;
 }
 
+.header-image-bg {
+  object-fit: cover;
+}
+
 .drag-zone::after {
   // content: "Drag Your Music Here Or Click The Plus Icon";
 }
@@ -562,23 +566,23 @@ export default {
 ///////////////////////////////
 
 .inactive {
-  background: #15617c;
+  background: #0284c7;
 }
 
 .processing {
   background: linear-gradient(
     to right,
-    #15617c,
-    #15617c,
-    #15617c,
-    #15617c,
-    #15617c,
+    #0284c7,
+    #0284c7,
+    #0284c7,
+    #0284c7,
+    #0284c7,
     #2fac67,
-    #15617c,
-    #15617c,
-    #15617c,
-    #15617c,
-    #15617c
+    #0284c7,
+    #0284c7,
+    #0284c7,
+    #0284c7,
+    #0284c7
   );
   background-size: 200% 200%;
   animation: Processing 5s ease infinite;
@@ -607,14 +611,8 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .img-blur {
   content: "";
-  /* box-shadow: 0 0 1rem 0 black; */
-  /* background-color: rgba(0, 0, 0, 0.5); */
-  background-image: linear-gradient(
-    rgba(55, 65, 81, 0.3),
-    rgba(31, 41, 55, 0.5),
-    rgba(31, 41, 55, 0.7)
-  );
-  backdrop-filter: blur(30px);
+  background-image: linear-gradient(rgba(5, 7, 14, 0.7), rgba(45, 61, 87, 0.5));
+  backdrop-filter: blur(20px);
 }
 
 th {

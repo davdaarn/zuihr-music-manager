@@ -1,6 +1,6 @@
 <template>
   <div
-    class="text-gray-300 h-14 p-2 hover:bg-gray-600 song-row-item"
+    class="text-gray-300 h-14 p-2 hover:bg-blueGray-700 song-row-item"
     :class="isInFocus"
     @click="setFocusedSong"
     @mouseover="hover = true"
@@ -12,7 +12,7 @@
         <div class="align-middle">
           <div
             v-if="hover"
-            class="mdi text-3xl hover:text-green-600"
+            class="mdi text-3xl hover:text-green-500"
             :class="hoverLogic()"
             @click="playPauseThis"
           ></div>
@@ -204,7 +204,7 @@ export default {
   computed: {
     isInFocus: function() {
       if (this.$store.state.app.songInFocusIndex === this.index) {
-        return 'bg-gray-700';
+        return 'bg-blueGray-600';
       }
 
       return '';

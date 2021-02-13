@@ -1,12 +1,12 @@
 <template>
   <div class="flex flex-col">
     <div
-      class="h-20 mx-12 my-2 bg-contain bg-no-repeat bg-center"
+      class="h-20 mx-12 mt-4 bg-contain bg-no-repeat bg-center"
       :style="{ backgroundImage: `url(${logo_blue})` }"
     ></div>
 
     <div class="p-2 flex flex-col justify-around">
-      <router-link to="/" class="hover:bg-gray-700 rounded">
+      <router-link to="/" class="hover:bg-blueGray-700 rounded">
         <div class="p-2 cursor-pointer flex items-center">
           <span
             class="pr-2 mdi mdi-home text-theme-text-active text-2xl"
@@ -20,7 +20,7 @@
           <span class="text-theme-text-active">Test</span>
         </div>
       </router-link> -->
-      <router-link to="/library" class="hover:bg-gray-700 rounded">
+      <router-link to="/library" class="hover:bg-blueGray-700 rounded">
         <div class="p-2 cursor-pointer flex items-center">
           <span
             class="pr-2 mdi mdi-playlist-music text-theme-text-active text-2xl"
@@ -45,7 +45,7 @@
         <router-link
           v-for="(item, index) in items"
           :key="index"
-          class="py-2 pl-6 select-none cursor-pointer hover:bg-gray-700 text-lg rounded"
+          class="py-2 pl-6 select-none cursor-pointer hover:bg-blueGray-700 text-lg rounded"
           :to="`/playlist/${index}`"
         >
           <span class="text-theme-text-active">{{ truncate(item.text) }}</span>

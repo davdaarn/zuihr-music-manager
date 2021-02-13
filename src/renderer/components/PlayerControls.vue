@@ -1,7 +1,7 @@
 <template>
-  <div class="h-24 bg-gray-900 flex flex-col">
+  <div class="h-24 flex flex-col">
     <!-- <div class="h-1 bg-gray-700"></div> -->
-    <div class="flex h-full justify-between">
+    <div class="flex h-full justify-between z-50">
       <!-- song peak -->
       <!-- todo: click on song to navigate to position in library -->
       <!-- todo: add quick actions -->
@@ -97,6 +97,7 @@
         </div>
       </div>
     </div>
+    <div class="player-controls-bg absolute w-full h-full z-40"></div>
     <!-- <div class="h-0.5" :class="processing ? `incative` : `inactive`"></div> -->
   </div>
 </template>
@@ -235,6 +236,12 @@ export default {
 <style lang="scss">
 .link:hover {
   text-decoration-line: underline;
+  // text-decoration-color: #0adf86;
+}
+
+.player-controls-bg {
+  background-color: rgba(31, 41, 55, 0.5);
+  backdrop-filter: blur(20px);
 }
 
 .inactive {

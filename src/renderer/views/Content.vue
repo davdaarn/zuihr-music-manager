@@ -1,7 +1,7 @@
 <template>
   <div class="max-h-screen">
     <div class="flex flex-col h-screen">
-      <div class="flex-grow flex max-h-screen">
+      <div class="flex-grow flex max-h-screen z-0">
         <!-- sidebar -->
         <Sidebar class="w-72 sidebar" />
         <!-- content -->
@@ -9,7 +9,7 @@
         <!-- </div> -->
       </div>
       <!-- player -->
-      <PlayerControls />
+      <PlayerControls class="absolute bottom-0 w-full z-50" />
       <!-- <StatusBar /> -->
     </div>
   </div>
@@ -36,9 +36,10 @@ export default {
 </script>
 
 <style >
-/* ::-webkit-scrollbar-track {
-  background-color: rgb(71, 71, 71);
-} */
+::-webkit-scrollbar-track {
+  /* background-color: rgb(36, 102, 163); */
+  margin-bottom: 100px;
+}
 
 ::-webkit-scrollbar {
   width: 4px;
@@ -50,6 +51,6 @@ export default {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: rgb(112, 112, 112);
+  background-color: #0284c7;
 }
 </style>

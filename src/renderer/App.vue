@@ -1,7 +1,7 @@
 <template>
   <div
     id="content-body"
-    class="bg-gray-800 select-none"
+    class="select-none bg-gradient-to-b from-coolGray-900 to-coolGray-800"
     :class="theme"
     @click.right="rightClick"
     @contextmenu.prevent
@@ -38,6 +38,9 @@ export default {
 </script>
 
 <style>
+html {
+  /* background-color: #00233b33; */
+}
 body::-webkit-scrollbar {
   display: none;
 }
@@ -47,7 +50,7 @@ body::-webkit-scrollbar {
 }
 
 .router-link-exact-active {
-  background-color: rgb(69, 89, 133);
+  background-color: #475569;
   cursor: pointer;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
