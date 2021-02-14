@@ -12,7 +12,7 @@
         <div class="align-middle">
           <div
             v-if="hover"
-            class="mdi text-3xl hover:text-green-500"
+            class="mdi text-3xl hover:text-active"
             :class="hoverLogic()"
             @click="playPauseThis"
           ></div>
@@ -20,10 +20,11 @@
             <div v-if="!nonHoverLogic()">
               {{ index + 1 }}
             </div>
-            <img
+            <!-- <img
               v-if="nonHoverLogic()"
               src="https://open.scdn.co/cdn/images/equaliser-animated-green.73b73928.gif"
-            />
+            /> -->
+            <img v-if="nonHoverLogic()" :src="`safe-file-protocol://${eq}`" />
           </div>
         </div>
       </div>
@@ -119,6 +120,8 @@
 
 <script>
 import { playerState } from '../types';
+// import eq from '../assets/equalizer.gif';
+import path from 'path';
 
 export default {
   name: 'SongRow',
@@ -137,7 +140,8 @@ export default {
     return {
       maxLength: 30,
       hover: false,
-      songToShowOptions: null
+      songToShowOptions: null,
+      eq: path.join(__static, '/equalizer.gif')
     };
   },
   created() {
@@ -215,6 +219,8 @@ export default {
 
 <style lang="scss" scoped>
 .link:hover {
-  text-decoration-line: underline;
+  text-decoration-line: none;
+  // text-decoration-color: #00e6cf;
+  color: #00e6cf;
 }
 </style>
