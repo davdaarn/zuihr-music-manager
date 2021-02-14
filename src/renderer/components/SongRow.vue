@@ -3,6 +3,7 @@
     class="text-gray-300 h-14 p-2 hover:bg-blueGray-700 song-row-item"
     :class="isInFocus"
     @click="setFocusedSong"
+    @click.right="setFocusedSong"
     @mouseover="hover = true"
     @mouseleave="hover = false"
   >
@@ -87,30 +88,8 @@
                   ? 'mdi-music-box-multiple-outline text-yellow-300 hover:text-yellow-200'
                   : 'mdi-dots-horizontal hover:text-white'
               "
-              v-on:click="showOptions(source, index)"
+              @click="showOptions($event, source, index)"
             ></div>
-            <div
-              v-if="songToShowOptions === index"
-              class="absolute h-auto w-48 bg-gray-900 rounded-sm shadow-2xl top-8 -left-24 z-50"
-            >
-              <div class="mdi mdi-heart-outline p-2 hover:text-red-500">
-                Stuff
-              </div>
-              <div class="p-2 hover:text-gray-200 hover:bg-gray-600">Stuff</div>
-              <div class="p-2 hover:text-gray-200 hover:bg-gray-600">Stuff</div>
-              <div class="p-2 hover:text-gray-200 hover:bg-gray-600">Stuff</div>
-              <div class="p-2 hover:text-gray-200 hover:bg-gray-600">Stuff</div>
-              <hr />
-              <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
-                Other Stuff
-              </div>
-              <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
-                Other Stuff
-              </div>
-              <div class="p-2 hover:text-gray-200 hover:bg-gray-600">
-                Other Stuff
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -121,7 +100,14 @@
 <script>
 import { playerState } from '../types';
 // import eq from '../assets/equalizer.gif';
+import { mapState } from 'vuex';
 import path from 'path';
+
+const emptyMenu = {
+  isActive: false,
+  classList: 'pointer-events-none',
+  event: null
+};
 
 export default {
   name: 'SongRow',
@@ -161,13 +147,27 @@ export default {
         index: this.index
       });
     },
-    showOptions(song, index) {
-      if (this.songToShowOptions === index) {
-        this.songToShowOptions = null;
-      } else {
-        this.songToShowOptions = index;
-      }
-      console.log(song, index);
+    showOptions(e, song, index, v) {
+      console.log(e, song, index, v);
+      // if (this.songToShowOptions === index) {
+      //   this.songToShowOptions = null;
+      // } else {
+      //   this.songToShowOptions = index;
+      // }
+      // console.log(song, index);
+      this.setMenu({
+        isActive: true,
+        classList: 'pointer-events-all',
+        event: e
+      });
+    },
+    clearMenu() {
+      console.log('clearing menu');
+      this.$store.dispatch('app/setContextMenuData', emptyMenu);
+    },
+    setMenu(value) {
+      console.log('setting menu');
+      this.$store.dispatch('app/setContextMenuData', value);
     },
     playPauseThis() {
       this.$store.dispatch('player/playThis', this.source);
@@ -206,6 +206,10 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      isActive: state => state.app.contextMenuData.isActive,
+      classList: state => state.app.contextMenuData.classList
+    }),
     isInFocus: function() {
       if (this.$store.state.app.songInFocusIndex === this.index) {
         return 'bg-blueGray-600';

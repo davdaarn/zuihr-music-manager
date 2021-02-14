@@ -36,6 +36,11 @@ export default {
 </script>
 
 <style >
+.sidebar {
+  border-right-color: rgba(104, 104, 104, 0.226);
+  border-right-width: 1px;
+}
+
 ::-webkit-scrollbar-track {
   /* background-color: rgb(36, 102, 163); */
   margin-bottom: 100px;

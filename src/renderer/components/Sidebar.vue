@@ -125,12 +125,13 @@ export default {
 }
 
 .router-link-exact-active {
+  color: #00e6cf;
+  /* filter: blur(10px); */
   /* background: linear-gradient(
     90deg,
     rgba(0, 229, 206, 0.2) 0%,
     rgba(0, 0, 0, 0.1) 15%
   ); */
-  color: #00e6cf;
   /* cursor: pointer;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgb(0, 0, 0, 0.1); */
 }

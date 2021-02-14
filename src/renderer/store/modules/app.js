@@ -1,6 +1,11 @@
 const state = {
   songInFocus: null,
-  songInFocusIndex: null
+  songInFocusIndex: null,
+  contextMenuData: {
+    isActive: false,
+    classList: 'pointer-events-none',
+    event: null
+  }
 };
 
 const getters = {};
@@ -15,6 +20,10 @@ const actions = {
       index
     });
   },
+
+  setContextMenuData(context, value) {
+    context.commit('SET_CONTEXT_MENU_DATA', value);
+  },
 };
 
 const mutations = {
@@ -22,6 +31,9 @@ const mutations = {
     state.songInFocus = value.song;
     state.songInFocusIndex = value.index;
   },
+  SET_CONTEXT_MENU_DATA(state, value) {
+    state.contextMenuData = value;
+  }
 };
 
 export default {

@@ -112,6 +112,7 @@
       <div
         v-if="!dragZoneActive && !processing && !manualOpen && songs.length > 0"
         class="overflow-y-scroll h-full pointer-event-none root"
+        @scroll="clearMenu"
         ref="root"
       >
         <div ref="viewport" :style="viewportStyle" class="">
@@ -212,6 +213,12 @@ import placeHolderImage from '../assets/lava.jpeg';
 import SongRow from '../components/SongRow';
 import { mapState } from 'vuex';
 import _ from 'lodash';
+
+const emptyMenu = {
+  isActive: false,
+  classList: 'pointer-events-none',
+  event: null
+};
 
 const passiveSupportMixin = {
   methods: {
@@ -505,6 +512,9 @@ export default {
       } else {
         return text;
       }
+    },
+    clearMenu() {
+      this.$store.dispatch('app/setContextMenuData', emptyMenu);
     }
   },
   created() {

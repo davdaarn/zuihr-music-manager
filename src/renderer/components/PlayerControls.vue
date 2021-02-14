@@ -143,9 +143,9 @@ export default {
     }),
     playIcon() {
       if (this.playerState === playerState.playing) {
-        return 'mdi-motion-pause-outline text-gray-300';
+        return 'mdi-pause text-gray-300';
       } else {
-        return 'mdi-motion-play-outline';
+        return 'mdi-play-outline';
       }
     },
     volumeIcon() {
