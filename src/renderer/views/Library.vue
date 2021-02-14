@@ -3,15 +3,21 @@
   <div class="flex flex-col">
     <!-- header -->
     <div class="w-full h-48 relative">
-      <!-- <div
+      <!-- Header backbround 1 -->
+      <div
         class="w-full h-full bg-cover bg-fixed shadow-2xl"
         :style="{ background: getBackground() }"
-      ></div> -->
-      <img
+      ></div>
+      <div class="img-blur w-full h-full absolute top-0"></div>
+
+      <!-- Header backbround 2 -->
+      <!-- <img
+        v-if="songInFocus"
         class="w-full h-full shadow-2xl rounded-lg header-image-bg"
         :src="`data:image/jpg;base64, ${songInFocus.songs[0].albumArt.image256}`"
       />
-      <div class="img-blur w-full h-full absolute top-0"></div>
+      <div class="img-blur w-full h-full absolute top-0"></div> -->
+
       <!-- Image Highlight -->
       <div
         v-if="songs && songs.length > 0 && songInFocus"
@@ -23,7 +29,7 @@
             :src="`data:image/jpg;base64, ${songInFocus.songs[0].albumArt.image256}`"
           />
           <!-- <div
-            class="absolute mdi mdi-play-circle text-theme-text-active hover:text-green-500 text-5xl top-32 right-6 shadow-2xl rounded-full"
+            class="absolute mdi mdi-play-circle text-theme-text-active hover:text-active text-5xl top-32 right-6 shadow-2xl rounded-full"
             @click="playThis"
           ></div> -->
         </div>
@@ -53,7 +59,7 @@
           <input
             type="text"
             placeholder="Search"
-            class="px-4 py-2 rounded-md bg-blueGray-800 focus:outline-none border border-solid border-blueGray-800 focus:border-lightBlue-500 disabled:opacity-25"
+            class="px-4 py-2 rounded-md bg-blueGray-800 focus:outline-none border border-solid border-blueGray-800 focus:border-active disabled:opacity-25"
             :disabled="songs.length < 1 ? true : false"
             v-model="userSearch"
           />
@@ -65,12 +71,12 @@
         <!-- Right Side -->
         <div class="flex items-center">
           <div
-            class="mx-2 mdi mdi-plus text-2xl hover:text-green-300 cursor-pointer"
+            class="mx-2 mdi mdi-plus text-2xl hover:text-active cursor-pointer"
             title="Add New Songs"
             @click="toggleOpen(!manualOpen)"
           ></div>
           <div
-            class="mx-2 mdi mdi-refresh text-xl hover:text-green-300 cursor-pointer"
+            class="mx-2 mdi mdi-refresh text-xl hover:text-active cursor-pointer"
             title="Refresh List"
             @click="reloadLibrary()"
           ></div>
@@ -119,7 +125,6 @@
             ></SongRow>
             <div class="h-14 p-2 spacer"></div>
             <div class="h-14 p-2 spacer"></div>
-            <div class="h-14 p-2 spacer"></div>
           </div>
         </div>
       </div>
@@ -159,7 +164,7 @@
             ></div>
             <div class="text-2xl m-2">
               Discovered
-              <span class="text-green-500 mx-2 text-3xl">{{
+              <span class="text-active mx-2 text-3xl">{{
                 songsToProcessCount
               }}</span>
               Songs!
@@ -167,14 +172,14 @@
 
             <div class="text-2xl m-2">
               Processing Song:
-              <span class="text-green-500 mx-2 text-3xl">{{
+              <span class="text-active mx-2 text-3xl">{{
                 processingSongNumber
               }}</span>
             </div>
 
             <div class="text-2xl m-2">
               Songs Added:
-              <span class="text-green-500 mx-2 text-3xl">{{
+              <span class="text-active mx-2 text-3xl">{{
                 songsAddedCount
               }}</span>
             </div>
@@ -315,7 +320,7 @@ export default {
       );
     },
     itemCount() {
-      return this.filteredSongs.length + 3;
+      return this.filteredSongs.length + 2;
     },
     /**
     The amount by which we need to translateY the items shown on the screen so that the scrollbar shows up correctly
@@ -552,7 +557,7 @@ export default {
 }
 
 .search:focus {
-  border: 1px solid #2fac67;
+  border: 1px solid #00e6cf;
 }
 
 .header-image-bg {
@@ -566,26 +571,26 @@ export default {
 ///////////////////////////////
 
 .inactive {
-  background: #0284c7;
+  background: #00e6cf63;
 }
 
 .processing {
   background: linear-gradient(
     to right,
-    #0284c7,
-    #0284c7,
-    #0284c7,
-    #0284c7,
-    #0284c7,
-    #2fac67,
-    #0284c7,
-    #0284c7,
-    #0284c7,
-    #0284c7,
-    #0284c7
+    #00e6cf63,
+    #00e6cf63,
+    #00e6cf63,
+    #00e6cf63,
+    #00e6cf63,
+    #00e6cf,
+    #00e6cf63,
+    #00e6cf63,
+    #00e6cf63,
+    #00e6cf63,
+    #00e6cf63
   );
   background-size: 200% 200%;
-  animation: Processing 5s ease infinite;
+  animation: Processing 2s ease infinite;
 }
 
 @keyframes Processing {
@@ -611,8 +616,8 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .img-blur {
   content: "";
-  background-image: linear-gradient(rgba(5, 7, 14, 0.7), rgba(45, 61, 87, 0.5));
-  backdrop-filter: blur(20px);
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.1));
+  // backdrop-filter: blur(40px);
 }
 
 th {

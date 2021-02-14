@@ -47,10 +47,10 @@ export default {
 
 ::-webkit-scrollbar-thumb {
   border-radius: 5px;
-  background-color: #555;
+  background-color: #00e6cf63;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: #0284c7;
+  background-color: #00e6cf;
 }
 </style>

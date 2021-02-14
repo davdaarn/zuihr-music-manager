@@ -117,7 +117,8 @@ export default {
       max: 0,
       deg: 0,
       railMode: 'inactive',
-      haltTrackUpdate: false
+      haltTrackUpdate: false,
+      maxLength: 20
     };
   },
   watch: {
@@ -240,7 +241,7 @@ export default {
 }
 
 .player-controls-bg {
-  background-color: rgba(31, 41, 55, 0.5);
+  background-color: rgba(31, 41, 55, 0.6);
   backdrop-filter: blur(20px);
 }
 
@@ -325,12 +326,12 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 input[type="range"]:hover::-webkit-slider-thumb {
-  background: #53be57;
-  box-shadow: -403px 0 0 400px #53be57;
+  background: #00e6cf;
+  box-shadow: -403px 0 0 400px #00e6cf;
 }
 
 .volume input[type="range"]:hover::-webkit-slider-thumb {
-  box-shadow: -203px 0 0 200px #53be57;
+  box-shadow: -203px 0 0 200px #00e6cf;
 }
 
 input[type="range"]::-webkit-slider-runnable-track {
