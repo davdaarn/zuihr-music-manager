@@ -1,52 +1,75 @@
 <template>
   <div
-    class="text-gray-300 bg-gray-800 rounded-lg py-2 px-4 shadow-2xl w-40"
+    class="text-gray-300 bg-gray-800 rounded-lg p-2 shadow-2xl w-60 border border-blueGray-500"
     :style="{ top: top, left: left }"
     @click.stop
     ref="root"
   >
-    <div
-      class="p-3 hover:text-active hover:bg-blueGray-700 rounded cursor-pointer"
-      @click.stop
-    >
-      Stuff
+    <div class="">
+      <div class="p-3 hover:bg-blueGray-700 rounded cursor-pointer" @click.stop>
+        Add to playlist
+      </div>
+      <div class="p-3 pt-0 h-40 rounded cursor-pointer" @click.stop>
+        <ul class="h-full overflow-auto flex flex-col">
+          <div
+            v-for="(item, index) in items"
+            :key="index"
+            class="hover:bg-blueGray-700 w-full flex items-center"
+            :to="`/playlist/${index}`"
+          >
+            <div
+              class="mdi text-2xl hover:text-active"
+              :class="item.icon"
+            ></div>
+            <span class="px-4 py-1">{{ truncate(item.text) }}</span>
+          </div>
+        </ul>
+      </div>
     </div>
-    <div
-      class="p-3 hover:text-active hover:bg-blueGray-700 rounded cursor-pointer"
-      @click.stop
-    >
-      Stuff
-    </div>
-    <div
-      class="p-3 hover:text-active hover:bg-blueGray-700 rounded cursor-pointer"
-      @click.stop
-    >
-      Stuff
-    </div>
-    <div
-      class="p-3 hover:text-active hover:bg-blueGray-700 rounded cursor-pointer"
-      @click.stop
-    >
-      Stuff
+    <div class="p-3 hover:bg-blueGray-700 rounded cursor-pointer" @click.stop>
+      Tags
     </div>
     <hr @click.stop />
-    <div
-      class="p-3 hover:text-active hover:bg-blueGray-700 rounded cursor-pointer"
-      @click.stop
-    >
-      Other Stuff
+    <!-- <div class="p-3 rounded cursor-pointer flex items-baseline" @click.stop>
+      <div
+        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
+      ></div>
+      <div
+        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
+      ></div>
+      <div
+        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
+      ></div>
+      <div
+        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
+      ></div>
+      <div
+        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
+      ></div>
+      <div
+        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
+      ></div>
+      <div
+        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
+      ></div>
+      <div
+        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
+      ></div>
+      <div
+        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
+      ></div>
+      <div
+        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
+      ></div>
+    </div> -->
+    <div class="p-3 hover:bg-blueGray-700 rounded cursor-pointer" @click.stop>
+      Remove rating
     </div>
-    <div
-      class="p-3 hover:text-active hover:bg-blueGray-700 rounded cursor-pointer"
-      @click.stop
-    >
-      Other Stuff
+    <div class="p-3 hover:bg-blueGray-700 rounded cursor-pointer" @click.stop>
+      Remove from library
     </div>
-    <div
-      class="p-3 hover:text-active hover:bg-blueGray-700 rounded cursor-pointer"
-      @click.stop
-    >
-      Other Stuff
+    <div class="p-3 hover:bg-blueGray-700 rounded cursor-pointer" @click.stop>
+      Delete from device
     </div>
   </div>
 </template>
@@ -64,8 +87,23 @@ export default {
   },
   data() {
     return {
-      // top: 0,
-      // left: 0
+      maxLength: 16,
+      items: [
+        { text: 'Oldies', icon: 'mdi-checkbox-marked' },
+        {
+          text: 'My Favorite Classic Video Game Soundtracks',
+          icon: 'mdi-checkbox-marked'
+        },
+        { text: 'Coding Music', icon: 'mdi-checkbox-blank-outline' },
+        { text: 'OST', icon: 'mdi-checkbox-blank-outline' },
+        { text: 'Deep', icon: 'mdi-checkbox-marked' },
+        { text: 'Hard Core', icon: 'mdi-checkbox-marked' },
+        { text: 'Inspirational', icon: 'mdi-checkbox-blank-outline' },
+        { text: 'Inspirational', icon: 'mdi-checkbox-blank-outline' },
+        { text: 'Quiet Days', icon: 'mdi-checkbox-blank-outline' },
+        { text: 'Feel Good', icon: 'mdi-checkbox-blank-outline' },
+        { text: 'Fun', icon: 'mdi-checkbox-marked' }
+      ]
     };
   },
   methods: {
@@ -74,6 +112,13 @@ export default {
     },
     setMenu(value) {
       this.$store.dispatch('app/setContextMenuData', value);
+    },
+    truncate(text) {
+      if (text.length > this.maxLength) {
+        return text.substring(0, this.maxLength) + '...';
+      } else {
+        return text;
+      }
     }
   },
   computed: {
@@ -120,4 +165,5 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+.one
 </style>

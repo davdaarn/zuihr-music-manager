@@ -90,6 +90,7 @@
         <div class="w-12 flex items-center mx-2 flex-none">#</div>
         <div class="w-4/12 flex items-center">Song</div>
         <div class="w-4/12 flex items-center">Album</div>
+        <div class="w-2/12 flex items-center">Rating</div>
         <div
           class="flex justify-around items-center h-10 w-4/12 mdi mdi-clock-outline"
         ></div>

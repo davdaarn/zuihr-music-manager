@@ -65,11 +65,70 @@
           {{ truncate(source.songs ? source.songs[0].album : "nope") }}
         </router-link>
       </div>
-      <!-- <div>Sometdin</div> -->
+      <!--  -->
+      <div class="w-2/12 flex items-center pointer-events-auto">
+        <div
+          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
+          :class="source.songs[0].rating > 0 ? 'bg-inactive' : ''"
+          @click="setRating(1)"
+        ></div>
+        <div
+          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
+          :class="source.songs[0].rating > 1 ? 'bg-inactive' : ''"
+          @click="setRating(2)"
+        ></div>
+        <div
+          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
+          :class="source.songs[0].rating > 2 ? 'bg-inactive' : ''"
+          @click="setRating(3)"
+        ></div>
+        <div
+          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
+          :class="source.songs[0].rating > 3 ? 'bg-inactive' : ''"
+          @click="setRating(4)"
+        ></div>
+        <div
+          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
+          :class="source.songs[0].rating > 4 ? 'bg-inactive' : ''"
+          @click="setRating(5)"
+        ></div>
+        <div
+          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
+          :class="source.songs[0].rating > 5 ? 'bg-inactive' : ''"
+          @click="setRating(6)"
+        ></div>
+        <div
+          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
+          :class="source.songs[0].rating > 6 ? 'bg-inactive' : ''"
+          @click="setRating(7)"
+        ></div>
+        <div
+          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
+          :class="source.songs[0].rating > 7 ? 'bg-inactive' : ''"
+          @click="setRating(8)"
+        ></div>
+        <div
+          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
+          :class="source.songs[0].rating > 8 ? 'bg-inactive' : ''"
+          @click="setRating(9)"
+        ></div>
+        <div
+          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
+          :class="source.songs[0].rating > 9 ? 'bg-inactive' : ''"
+          @click="setRating(10)"
+        ></div>
+      </div>
+      <!--  -->
       <div class="flex justify-around items-center h-10 w-4/12">
         <div class="flex">
           <div
-            class="mdi mdi-heart-outline text-gray-400 hover:text-red-500 cursor-pointer pointer-events-auto"
+            class="mdi hover:text-red-500 cursor-pointer pointer-events-auto"
+            :class="
+              source.songs[0].favorite
+                ? 'mdi-heart text-red-800'
+                : 'mdi-heart-outline text-gray-400'
+            "
+            @click="setFavorite"
           ></div>
           <div class="pl-2 pr-2 w-20 flex justify-center">
             <!-- Todo: make this accurate -->
@@ -126,10 +185,11 @@ export default {
   components: {},
   data() {
     return {
-      maxLength: 30,
+      maxLength: 25,
       hover: false,
       songToShowOptions: null,
-      eq: path.join(__static, '/equalizer.gif')
+      eq: path.join(__static, '/equalizer.gif'),
+      rating: 4
     };
   },
   created() {},
@@ -201,6 +261,16 @@ export default {
       }
 
       return `${m}:${s}`;
+    },
+    setRating(r) {
+      this.source.songs[0].rating = r;
+    },
+    setFavorite() {
+      if (!this.source.songs[0].favorite) {
+        this.source.songs[0].favorite = true;
+      } else {
+        this.source.songs[0].favorite = false;
+      }
     }
   },
   computed: {

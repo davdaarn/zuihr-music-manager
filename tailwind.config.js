@@ -27,6 +27,7 @@ module.exports = {
       pink: colors.pink,
       customGray: '#002842',
       active: '#00e6cf',
+      inactive: '#00e6cf63',
 
       // background: {
       //   primary: 'var(--bg-primary)',
