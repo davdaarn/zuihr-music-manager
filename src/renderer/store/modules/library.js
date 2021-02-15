@@ -89,6 +89,40 @@ const actions = {
       .catch(console.log)
       .finally(x => {});
   },
+
+  async setSongRating({
+    context
+  }, args) {
+    console.log(args.id);
+    ipcRenderer
+      .invoke('SET_SONG_RATING', {
+        args
+      })
+      .then(docs => {
+        console.log(docs);
+        // context.commit('SET_SONG_RATING', docs)
+      })
+      .catch(console.log)
+      .finally(x => {});
+  },
+
+  async setAsFavorite({
+    context
+  }, args) {
+    console.log(args.id);
+    ipcRenderer
+      .invoke('SET_AS_FAVORITE', {
+        args
+      })
+      .then(docs => {
+        console.log(docs);
+        // context.commit('SET_SONG_RATING', docs)
+      })
+      .catch(console.log)
+      .finally(x => {});
+  },
+
+
 };
 
 const mutations = {
@@ -139,4 +173,3 @@ export default {
   actions,
   mutations
 }
-

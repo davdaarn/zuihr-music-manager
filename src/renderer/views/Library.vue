@@ -34,10 +34,10 @@
           ></div> -->
         </div>
         <div
-          class="flex flex-col glex-grow pl-6 justify-between my-4"
+          class="flex flex-col glex-grow pl-6 justify-end my-4"
           style="text-shadow: #33333399 0 0 10px"
         >
-          <div class="text-gray-300 text-4xl">
+          <div class="text-gray-300 text-5xl">
             {{ truncate(songInFocus.songs[0].title) || "" }}
           </div>
           <div class="text-gray-300 text-xl pt-4 pl-2">
@@ -135,72 +135,77 @@
         v-else-if="
           dragZoneActive || processing || manualOpen || songs.length < 1
         "
-        class="h-full w-full flex justify-center items-center text-gray-300 drag-zone pointer-events-none"
+        class="h-full w-full flex flex-col justify-center items-center text-gray-300 drag-zone pointer-events-none"
       >
-        <div
-          class="w-5/6 h-5/6 border-dashed border-4 border-gray-600 rounded-md shadow-md flex flex-col justify-center items-center"
-          :class="{ 'bg-gray-600 opacity-75': dragZoneActive }"
-        >
+        <div class="h-full w-full flex justify-center items-center">
           <div
-            v-if="!dragZoneActive && !processing"
-            class="flex flex-col justify-center items-center"
-          >
-            <div class="p-2 text-2xl">Drag Your Music Here!</div>
-            <!-- <div class="p-2 text-2xl">Or</div>
-            <div class="p-2 text-2xl">Click The Plus Button!</div> -->
-          </div>
-
-          <div
-            v-else-if="dragZoneActive"
-            class="mdi mdi-plus text-9xl text-gray-800"
-          ></div>
-
-          <div
-            v-else-if="
-              (!dragZoneActive && processing) || (!dragZoneActive && manualOpen)
-            "
+            class="w-5/6 h-5/6 border-dashed border-4 border-gray-600 rounded-md shadow-md flex flex-col justify-center items-center"
+            :class="{ 'bg-gray-600 opacity-75': dragZoneActive }"
           >
             <div
-              class="mdi mdi-close text-2xl"
-              @click="toggleOpen(false)"
+              v-if="!dragZoneActive && !processing"
+              class="flex flex-col justify-center items-center"
+            >
+              <div class="p-2 text-2xl">Drag Your Music Here!</div>
+            </div>
+
+            <div
+              v-else-if="dragZoneActive"
+              class="mdi mdi-plus text-9xl text-gray-800"
             ></div>
-            <div class="text-2xl m-2">
-              Discovered
-              <span class="text-active mx-2 text-3xl">{{
-                songsToProcessCount
-              }}</span>
-              Songs!
-            </div>
 
-            <div class="text-2xl m-2">
-              Processing Song:
-              <span class="text-active mx-2 text-3xl">{{
-                processingSongNumber
-              }}</span>
-            </div>
+            <div
+              v-else-if="
+                (!dragZoneActive && processing) ||
+                (!dragZoneActive && manualOpen)
+              "
+              class="relative w-full h-full flex flex-col items-center"
+            >
+              <div
+                class="mdi mdi-close text-2xl absolute top-10 right-10 pointer-events-auto hover:text-active cursor-pointer"
+                @click="toggleOpen(false)"
+              ></div>
+              <div class="m-auto">
+                <div class="text-2xl m-2">
+                  Discovered
+                  <span class="text-active mx-2 text-3xl">{{
+                    songsToProcessCount
+                  }}</span>
+                  Songs!
+                </div>
 
-            <div class="text-2xl m-2">
-              Songs Added:
-              <span class="text-active mx-2 text-3xl">{{
-                songsAddedCount
-              }}</span>
-            </div>
+                <div class="text-2xl m-2">
+                  Processing Song:
+                  <span class="text-active mx-2 text-3xl">{{
+                    processingSongNumber
+                  }}</span>
+                </div>
 
-            <div class="text-2xl m-2">
-              Duplicates Found:
-              <span class="text-yellow-600 mx-2 text-3xl">{{
-                duplicateSongCount
-              }}</span>
-            </div>
+                <div class="text-2xl m-2">
+                  Songs Added:
+                  <span class="text-active mx-2 text-3xl">{{
+                    songsAddedCount
+                  }}</span>
+                </div>
 
-            <div class="text-2xl m-2">
-              Songs Already In Library:
-              <span class="text-yellow-600 mx-2 text-3xl">{{
-                existingSongCount
-              }}</span>
+                <div class="text-2xl m-2">
+                  Duplicates Found:
+                  <span class="text-yellow-600 mx-2 text-3xl">{{
+                    duplicateSongCount
+                  }}</span>
+                </div>
+
+                <div class="text-2xl m-2">
+                  Songs Already In Library:
+                  <span class="text-yellow-600 mx-2 text-3xl">{{
+                    existingSongCount
+                  }}</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+        <div class="w-full h-20 spacer"></div>
       </div>
     </div>
 

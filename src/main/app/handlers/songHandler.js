@@ -207,19 +207,27 @@ const processSongs = () => {
 
         // todo: make function // processNewSong(song);
         // * 1 - check if song exists in db
-        db.songs.find({_id: uid }, (err, docs) => {
+        db.songs.find({
+          _id: uid
+        }, (err, docs) => {
           if (err) {
             console.warn(err);
           } else if (docs.length > 1) {
             console.error("Entities should have unique id's"); // this should never happen
           } else if (docs.length === 1) {
             /**
-            ** 1.2 - if song is not unique but has a different path
-            ** add song as duplicate
-            */ 
+             ** 1.2 - if song is not unique but has a different path
+             ** add song as duplicate
+             */
             const exists = docs[0].songs.some(x => x.path === song.path); // check for existing file path
             if (!exists) {
-              db.songs.update({ _id: uid }, { $push: { songs: song } },
+              db.songs.update({
+                  _id: uid
+                }, {
+                  $push: {
+                    songs: song
+                  }
+                },
                 (err, numEffected, param3, param4) => {
                   if (err) {
                     console.error('db error updating song', err);
@@ -285,7 +293,7 @@ const processSongs = () => {
     win.webContents.send('SET_SONGS_TO_PROCESS_COUNT', songsToProcess.length);
     win.webContents.send('PROCESSING_SONG_NUMBER', processingSongNumber);
     win.webContents.send('SET_EXISTING_SONG_COUNT', songsAlreadyInLibrary);
-    
+
     win.webContents.send('SET_IS_LIBRARY_DIRTY', true);
 
   }
@@ -350,6 +358,82 @@ ipcMain.handle('LOAD_LIBRARY', async (even, args) => {
         return resolve(docs);
       }
     });
+  })
+
+  return res;
+})
+
+ipcMain.handle('SET_SONG_RATING', async (event, args) => {
+  console.log(args.args.id);
+  let res = 'poo';
+
+  res = await new Promise((resolve, reject) => {
+    db.songs.findOne({
+      _id: args.args.id
+    }, (err, doc) => {
+      if (err) {
+        console.error(err);
+        return reject(err);
+      } else {
+        doc.songs[0].rating = args.args.rating;
+        db.songs.update({
+          _id: args.args.id
+        }, {
+          songs: doc.songs
+        }, (err, numReplaced) => {
+          if (err) {
+            console.log(err);
+            return reject(err);
+          } else {
+            // if (!win) {
+            //   win = mainAppWindow.getInstance();
+            // }
+            // win.webContents.send('SET_IS_LIBRARY_DIRTY', false);
+            console.log(numReplaced);
+            return resolve(numReplaced);
+          }
+        });
+      }
+    });
+
+  })
+
+  return res;
+})
+
+ipcMain.handle('SET_AS_FAVORITE', async (event, args) => {
+  console.log(args.args.id);
+  let res = 'poo';
+
+  res = await new Promise((resolve, reject) => {
+    db.songs.findOne({
+      _id: args.args.id
+    }, (err, doc) => {
+      if (err) {
+        console.error(err);
+        return reject(err);
+      } else {
+        doc.songs[0].favorite = args.args.favorite;
+        db.songs.update({
+          _id: args.args.id
+        }, {
+          songs: doc.songs
+        }, (err, numReplaced) => {
+          if (err) {
+            console.log(err);
+            return reject(err);
+          } else {
+            // if (!win) {
+            //   win = mainAppWindow.getInstance();
+            // }
+            // win.webContents.send('SET_IS_LIBRARY_DIRTY', false);
+            console.log(numReplaced);
+            return resolve(numReplaced);
+          }
+        });
+      }
+    });
+
   })
 
   return res;

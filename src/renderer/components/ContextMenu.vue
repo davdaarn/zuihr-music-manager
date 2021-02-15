@@ -1,11 +1,15 @@
 <template>
   <div
-    class="text-gray-300 bg-gray-800 rounded-lg p-2 shadow-2xl w-60 border border-blueGray-500"
+    class="text-gray-300 bg-gray-800 rounded-lg p-2 shadow-2xl w-60 border-2 border-blueGray-600"
     :style="{ top: top, left: left }"
     @click.stop
     ref="root"
   >
-    <div class="">
+    <div class="p-3 hover:bg-blueGray-700 rounded cursor-pointer" @click.stop>
+      Add to queue
+    </div>
+    <div class="h-0.5 w-full bg-blueGray-600 my-1" @click.stop></div>
+    <div v-if="items.length > 0" class="">
       <div class="p-3 hover:bg-blueGray-700 rounded cursor-pointer" @click.stop>
         Add to playlist
       </div>
@@ -29,39 +33,7 @@
     <div class="p-3 hover:bg-blueGray-700 rounded cursor-pointer" @click.stop>
       Tags
     </div>
-    <hr @click.stop />
-    <!-- <div class="p-3 rounded cursor-pointer flex items-baseline" @click.stop>
-      <div
-        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
-      ></div>
-      <div
-        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
-      ></div>
-      <div
-        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
-      ></div>
-      <div
-        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
-      ></div>
-      <div
-        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
-      ></div>
-      <div
-        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
-      ></div>
-      <div
-        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
-      ></div>
-      <div
-        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
-      ></div>
-      <div
-        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
-      ></div>
-      <div
-        class="one h-4 w-4 bg-gray-600 m-1 hover:bg-active rounded-full"
-      ></div>
-    </div> -->
+    <div class="h-0.5 w-full bg-blueGray-600 my-1" @click.stop></div>
     <div class="p-3 hover:bg-blueGray-700 rounded cursor-pointer" @click.stop>
       Remove rating
     </div>
@@ -165,5 +137,4 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-.one
 </style>

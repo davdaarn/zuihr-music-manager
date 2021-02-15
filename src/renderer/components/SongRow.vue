@@ -68,53 +68,93 @@
       <!--  -->
       <div class="w-2/12 flex items-center pointer-events-auto">
         <div
-          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
-          :class="source.songs[0].rating > 0 ? 'bg-inactive' : ''"
+          class="mdi text-gray-500 mr-1 hover:text-active rounded-full"
+          :class="
+            source.songs[0].rating > 0
+              ? 'text-inactive mdi-checkbox-blank-circle'
+              : 'mdi-checkbox-blank-circle-outline'
+          "
           @click="setRating(1)"
         ></div>
         <div
-          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
-          :class="source.songs[0].rating > 1 ? 'bg-inactive' : ''"
+          class="mdi text-gray-500 mr-1 hover:text-active rounded-full"
+          :class="
+            source.songs[0].rating > 1
+              ? 'text-inactive mdi-checkbox-blank-circle'
+              : 'mdi-checkbox-blank-circle-outline'
+          "
           @click="setRating(2)"
         ></div>
         <div
-          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
-          :class="source.songs[0].rating > 2 ? 'bg-inactive' : ''"
+          class="mdi text-gray-500 mr-1 hover:text-active rounded-full"
+          :class="
+            source.songs[0].rating > 2
+              ? 'text-inactive mdi-checkbox-blank-circle'
+              : 'mdi-checkbox-blank-circle-outline'
+          "
           @click="setRating(3)"
         ></div>
         <div
-          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
-          :class="source.songs[0].rating > 3 ? 'bg-inactive' : ''"
+          class="mdi text-gray-500 mr-1 hover:text-active rounded-full"
+          :class="
+            source.songs[0].rating > 3
+              ? 'text-inactive mdi-checkbox-blank-circle'
+              : 'mdi-checkbox-blank-circle-outline'
+          "
           @click="setRating(4)"
         ></div>
         <div
-          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
-          :class="source.songs[0].rating > 4 ? 'bg-inactive' : ''"
+          class="mdi text-gray-500 mr-1 hover:text-active rounded-full"
+          :class="
+            source.songs[0].rating > 4
+              ? 'text-inactive mdi-checkbox-blank-circle'
+              : 'mdi-checkbox-blank-circle-outline'
+          "
           @click="setRating(5)"
         ></div>
         <div
-          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
-          :class="source.songs[0].rating > 5 ? 'bg-inactive' : ''"
+          class="mdi text-gray-500 mr-1 hover:text-active rounded-full"
+          :class="
+            source.songs[0].rating > 5
+              ? 'text-inactive mdi-checkbox-blank-circle'
+              : 'mdi-checkbox-blank-circle-outline'
+          "
           @click="setRating(6)"
         ></div>
         <div
-          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
-          :class="source.songs[0].rating > 6 ? 'bg-inactive' : ''"
+          class="mdi text-gray-500 mr-1 hover:text-active rounded-full"
+          :class="
+            source.songs[0].rating > 6
+              ? 'text-inactive mdi-checkbox-blank-circle'
+              : 'mdi-checkbox-blank-circle-outline'
+          "
           @click="setRating(7)"
         ></div>
         <div
-          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
-          :class="source.songs[0].rating > 7 ? 'bg-inactive' : ''"
+          class="mdi text-gray-500 mr-1 hover:text-active rounded-full"
+          :class="
+            source.songs[0].rating > 7
+              ? 'text-inactive mdi-checkbox-blank-circle'
+              : 'mdi-checkbox-blank-circle-outline'
+          "
           @click="setRating(8)"
         ></div>
         <div
-          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
-          :class="source.songs[0].rating > 8 ? 'bg-inactive' : ''"
+          class="mdi text-gray-500 mr-1 hover:text-active rounded-full"
+          :class="
+            source.songs[0].rating > 8
+              ? 'text-inactive mdi-checkbox-blank-circle'
+              : 'mdi-checkbox-blank-circle-outline'
+          "
           @click="setRating(9)"
         ></div>
         <div
-          class="one h-3 w-3 bg-gray-500 m-1 hover:bg-active rounded-full"
-          :class="source.songs[0].rating > 9 ? 'bg-inactive' : ''"
+          class="mdi text-gray-500 mr-1 hover:text-active rounded-full"
+          :class="
+            source.songs[0].rating > 9
+              ? 'text-inactive mdi-checkbox-blank-circle'
+              : 'mdi-checkbox-blank-circle-outline'
+          "
           @click="setRating(10)"
         ></div>
       </div>
@@ -128,7 +168,7 @@
                 ? 'mdi-heart text-red-800'
                 : 'mdi-heart-outline text-gray-400'
             "
-            @click="setFavorite"
+            @click="setAsFavorite"
           ></div>
           <div class="pl-2 pr-2 w-20 flex justify-center">
             <!-- Todo: make this accurate -->
@@ -264,12 +304,24 @@ export default {
     },
     setRating(r) {
       this.source.songs[0].rating = r;
+      this.$store.dispatch('library/setSongRating', {
+        id: this.source._id,
+        rating: r
+      });
     },
-    setFavorite() {
+    setAsFavorite() {
       if (!this.source.songs[0].favorite) {
         this.source.songs[0].favorite = true;
+        this.$store.dispatch('library/setAsFavorite', {
+          id: this.source._id,
+          favorite: true
+        });
       } else {
         this.source.songs[0].favorite = false;
+        this.$store.dispatch('library/setAsFavorite', {
+          id: this.source._id,
+          favorite: false
+        });
       }
     }
   },
