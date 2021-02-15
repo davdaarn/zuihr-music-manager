@@ -123,7 +123,6 @@ export default {
   },
   watch: {
     '$store.state': function(o, n) {
-      console.log('state changed');
       console.log(o, n);
     }
   },

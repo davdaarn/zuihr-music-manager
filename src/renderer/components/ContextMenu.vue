@@ -1,17 +1,53 @@
 <template>
   <div
-    class="text-white bg-gray-900 hover:text-active cursor-pointer"
+    class="text-gray-300 bg-gray-800 rounded-lg py-2 px-4 shadow-2xl w-40"
     :style="{ top: top, left: left }"
+    @click.stop
+    ref="root"
   >
-    <div class="mdi mdi-heart-outline p-2 hover:text-red-500">Stuff</div>
-    <div class="p-2 hover:text-gray-200 hover:bg-gray-600">Stuff</div>
-    <div class="p-2 hover:text-gray-200 hover:bg-gray-600">Stuff</div>
-    <div class="p-2 hover:text-gray-200 hover:bg-gray-600">Stuff</div>
-    <div class="p-2 hover:text-gray-200 hover:bg-gray-600">Stuff</div>
-    <hr />
-    <div class="p-2 hover:text-gray-200 hover:bg-gray-600">Other Stuff</div>
-    <div class="p-2 hover:text-gray-200 hover:bg-gray-600">Other Stuff</div>
-    <div class="p-2 hover:text-gray-200 hover:bg-gray-600">Other Stuff</div>
+    <div
+      class="p-3 hover:text-active hover:bg-blueGray-700 rounded cursor-pointer"
+      @click.stop
+    >
+      Stuff
+    </div>
+    <div
+      class="p-3 hover:text-active hover:bg-blueGray-700 rounded cursor-pointer"
+      @click.stop
+    >
+      Stuff
+    </div>
+    <div
+      class="p-3 hover:text-active hover:bg-blueGray-700 rounded cursor-pointer"
+      @click.stop
+    >
+      Stuff
+    </div>
+    <div
+      class="p-3 hover:text-active hover:bg-blueGray-700 rounded cursor-pointer"
+      @click.stop
+    >
+      Stuff
+    </div>
+    <hr @click.stop />
+    <div
+      class="p-3 hover:text-active hover:bg-blueGray-700 rounded cursor-pointer"
+      @click.stop
+    >
+      Other Stuff
+    </div>
+    <div
+      class="p-3 hover:text-active hover:bg-blueGray-700 rounded cursor-pointer"
+      @click.stop
+    >
+      Other Stuff
+    </div>
+    <div
+      class="p-3 hover:text-active hover:bg-blueGray-700 rounded cursor-pointer"
+      @click.stop
+    >
+      Other Stuff
+    </div>
   </div>
 </template>
 
@@ -35,19 +71,50 @@ export default {
   methods: {
     click() {
       console.log('I was clicked');
+    },
+    setMenu(value) {
+      this.$store.dispatch('app/setContextMenuData', value);
     }
   },
   computed: {
     ...mapState({
-      top: state => state.app.contextMenuData.event.clientY + 'px',
-      left: state => state.app.contextMenuData.event.clientX + 'px'
+      // top: state => state.app.contextMenuData.event.clientY + 'px',
+      // left: state => state.app.contextMenuData.event.clientX + 'px',
+      top: state => state.app.contextMenuData.Y + 'px',
+      left: state => state.app.contextMenuData.X + 'px',
+      contextMenuData: state => state.app.contextMenuData
     })
   },
-  created() {
-    console.log('menu created');
-    // console.log(this.source.event.clientX, this.source.event.clientY);
-    // this.top = this.source.event.clientY + 'px';
-    // this.left = this.source.event.clientX + 'px';
+  created() {},
+  mounted() {
+    let addjustedPosX = this.contextMenuData.X;
+    let addjustedPosY = this.contextMenuData.Y;
+
+    if (
+      this.contextMenuData.X + this.$refs.root.clientWidth >
+      document.body.offsetWidth
+    ) {
+      addjustedPosX =
+        document.body.offsetWidth - this.$refs.root.clientWidth - 10;
+    }
+
+    if (
+      this.contextMenuData.Y + this.$refs.root.clientHeight >
+      document.body.offsetHeight - 100
+    ) {
+      addjustedPosY =
+        document.body.offsetHeight - this.$refs.root.clientHeight - 100;
+    }
+
+    if (
+      addjustedPosX !== this.contextMenuData.X ||
+      addjustedPosY !== this.contextMenuData.Y
+    ) {
+      this.$store.dispatch('app/setContextPosition', {
+        X: addjustedPosX,
+        Y: addjustedPosY
+      });
+    }
   }
 };
 </script>

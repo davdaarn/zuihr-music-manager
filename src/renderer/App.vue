@@ -10,7 +10,7 @@
     <Content id="content" />
     <ContextMenu
       v-if="isActive"
-      id="contextMenu"
+      id="context-menu"
       class="absolute top-40 left-20"
       :class="classList"
     />
@@ -25,7 +25,9 @@ import { mapState } from 'vuex';
 const emptyMenu = {
   isActive: false,
   classList: 'pointer-events-none',
-  event: null
+  event: null,
+  X: null,
+  Y: null
 };
 
 export default {
@@ -44,35 +46,22 @@ export default {
   methods: {
     rightClick(e) {
       if (e.target.classList.value.includes('song-row-item')) {
-        if (this.isActive === false) {
-          this.setMenu({
-            isActive: true,
-            classList: 'pointer-events-all',
-            event: e
-          });
-        } else {
-          this.setMenu({
-            isActive: true,
-            classList: 'pointer-events-all',
-            event: e
-          });
-        }
       } else {
         this.clearMenu();
       }
     },
     leftClick(e) {
-      // console.log(e);
-      if (!e.target.id.includes('contextMenu')) {
-        // this.clearMenu();
+      if (
+        !e.target.id.includes('contextMenu')
+        // && !e.target.classList.value.includes('context-menu')
+      ) {
+        this.clearMenu();
       }
     },
     clearMenu() {
-      console.log('clearing menu');
       this.$store.dispatch('app/setContextMenuData', emptyMenu);
     },
     setMenu(value) {
-      console.log('setting menu');
       this.$store.dispatch('app/setContextMenuData', value);
     }
   },

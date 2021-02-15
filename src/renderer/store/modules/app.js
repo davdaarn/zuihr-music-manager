@@ -4,7 +4,9 @@ const state = {
   contextMenuData: {
     isActive: false,
     classList: 'pointer-events-none',
-    event: null
+    event: null,
+    X: null,
+    Y: null,
   }
 };
 
@@ -24,6 +26,10 @@ const actions = {
   setContextMenuData(context, value) {
     context.commit('SET_CONTEXT_MENU_DATA', value);
   },
+
+  setContextPosition(context, value) {
+    context.commit('SET_CONTEXT_POSITION', value);
+  }
 };
 
 const mutations = {
@@ -33,6 +39,10 @@ const mutations = {
   },
   SET_CONTEXT_MENU_DATA(state, value) {
     state.contextMenuData = value;
+  },
+  SET_CONTEXT_POSITION(state, value) {
+    state.contextMenuData.X = value.X;
+    state.contextMenuData.Y = value.Y;
   }
 };
 

@@ -3,7 +3,7 @@
     class="text-gray-300 h-14 p-2 hover:bg-blueGray-700 song-row-item"
     :class="isInFocus"
     @click="setFocusedSong"
-    @click.right="setFocusedSong"
+    @click.right="showOptions"
     @mouseover="hover = true"
     @mouseleave="hover = false"
   >
@@ -82,13 +82,13 @@
               class="mdi mdi-dots-horizontal hover:text-white select-auto"
             ></div> -->
             <div
-              class="mdi select-auto cursor-pointer pointer-events-auto text-gray-400"
+              class="mdi select-auto cursor-pointer pointer-events-auto text-gray-400 context-menu"
               :class="
                 source.songs.length > 1
                   ? 'mdi-music-box-multiple-outline text-yellow-300 hover:text-yellow-200'
                   : 'mdi-dots-horizontal hover:text-white'
               "
-              @click="showOptions($event, source, index)"
+              @click.stop.prevent="showOptions"
             ></div>
           </div>
         </div>
@@ -106,7 +106,9 @@ import path from 'path';
 const emptyMenu = {
   isActive: false,
   classList: 'pointer-events-none',
-  event: null
+  event: null,
+  X: null,
+  Y: null
 };
 
 export default {
@@ -130,9 +132,7 @@ export default {
       eq: path.join(__static, '/equalizer.gif')
     };
   },
-  created() {
-    // console.log(this.source);
-  },
+  created() {},
   methods: {
     truncate(text) {
       if (text.length > this.maxLength) {
@@ -147,26 +147,24 @@ export default {
         index: this.index
       });
     },
-    showOptions(e, song, index, v) {
-      console.log(e, song, index, v);
-      // if (this.songToShowOptions === index) {
-      //   this.songToShowOptions = null;
-      // } else {
-      //   this.songToShowOptions = index;
-      // }
-      // console.log(song, index);
-      this.setMenu({
-        isActive: true,
-        classList: 'pointer-events-all',
-        event: e
-      });
+    showOptions(e) {
+      this.setFocusedSong();
+      this.clearMenu();
+      setTimeout(() => {
+        this.setMenu({
+          isActive: true,
+          classList: 'pointer-events-all',
+          event: e,
+          X: e.clientX,
+          Y: e.clientY
+        });
+      }, 100);
     },
     clearMenu() {
       console.log('clearing menu');
       this.$store.dispatch('app/setContextMenuData', emptyMenu);
     },
     setMenu(value) {
-      console.log('setting menu');
       this.$store.dispatch('app/setContextMenuData', value);
     },
     playPauseThis() {
