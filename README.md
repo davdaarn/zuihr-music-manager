@@ -8,6 +8,10 @@ An app for managing your music library
 npm i
 ```
 
+```
+npm i sqlite3 --build-from-source --runtime=electron --target=9.4.3 --dist-url=https://electronjs.org/headers
+```
+
 ``` 
 npm run electron:serve
 ```
