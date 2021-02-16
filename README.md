@@ -1,6 +1,13 @@
-# playlister
+# Unnamed Music Player
 
 An app for managing your music library
+
+<p align="center">
+  <img src="https://davdaarn.github.io/assets/assets/playlister/demo_1.gif" alt="Example gif"/>
+</p>
+<p align="center">
+  <img src="https://davdaarn.github.io/assets/assets/playlister/demo_2.gif" alt="Example gif"/>
+</p>
 
 ## Installation
 
