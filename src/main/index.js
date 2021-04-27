@@ -4,7 +4,8 @@ import {
   app,
   protocol,
   BrowserWindow,
-  ipcMain
+  ipcMain,
+  webContents,
 } from 'electron';
 
 import {
@@ -58,6 +59,7 @@ async function createWindow() {
     win.loadURL('app://./index.html')
   }
 
+
 }
 
 // Quit when all windows are closed.
@@ -79,16 +81,6 @@ app.on('activate', () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', async () => {
-  // const appData = app.getPath('appData');
-  // const db = {};
-  // db.playlists = new DataStore({
-  //   filename: `${appData}/playlister/db/playlists.db`,
-  //   autoload: true
-  // });
-  // db.songs = new DataStore({
-  //   filename: `${appData}/playlister/db/songs.db`,
-  //   autoload: true
-  // });
 
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools

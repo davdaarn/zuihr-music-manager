@@ -310,7 +310,7 @@ function runService(workerData) {
       win.webContents.send('SONGS_TO_PROCESS_COUNT', data.filePaths.length);
       if (data.filePaths.length < 1 && songsToProcess.length < 1) {
         win.webContents.send('PROCESSING_SONGS', processingSongs);
-        return resolve(`Nothing to process`);
+        return resolve('Nothing to process');
       } else {
         songsToProcess.push(...data.filePaths);
         return resolve(`Added ${data.filePaths.length} songs to process`);
