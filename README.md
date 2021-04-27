@@ -1,6 +1,6 @@
-# Unnamed Music Player
+# ZuIhr Music Manager
 
-An app for managing your music library
+An app for managing your music library. Built with Electron, Vue, Tailwind.
 
 
   <img src="https://davdaarn.github.io/assets/assets/playlister/demo_1.gif" alt="Example gif"/>
