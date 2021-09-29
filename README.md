@@ -9,7 +9,9 @@ An app for managing your music library. Built with Electron, Vue, Tailwind.
 
 
 ## Disclaimer
-`Not working on macOS yet. Only few tweaks needed, just haven't gotten around to it yet.`
+Not working on macOS yet. Only few tweaks needed, just haven't gotten around to it yet.
+
+Also only half finished.
 
 ## Installation
 
@@ -51,6 +53,7 @@ npm run electron:rebuild:win
   - [x] Backend
   - [ ] UI (partly implemented)
 - [x] Worker threads for non-blocking disk operations
+- [x] Right click context menu
 - [ ] Export playlists for mobile via sd card
 - [ ] Export playlists to One Drive for mobile sync
 - [ ] Companion mobile app ( Flutter, prof of concept working )
