@@ -1,16 +1,15 @@
-// Todo: fiqure out why Vuter extention hates this file
 <template>
   <div class="flex flex-col">
     <!-- header -->
     <div class="w-full h-48 relative">
-      <!-- Header backbround 1 -->
+      <!-- Header background 1 -->
       <div
         class="w-full h-full bg-cover bg-fixed shadow-2xl"
         :style="{ background: getBackground() }"
       ></div>
       <div class="img-blur w-full h-full absolute top-0"></div>
 
-      <!-- Header backbround 2 -->
+      <!-- Header background 2 -->
       <!-- <img
         v-if="songInFocus"
         class="w-full h-full shadow-2xl rounded-lg header-image-bg"
@@ -34,7 +33,7 @@
           ></div> -->
         </div>
         <div
-          class="flex flex-col glex-grow pl-6 justify-end my-4"
+          class="flex flex-col flex-grow pl-6 justify-end my-4"
           style="text-shadow: #33333399 0 0 10px"
         >
           <div class="text-gray-300 text-5xl">
@@ -271,7 +270,7 @@ export default {
       scrollTop: 0,
       nodePadding: 0,
       rootHeight: 1500,
-      railMode: 'incative',
+      railMode: 'inactive',
       dragZoneActive: false,
       manualOpen: false,
       userSearch: ''
@@ -281,20 +280,24 @@ export default {
   },
   computed: {
     //
-    ...mapState({
-      songInFocus: state => state.app.songInFocus,
+    // ...mapState({
+    //   songInFocus: state => state.app.songInFocus,
+    //   songInFocusIndex: state => state.app.songInFocusIndex,
 
-      library: state => state.library.library,
-      processing: state => state.library.processing,
-      isLibraryDirty: state => state.library.isDirty,
-      songsAddedCount: state => state.library.songsAddedCount,
-      existingSongCount: state => state.library.existingSongCount,
-      duplicateSongCount: state => state.library.duplicateSongCount,
-      songsToProcessCount: state => state.library.songsToProcessCount,
-      processingSongNumber: state => state.library.processingSongNumber
-      // todo: maybe this should stay local...
-      // filteredSongs: state => state.library.filteredSongs
-    }),
+    //   library: state => state.library.library,
+    //   processing: state => state.library.processing,
+    //   isLibraryDirty: state => state.library.isDirty,
+    //   songsAddedCount: state => state.library.songsAddedCount,
+    //   existingSongCount: state => state.library.existingSongCount,
+    //   duplicateSongCount: state => state.library.duplicateSongCount,
+    //   songsToProcessCount: state => state.library.songsToProcessCount,
+    //   processingSongNumber: state => state.library.processingSongNumber
+    //   // todo: maybe this should stay local...
+    //   // filteredSongs: state => state.library.filteredSongs
+    // }),
+
+		...mapState('app', ['songInFocus', 'songInFocusIndex']),
+		...mapState('library', ['library', 'processing', 'isDirty', 'songsAddedCount', 'existingSongCount', 'duplicateSongCount', 'songsToProcessCount', 'processingSongNumber']),
     //
     /**
     Total height of the viewport = number of items in the array x height of each item
@@ -364,12 +367,12 @@ export default {
     }
   },
   watch: {
-    '$store.state.library.library'(state) {
+    library(state) {
       this.songs = state;
       this.filteredSongs = state;
     },
 
-    '$store.state.app.songInFocusIndex'(state) {
+    songInFocusIndex(state) {
       this.focusedSong = state;
     },
 
