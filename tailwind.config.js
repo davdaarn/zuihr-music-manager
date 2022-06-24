@@ -56,13 +56,13 @@ module.exports = {
   variants: {
     extend: {
       opacity: [
-        "disabled"
+        'disabled'
       ],
       backgroundColor: [
-        "disabled"
+        'disabled'
       ],
       cursor: [
-        "disabled"
+        'disabled'
       ]
     },
   },
